@@ -28,7 +28,7 @@ using WF.Player.Core;
 
 namespace WF.Player.iPhone
 {
-	public class ScreenController : UINavigationController, IUserInterface
+	public class ScreenController : UINavigationController
 	{
 		private AppDelegate appDelegate;
 		private AVAudioPlayer soundPlayer; 
@@ -40,9 +40,10 @@ namespace WF.Player.iPhone
 		private CLLocationManager locationManager;
 		private bool animation = false;
 		private TextWriter logFile;
+		private LogLevel logLevel = LogLevel.Error;
 		private int zoomLevel = 16;
 
-		public int ScreenType;
+		public ScreenType activeScreen;
 		public bool Transitioning;
 
 		public ScreenController (AppDelegate appDelegate)
@@ -90,8 +91,30 @@ namespace WF.Player.iPhone
 				return engine; 
 			} 
 			set { 
-				if (engine != value) 
-					engine = value; 
+				if (engine != value) {
+					// Remove old engine
+					if (engine != null) {
+						engine.InputRequested -= OnGetInput;
+						engine.LogMessageRequested -= OnLogMessage;
+						engine.NotifyOS -= OnNotifyOS;
+						engine.PlayMediaRequested -= OnPlayMedia;
+						engine.ShowMessageBoxRequested -= OnShowMessageBox;
+						engine.ShowScreenRequested -= OnShowScreen;
+						engine.ShowStatusTextRequested -= OnShowStatusText;
+						engine.SynchronizeRequested -= OnSynchronize;
+					}
+					// Set new engine
+					engine = value;
+					// Add all events
+					engine.InputRequested += OnGetInput;
+					engine.LogMessageRequested += OnLogMessage;
+					engine.NotifyOS += OnNotifyOS;
+					engine.PlayMediaRequested += OnPlayMedia;
+					engine.ShowMessageBoxRequested += OnShowMessageBox;
+					engine.ShowScreenRequested += OnShowScreen;
+					engine.ShowStatusTextRequested += OnShowStatusText;
+					engine.SynchronizeRequested += OnSynchronize;
+				}
 				if (engine != null) {
 					cartridge = engine.Cartridge; 
 					Title = cartridge.Name; 
@@ -115,12 +138,12 @@ namespace WF.Player.iPhone
 			}
 			if (VisibleViewController == itemScreen) {
 				if (itemScreen.Table != null) {
-					itemScreen.UpdateData();
+					itemScreen.UpdateData(activeScreen);
 					itemScreen.Table.ReloadData();
 				}
 			}
 			if (VisibleViewController == detailScreen)
-				ShowScreen (engine.DETAILSCREEN,detailScreen.Item.GetInt ("ObjIndex"));
+				ShowScreen (ScreenType.Details,detailScreen.Item);
 		}
 		
 		public void Start()
@@ -164,9 +187,40 @@ namespace WF.Player.iPhone
 		{
 		}
 
-		public void NotifyOS(string command)
+		#region Events
+
+		public void OnGetInput (Object sender, ObjectEventArgs<Input> input)
 		{
-			this.InvokeOnMainThread( () => { notifyOS(command); } );
+			this.InvokeOnMainThread( () => { getInput(input.Object); } );
+		}
+
+		private void getInput (Input input)
+		{
+			ShowScreen (ScreenType.Dialog, input);
+		}
+
+		public void OnLogMessage ( Object sender, LogMessageEventArgs args )
+		{
+			this.InvokeOnMainThread( () => { logMessage (args.Level, args.Message); } );
+		}
+
+		private void logMessage ( LogLevel level, string text )
+		{
+			if (logFile == null)
+				logFile = new StreamWriter(cartridge.LogFilename,true,Encoding.UTF8);
+
+			if (level <= logLevel)
+				logFile.WriteLine(engine.CreateLogMessage(text));
+
+			// TODO: wieder rausnehmen
+			#if DEBUG
+				Console.WriteLine (text);
+			#endif
+		}
+
+		public void OnNotifyOS(Object sender, NotifyOSEventArgs args)
+		{
+			this.InvokeOnMainThread( () => { notifyOS(args.Command); } );
 		}
 
 		private void notifyOS(string command)
@@ -179,62 +233,39 @@ namespace WF.Player.iPhone
 			}
 		}
 
-		public void MessageBox(string text, Media mediaObj, string btn1Label, string btn2Label, CallbackFunction wrapper)
+		public void OnPlayMedia(Object sender, ObjectEventArgs<Media> mediaObj)
 		{
-			this.InvokeOnMainThread( () => { messageBox(text, mediaObj, btn1Label, btn2Label, wrapper); } );
+			this.InvokeOnMainThread( () => { playMedia(mediaObj.Object); } );
 		}
 
-		private void messageBox(string text, Media mediaObj, string btn1Label, string btn2Label, CallbackFunction wrapper)
+		private void playMedia(Media mediaObj)
 		{
-			MessageEntry entry;
-
-			entry = new MessageEntry ();
-			entry.Text = text;
-			if (mediaObj != null) 
-				entry.Image = UIImage.LoadFromData (NSData.FromArray (mediaObj.Data));
-			entry.Buttons.Add (btn1Label);
-			if (!btn2Label.Equals(""))
-				entry.Buttons.Add (btn2Label);
-			entry.Type = MessageEntry.sqeMessage;
-			entry.Callback = wrapper;
-
-			Screen (engine.DIALOGSCREEN, entry);
+			NSError error;
+			soundPlayer = AVAudioPlayer.FromData(NSData.FromArray (mediaObj.Data), out error);
+			if (soundPlayer != null)
+				soundPlayer.Play ();
+			else
+				logMessage (LogLevel.Error,String.Format ("Audio file format of media {0} is not valid",mediaObj.Name));
 		}
 
-		public void GetInput (Input input)
+		public void OnShowMessageBox(Object sender, MessageBoxEventArgs args)
 		{
-			this.InvokeOnMainThread( () => { getInput(input); } );
+			this.InvokeOnMainThread( () => { showMessageBox(args); } );
 		}
 
-		private void getInput (Input input)
+		private void showMessageBox(MessageBoxEventArgs args)
 		{
-			MessageEntry entry = new MessageEntry ();
-			entry.Input = input;
-			entry.Title = input.Name;
-			entry.Text = input.Text;
-			if (input.Image != null)
-				entry.Image = UIImage.LoadFromData (NSData.FromArray (input.Image.Data));
-			if (input.InputType.ToLower ().Equals ("text")) {
-				entry.Type = MessageEntry.sqeInput;
-				entry.Edit = "";
-				entry.Buttons.Add ("OK");
-			} else {
-				entry.Type = MessageEntry.sqeChoice;
-				foreach(string c in input.Choices)
-					entry.Buttons.Add (c);
-			}
-			entry.Callback = input.Callback;
-			Screen (engine.DIALOGSCREEN, entry);
+			ShowScreen (ScreenType.Dialog, args.Descriptor);
 		}
 
-		public void ShowScreen (int screenId, int idxObject = -1)
+		public void OnShowScreen (Object sender, ScreenEventArgs args)
 		{
-			this.InvokeOnMainThread( () => { Screen(screenId,idxObject); } );
+			this.InvokeOnMainThread( () => { ShowScreen(args.Screen, args.Object); } );
 		}
 
-		public void Screen (int screenId, object param = null)
+		public void ShowScreen (ScreenType screenId, object param = null)
 		{
-			ScreenType = screenId;
+			activeScreen = screenId;
 
 			// If there is a old DialogScreen active, remove it
 			if (VisibleViewController is DialogScreen) {
@@ -247,7 +278,7 @@ namespace WF.Player.iPhone
 				NSRunLoop.Current.RunUntil(DateTime.Now);
 			}
 
-			if (screenId == engine.MAINSCREEN)
+			if (screenId == ScreenType.Main)
 			{
 				this.NavigationItem.SetHidesBackButton(false, animation);
 				PopToRootViewController(animation);
@@ -255,7 +286,7 @@ namespace WF.Player.iPhone
 				// Ensure, that screen is updated
 				NSRunLoop.Current.RunUntil(DateTime.Now);
 			}
-			if (screenId == engine.LOCATIONSCREEN || screenId == engine.ITEMSCREEN || screenId == engine.INVENTORYSCREEN || screenId == engine.TASKSCREEN)
+			if (screenId == ScreenType.Locations || screenId == ScreenType.Items || screenId == ScreenType.Inventory || screenId == ScreenType.Tasks)
 			{
 				if (VisibleViewController != mainScreen)
 					PopToRootViewController(animation);
@@ -267,7 +298,7 @@ namespace WF.Player.iPhone
 					NSRunLoop.Current.RunUntil(DateTime.Now);
 				}
 			}
-			if (screenId == engine.DETAILSCREEN)
+			if (screenId == ScreenType.Details)
 			{
 				int idxDetail = (int) param;
 				if (idxDetail == -1)
@@ -278,18 +309,21 @@ namespace WF.Player.iPhone
 				// Create new ViewController
 				detailScreen = new DetailScreen(this,detail);
 				detailScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
-				if (engine.IsZone(detail) || (engine.IsThing(detail) && engine.VisibleObjects.Contains((Thing)detail)))
+				if (detail is Zone || (detail is Thing && engine.VisibleObjects.Contains((Thing)detail)))
 					detailScreen.NavigationItem.SetRightBarButtonItem(new UIBarButtonItem(@"Map",UIBarButtonItemStyle.Plain, (sender,args) => { map ((Thing)detail); }), true);
 				PushViewController (detailScreen,animation);
 				// Ensure, that screen is updated
 				NSRunLoop.Current.RunUntil(DateTime.Now);
 			}
-			if (screenId == engine.DIALOGSCREEN)
+			if (screenId == ScreenType.Dialog)
 			{
 				if (param == null)
 					return;
-				MessageEntry entry = (MessageEntry) param;
-				DialogScreen dialogScreen = new DialogScreen(this, entry);
+				DialogScreen dialogScreen;
+				if (param is MessageBox)
+					dialogScreen = new DialogScreen(this, (MessageBox)param);
+				else
+					dialogScreen = new DialogScreen(this, (Input)param);
 				this.NavigationItem.SetHidesBackButton(true, animation);
 				PushViewController (dialogScreen,animation);
 				// Ensure, that screen is updated
@@ -297,34 +331,13 @@ namespace WF.Player.iPhone
 			}
 		}
 
-		public void DialogCallback (MessageEntry entry, int button)
+		public void RemoveScreen(ScreenType last)
 		{
-			// TODO
-			// Remove basic lua access
-			Screen (engine.DIALOGSCREEN, null);
-			if (entry.Type == MessageEntry.sqeInput)
-				entry.Callback(entry.Edit);
-			else if (entry.Type == MessageEntry.sqeChoice)
-				entry.Callback(entry.Buttons[button]);
-			else if (entry.Type == MessageEntry.sqeMessage && entry.Callback != null)
-				entry.Callback(String.Format ("Button{0}",button+1));
-		}
+			PopViewControllerAnimated(animation);
+			Refresh();
 
-		public void MediaEvent(int type, Media mediaObj)
-		{
-			this.InvokeOnMainThread( () => { mediaEvent(type, mediaObj); } );
-		}
-
-		private void mediaEvent(int type, Media mediaObj)
-		{
-			// TODO
-			// Remove basic lua access
-			NSError error;
-			soundPlayer = AVAudioPlayer.FromData(NSData.FromArray (mediaObj.Data), out error);
-			if (soundPlayer != null)
-				soundPlayer.Play ();
-			else
-				LogMessage (4,String.Format ("Audio file format of media {0} is not valid",mediaObj.Name));
+			// TODO: Set right new screen
+			ShowScreen (ScreenType.Dialog, null);
 		}
 
 		public void StopSound ()
@@ -339,40 +352,21 @@ namespace WF.Player.iPhone
 			}
 		}
 
-		public void LogMessage ( int level, string text )
+		public void OnShowStatusText(Object sender, StatusTextEventArgs args)
 		{
-			this.InvokeOnMainThread( () => { logMessage (level, text); } );
-		}
-
-		private void logMessage ( int level, string text )
-		{
-			if (logFile == null)
-				logFile = new StreamWriter(cartridge.LogFilename,true,Encoding.UTF8);
-      
-      		StringBuilder logText = new StringBuilder();
-
-      		// Add date, position and other things to log line
-      		logText.AppendFormat("{0:yyy-mm-dd hh:mm:ss}|", DateTime.Now);
-      		logText.AppendFormat("{0:0.000000}|{1:0.000000}|{2:0.0}|{3:0.0}|", engine.Latitude, engine.Longitude, engine.Altitude, engine.Accuracy);
-      		logText.Append(text);
-      
-      		// Write to log file
-      		logFile.WriteLine(logText);
-
-			// TODO: wieder rausnehmen
-			#if DEBUG
-				Console.WriteLine (text);
-			#endif
-		}
-
-		public void ShowStatusText(string text)
-		{
-			this.InvokeOnMainThread( () => { showStatusText (text); } );
+			this.InvokeOnMainThread( () => { showStatusText (args.Text); } );
 		}
 
 		private void showStatusText(string text)
 		{
 		}
+
+		public void OnSynchronize (Object sender, SynchronizeEventArgs args )
+		{
+			this.InvokeOnMainThread( () => { args.Tick(); } );
+		}
+
+		#endregion
 		
 		public void ZoneStateChanged(List<Zone> zones)
 		{
@@ -423,11 +417,6 @@ namespace WF.Player.iPhone
 			return "0.1.0";	
 		}
 
-		public void Syncronize ( SyncronizeTick Tick, object source )
-		{
-			this.InvokeOnMainThread( () => { Tick(source); } );
-		}
-
 		private void quit ()
 		{
 			// Ask, if user wants to save game
@@ -463,7 +452,7 @@ namespace WF.Player.iPhone
 				{
 					var alert = new UIAlertView(); 
 					alert.Title = "WF.Player.iPhone"; 
-					alert.Message = String.Format ("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, SharpLua, Lua ",GetVersion(),Engine.CoreVersion); 
+					alert.Message = String.Format ("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",GetVersion(),Engine.CoreVersion); 
 					alert.AddButton("Ok"); 
 //					alert.Clicked += (sender, e) => {
 //					};
@@ -475,8 +464,7 @@ namespace WF.Player.iPhone
 
 		private void back ()
 		{
-			PopViewControllerAnimated(animation);
-			Refresh();
+			RemoveScreen (activeScreen);
 		}
 
 		private void map (Thing thing)

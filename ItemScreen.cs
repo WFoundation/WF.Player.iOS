@@ -96,7 +96,7 @@ namespace WF.Player.iPhone
 			return true;
 		}
 
-		public bool UpdateData (int screenId = -1)
+		public bool UpdateData (ScreenType screenId)
 		{
 			if (itemScreenSource != null)
 				return itemScreenSource.UpdateData (screenId);
@@ -114,7 +114,7 @@ namespace WF.Player.iPhone
 	public class ItemScreenSource : UITableViewSource 
 	{ 
 		private ScreenController ctrl;
-		private int screenType;
+		private ScreenType screenType;
 		private List<UIObject> list;
 
 		public ItemScreenSource(ScreenController ctrl) 
@@ -162,38 +162,37 @@ namespace WF.Player.iPhone
 			// Remove convert
 			Table obj = list[indexPath.Row];
 			int idx = obj.GetInt ("ObjIndex");
-			ctrl.ShowScreen (ctrl.Engine.DETAILSCREEN, idx);
+			ctrl.ShowScreen (ScreenType.Details, idx);
 		}
 
-		public bool UpdateData(int type)
+		public bool UpdateData(ScreenType type)
 		{
-			if (type != -1)
-				screenType = type;
+			screenType = type;
 			
 			if (list != null)
 				list.Clear();
 			else
 				list = new List<UIObject>();
 
-			if (screenType == ctrl.Engine.LOCATIONSCREEN)
+			if (screenType == ScreenType.Locations)
 			{
 				List<Zone> zones = ctrl.Engine.ActiveVisibleZones;
 				foreach(Zone z in zones)
 					list.Add (z);
 			}
-			if (screenType == ctrl.Engine.ITEMSCREEN)
+			if (screenType == ScreenType.Items)
 			{
 				List<Thing> items = ctrl.Engine.VisibleObjects;
 				foreach(Thing i in items)
 					list.Add (i);
 			}
-			if (screenType == ctrl.Engine.INVENTORYSCREEN)
+			if (screenType == ScreenType.Inventory)
 			{
 				List<Thing> items = ctrl.Engine.VisibleInventory;
 				foreach(Thing i in items)
 					list.Add (i);
 			}
-			if (screenType == ctrl.Engine.TASKSCREEN)
+			if (screenType == ScreenType.Tasks)
 			{
 				List<Task> tasks = ctrl.Engine.ActiveVisibleTasks;
 				foreach(Task t in tasks)
@@ -266,7 +265,7 @@ namespace WF.Player.iPhone
 			this.AddSubview (textDistance);
 		}
 
-		public void UpdateData (int screenType, Engine engine, UIObject t)
+		public void UpdateData (ScreenType screenType, Engine engine, UIObject t)
 		{
 			if (t.Icon == null)
 				this.imageIcon.Image = null;
@@ -275,17 +274,17 @@ namespace WF.Player.iPhone
 
 			this.textTitle.Text = t.Name;
 
-			if (screenType != engine.TASKSCREEN && screenType != engine.INVENTORYSCREEN) {
-				if(engine.IsZone (t) && t.GetString ("State").ToLower ().Equals ("inside")) {
+			if (screenType != ScreenType.Tasks && screenType != ScreenType.Inventory) {
+				if(t is Zone && t.GetString ("State").ToLower ().Equals ("inside")) {
 					this.imageDirection.Hidden = false;
 					this.imageDirection.Image = drawCenter ();
 					this.textDistance.Hidden = false;
 					this.textDistance.Text = "Inside";
 				} else {
 					this.imageDirection.Hidden = false;
-					this.imageDirection.Image = drawArrow ((engine.GetBearingOf((Thing)t)+engine.Heading)%360); // * 180.0 / Math.PI);
+					this.imageDirection.Image = drawArrow ((((Thing)t).VectorFromPlayer.Bearing.GetValueOrDefault()+engine.Heading)%360); // * 180.0 / Math.PI);
 					this.textDistance.Hidden = false;
-					this.textDistance.Text = engine.GetDistanceTextOf ((Thing)t);
+					this.textDistance.Text = ((Thing)t).VectorFromPlayer.Distance.BestMeasureAs(DistanceUnit.Meters);
 				}
 			} else {
 				this.imageDirection.Hidden = true;

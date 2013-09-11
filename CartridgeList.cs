@@ -118,7 +118,7 @@ namespace WF.Player.iPhone
 	
 	public class CartridgeListSource : UITableViewSource 
 	{ 
-		private List<Cartridge> cartList;
+		private Cartridges cartList;
 		
 		public delegate void OnSelectEvent(Cartridge cartList);
 		
@@ -126,7 +126,7 @@ namespace WF.Player.iPhone
 		
 		public CartridgeListSource() 
 		{  
-			cartList = new List<Cartridge> ();
+			cartList = new Cartridges();
 			GetCartridgeList();
 		}  
 		
@@ -173,14 +173,21 @@ namespace WF.Player.iPhone
 		{
 			string documentsPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 			FileInfo[] cartridgeFiles = new DirectoryInfo (documentsPath).GetFiles ("*.gwc");
-			
-			cartList = new List<Cartridge> ();
-			
+
+			List<string> fileList = new List<string> (); 
+
 			foreach (FileInfo fileInfo in cartridgeFiles) 
 			{
-				cartList.Add (new Cartridge(fileInfo.FullName));
-				cartList[cartList.Count-1].PreLoadGWC(new FileStream(fileInfo.FullName,FileMode.Open));
+				fileList.Add (fileInfo.FullName);
 			}
+
+			cartList.GetByFileList(fileList);
+			
+//			foreach (FileInfo fileInfo in cartridgeFiles) 
+//			{
+//				cartList.Add (new Cartridge(fileInfo.FullName));
+//				cartList[cartList.Count-1]..PreLoadGWC(new FileStream(fileInfo.FullName,FileMode.Open));
+//			}
 		}
 	} 
 
@@ -240,8 +247,8 @@ namespace WF.Player.iPhone
 		{
 			this.textTitle.Text = cart.Name;
 			this.textTitle.SizeToFit();
-			if (!cart.Author.Equals (String.Empty))
-				this.textDetail.Text = "by " + cart.Author + " ";
+			if (cart.AuthorName != null && !cart.AuthorName.Equals (String.Empty))
+				this.textDetail.Text = "by " + cart.AuthorName + " ";
 			this.textDetail.Text += "(Version " + cart.Version + ")";
 			if (cart.Poster != null)
 				this.imagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Poster.Data));

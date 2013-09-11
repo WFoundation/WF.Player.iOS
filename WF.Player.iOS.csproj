@@ -25,6 +25,7 @@
     <MtouchI18n />
     <MtouchArch>ARMv7</MtouchArch>
     <AssemblyName>iPhone</AssemblyName>
+    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -103,6 +104,7 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="Images\" />
+    <Folder Include="iOS\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -118,10 +120,10 @@
     <Compile Include="MainScreen.cs" />
     <Compile Include="ItemScreen.cs" />
     <Compile Include="DetailScreen.cs" />
-    <Compile Include="ScreenQueue.cs" />
     <Compile Include="DialogScreen.cs" />
     <Compile Include="MapScreen.cs" />
     <Compile Include="CartridgeList.cs" />
+    <Compile Include="iOS\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -131,16 +133,15 @@
     <Content Include="Images\IconYouSee.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.iOS.csproj">
+    <InterfaceDefinition Include="CartridgeDetail.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="WF.Player.Core\Core\Core.iOS.csproj">
       <Project>{DFD85D7E-251B-4D9E-BF44-2F054386F46F}</Project>
       <Name>Core.iOS</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NLua\Core\NLua\NLua.IOS.csproj">
-      <Project>{7064B157-DD57-4828-94C5-CA149B25CB40}</Project>
-      <Name>NLua.IOS</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <InterfaceDefinition Include="CartridgeDetail.xib" />
+    <EmbeddedResource Include="libLua51.a" />
   </ItemGroup>
 </Project>

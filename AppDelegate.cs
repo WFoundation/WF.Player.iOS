@@ -77,14 +77,14 @@ namespace WF.Player.iPhone
 
 		public void CartStart(Cartridge cart)
 		{
-			// Create main screen handler
-			ScreenController screen = new ScreenController(this);
-
 			// Create engine
-			engine = new Engine (screen);
+			engine = new Engine ();
 			
 			// Load cartridge into engine
 			engine.Init(new FileStream(cart.Filename,FileMode.Open),cart);
+
+			// Create main screen handler
+			ScreenController screen = new ScreenController(this);
 
 			// Set engine belonging to this screen
 			screen.Engine = engine;
@@ -100,14 +100,14 @@ namespace WF.Player.iPhone
 
 		public void CartRestore(Cartridge cart)
 		{
-			// Create main screen handler
-			ScreenController screen = new ScreenController(this);
-			
 			// Create engine
-			engine = new Engine (screen);
+			engine = new Engine ();
 			
 			// Load cartridge into engine
 			engine.Init(new FileStream(cart.Filename,FileMode.Open),cart);
+
+			// Create main screen handler
+			ScreenController screen = new ScreenController(this);
 
 			// Set engine belonging to this screen
 			screen.Engine = engine;

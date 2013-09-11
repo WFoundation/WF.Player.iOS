@@ -79,7 +79,7 @@ namespace WF.Player.iPhone
 		private void updateData ()
 		{
 			this.TextTitle.Text = cart.Name;
-			this.TextDescription.Text = cart.Description;
+			this.TextDescription.Text = cart.LongDescription;
 			this.TextDescription.SizeToFit();
 			if (cart.Poster != null)
 				this.ImagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Poster.Data));

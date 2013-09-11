@@ -77,9 +77,9 @@ namespace WF.Player.iPhone
 			// Set center to object
 			ZonePoint loc;
 			
-			if (ctrl.Engine.IsZone (thing))
+			if (thing is Zone)
 				loc = ((Zone)thing).OriginalPoint;
-			else if (ctrl.Engine.IsItem (thing))
+			else if (thing is Item)
 				loc = ((Item)thing).ObjectLocation;
 			else
 				loc = ((Character)thing).ObjectLocation;

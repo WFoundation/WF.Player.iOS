@@ -37,6 +37,7 @@ namespace WF.Player.iPhone
 		private UIScrollView scroll;
 		private UILabel text;
 		private Command actionCommand;
+		private string actionCommandEmpty;
 		private List<Command> commands;
 		private List<Thing> things;
 
@@ -66,7 +67,7 @@ namespace WF.Player.iPhone
 			// Get all commands for this object
 			commands = new List<Command> ();
 			things = null;
-			if (!ctrl.Engine.IsTask(obj)) {
+			if (!(obj is Task)) {
 				foreach(Command c in ((Thing)obj).ActiveCommands)
 					commands.Add (c);
 			}
@@ -110,21 +111,19 @@ namespace WF.Player.iPhone
 						things.Add (t);
 					// If things has no entry, than there are no targets for this command
 					if (things.Count == 0) {
-						MessageEntry entry = new MessageEntry(command.EmptyTargetListText);
-						ctrl.Screen(ctrl.Engine.DIALOGSCREEN,entry);
-					} else {
-						actionCommand = command;
-						createView ();
-						resizeView ();
+						actionCommandEmpty = command.EmptyTargetListText;
 					}
-
+					actionCommand = command;
+					createView ();
+					resizeView ();
 				} else {
 					// This command didn't have a list of things, with which it works, so call the method
 					command.Execute ();
 				}
 			} else {
 				// Player select 
-				ctrl.ShowScreen (ctrl.Engine.DETAILSCREEN,obj.ObjIndex);
+				ctrl.ShowScreen (ScreenType.Details,obj);
+				if (String.IsNullOrEmpty(actionCommandEmpty))
 				actionCommand.Execute(things[((UIButton)sender).Tag]);
 			}
 
@@ -156,7 +155,7 @@ namespace WF.Player.iPhone
 			// Create description
 			if (!String.IsNullOrEmpty(obj.Description)) {
 				text = new UILabel () {
-				    Text = removeHTML(obj.Description),
+				    Text = obj.Description,
 					BackgroundColor = UIColor.Clear,
 					Lines = 0,
 					LineBreakMode = UILineBreakMode.WordWrap,
@@ -171,7 +170,7 @@ namespace WF.Player.iPhone
 			}
 
 			// Create buttons
-			if (things != null) {
+			if (things != null || !String.IsNullOrEmpty(actionCommandEmpty)) {
 				buttonView = new UIView () {
 					ContentMode = UIViewContentMode.Center
 				};
@@ -179,7 +178,7 @@ namespace WF.Player.iPhone
 				buttonView.Bounds = new RectangleF (0, 0, maxWidth, (things.Count + 1) * 45);
 				buttonView.BackgroundColor = UIColor.Clear;
 				UILabel action = new UILabel(new RectangleF(0, 0, maxWidth, 35)) {
-					Text = removeHTML(actionCommand.Text),
+					Text = String.IsNullOrEmpty(actionCommandEmpty) ? actionCommand.Text : actionCommandEmpty,
 					BackgroundColor = UIColor.Clear,
 					Lines = 0,
 					LineBreakMode = UILineBreakMode.WordWrap,
@@ -189,20 +188,34 @@ namespace WF.Player.iPhone
 				};
 				buttonView.AddSubview(action);
 				int pos = 1;
-				foreach (Thing t in things) {
+				if (String.IsNullOrEmpty(actionCommandEmpty)) {
+					foreach (Thing t in things) {
+						UIButton button = UIButton.FromType (UIButtonType.RoundedRect);
+						button.Tag = pos-1;
+						button.Bounds = new RectangleF (0, 0, maxWidth, 35);
+						button.Frame = new RectangleF (0, pos * 45, maxWidth, 35);
+						button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
+						button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
+						button.SetTitle (t.Name, UIControlState.Normal);
+						button.TouchUpInside += OnTouchUpInside;
+						buttonView.AddSubview (button);
+						buttons.Add (button);
+						pos++;
+					}
+				} else {
 					UIButton button = UIButton.FromType (UIButtonType.RoundedRect);
 					button.Tag = pos-1;
 					button.Bounds = new RectangleF (0, 0, maxWidth, 35);
 					button.Frame = new RectangleF (0, pos * 45, maxWidth, 35);
 					button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
 					button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
-					button.SetTitle (removeHTML(t.Name), UIControlState.Normal);
+					button.SetTitle ("Ok", UIControlState.Normal);
 					button.TouchUpInside += OnTouchUpInside;
 					buttonView.AddSubview (button);
 					buttons.Add (button);
-					pos++;
+
 				}
-			} else if (!ctrl.Engine.IsTask(obj) && commands.Count > 0) {
+			} else if (!(obj is Task) && commands.Count > 0) {
 				buttonView = new UIView () {
 					ContentMode = UIViewContentMode.Center
 				};
@@ -217,7 +230,7 @@ namespace WF.Player.iPhone
 					button.Frame = new RectangleF (0, pos * 45, maxWidth, 35);
 					button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
 					button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
-					button.SetTitle (removeHTML(c.Text), UIControlState.Normal);
+					button.SetTitle (c.Text, UIControlState.Normal);
 					button.TouchUpInside += OnTouchUpInside;
 					buttonView.AddSubview (button);
 					buttons.Add (button);
@@ -294,19 +307,6 @@ namespace WF.Player.iPhone
 			}
 
 			scroll.ContentSize = new SizeF(scroll.Frame.Width,height);
-		}
-
-		private string removeHTML(string text)
-		{
-			string result = text;
-
-			result = result.Replace ("<BR>","\n");
-			result = result.Replace ("<br>","\n");
-			result = result.Replace ("<bR>","\n");
-			result = result.Replace ("<Br>","\n");
-			result = result.Replace ("&nbsp;"," ");
-
-			return result;
 		}
 
 	}

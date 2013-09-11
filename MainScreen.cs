@@ -159,16 +159,16 @@ namespace WF.Player.iPhone
 		{
 			switch (indexPath.Row) {
 			case 0:
-				ctrl.ShowScreen (ctrl.Engine.LOCATIONSCREEN, 0);
+				ctrl.ShowScreen (ScreenType.Locations, 0);
 				break;
 			case 1:
-				ctrl.ShowScreen (ctrl.Engine.ITEMSCREEN, 0);
+				ctrl.ShowScreen (ScreenType.Items, 0);
 				break;
 			case 2:
-				ctrl.ShowScreen (ctrl.Engine.INVENTORYSCREEN, 0);
+				ctrl.ShowScreen (ScreenType.Inventory, 0);
 				break;
 			case 3:
-				ctrl.ShowScreen (ctrl.Engine.TASKSCREEN, 0);
+				ctrl.ShowScreen (ScreenType.Tasks, 0);
 				break;
 			}
 		}

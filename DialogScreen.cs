@@ -34,20 +34,46 @@ namespace WF.Player.iPhone
 		private bool moveViewUp = false;
 
 		private ScreenController ctrl;
-		private List<UIButton> buttons = new List<UIButton> ();
+		private List<UIButton> buttonViews = new List<UIButton> ();
+		private List<string> buttons = new List<string>();
 		private UIView buttonView;
-		private MessageEntry content;
-		private UITextField input;
-		private UIImageView image;
-		private UIScrollView scroll;
-		private UILabel text;
+		private MessageBox msgBox;
+		private Input input;
+		private Media image;
+		private string text;
+		private string button1;
+		private string button2;
+		private UITextField inputView;
+		private UIImageView imageView;
+		private UIScrollView scrollView;
+		private UILabel textView;
 		
-		public DialogScreen (ScreenController ctrl, MessageEntry content) : base ()
+		public DialogScreen (ScreenController ctrl, MessageBox msgBox) : base ()
 		{
 			this.ctrl = ctrl;
-			this.content = content;
+			this.msgBox = msgBox;
+			this.text = msgBox.Text;
+			this.image = msgBox.Image;
+			if (!String.IsNullOrWhiteSpace (msgBox.FirstButtonLabel)) {
+				this.buttons.Add (msgBox.FirstButtonLabel);
+				if (!String.IsNullOrWhiteSpace (msgBox.SecondButtonLabel))
+					this.buttons.Add (msgBox.SecondButtonLabel);
+			}
 		}
 		
+		public DialogScreen (ScreenController ctrl, Input input) : base ()
+		{
+			this.ctrl = ctrl;
+			this.input = input;
+			this.text = input.Text;
+			this.image = input.Image;
+			if (input.InputType == InputType.Text)
+				buttons.Add ("Ok");
+			if (input.InputType == InputType.MultipleChoice)
+				foreach (string s in input.Choices)
+					buttons.Add (s);
+		}
+
 		#region MonoTouch Functions
 		
 		public override void DidReceiveMemoryWarning ()
@@ -96,11 +122,11 @@ namespace WF.Player.iPhone
 			
 			RectangleF r = UIKeyboard.BoundsFromNotification(notification);
 			
-			if(input != null && input.IsEditing)
+			if(inputView != null && inputView.IsEditing)
 			{
 				//Calculate the bottom of the Texbox
 				//plus a small margin...
-				bottomPoint = (this.input.Frame.Y + this.input.Frame.Height + 10);
+				bottomPoint = (this.inputView.Frame.Y + this.inputView.Frame.Height + 10);
 				
 				//Calculate the amount to scroll the view
 				//upwards so the Textbox becomes visible...
@@ -115,7 +141,7 @@ namespace WF.Player.iPhone
 			if (scrollamount > 0)
 			{
 				moveViewUp = true;
-				scrollView(moveViewUp);
+				scroll(moveViewUp);
 			}
 			else moveViewUp = false;
 		}
@@ -123,7 +149,7 @@ namespace WF.Player.iPhone
 		private bool inputShouldReturn (UITextField tf)
 		{
 			tf.ResignFirstResponder ();
-			if (moveViewUp) { scrollView(false); }
+			if (moveViewUp) { scroll(false); }
 			return true;
 		}
 
@@ -138,7 +164,7 @@ namespace WF.Player.iPhone
 			UIView.CommitAnimations();
 		}
 
-		private void scrollView(bool movedUp)
+		private void scroll(bool movedUp)
 		{
 			//To invoke a views built-in animation behaviour,
 			//you create an animation block and
@@ -176,22 +202,32 @@ namespace WF.Player.iPhone
 
 		private void OnTouchUpInside(object sender, EventArgs e) 
 		{
-			if (input != null)
-				if (input.Text == null)
-					content.Edit = "";
-				else
-					content.Edit = input.Text;
+			string result = "";
+			if (inputView != null && inputView.Text != null)
+				result = inputView.Text;
+			// TODO: Remove old screen
+			ctrl.RemoveScreen (ScreenType.Dialog);
 			// Show right screen
-			ctrl.DialogCallback (content,((UIButton)sender).Tag);
+			if (input != null) {
+				if (input.InputType == InputType.Text)
+					input.GiveResult (result);
+				else
+					input.GiveResult (buttons[((UIButton)sender).Tag]);
+			} else {
+				var btn = ((UIButton)sender).Tag == 0 ? MessageBoxResult.FirstButton : MessageBoxResult.SecondButton;
+				msgBox.GiveResult (btn);
+			}
 		}
 		
 		#endregion
 
 		private void createView ()
 		{
+			string saveInput = null;
+
 			// If input, than safe text for later use
 			if (input != null)
-				content.Edit = input.Text;
+				saveInput = inputView.Text;
 
 			// Remove all existing subviews
 			foreach (UIView view in this.View.Subviews) {
@@ -203,17 +239,17 @@ namespace WF.Player.iPhone
 			float maxWidth = this.View.Bounds.Width - 2 * frame;
 			float maxHeight = this.View.Bounds.Height;
 
-			if (content.Image != null) {
-				image = new UIImageView (content.Image) {
+			if (image != null) {
+				imageView = new UIImageView (UIImage.LoadFromData (NSData.FromArray (image.Data))) {
 					ContentMode = UIViewContentMode.Center | UIViewContentMode.ScaleAspectFit
 				};
-				image.Bounds = new RectangleF (0, 0, maxWidth, image.Bounds.Height);
+				imageView.Bounds = new RectangleF (0, 0, maxWidth, imageView.Bounds.Height);
 			} else {
-				image = null;
+				imageView = null;
 			}
-			if (!String.IsNullOrEmpty (content.Text)) {
-				text = new UILabel () {
-					Text = content.Text,
+			if (!String.IsNullOrEmpty (text)) {
+				textView = new UILabel () {
+					Text = text,
 					BackgroundColor = UIColor.Clear,
 					Lines = 0,
 					LineBreakMode = UILineBreakMode.WordWrap,
@@ -221,30 +257,30 @@ namespace WF.Player.iPhone
 					AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
 					ContentMode = UIViewContentMode.Center
 				};
-				SizeF size = text.SizeThatFits (new SizeF (maxWidth, 999999));
-				text.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
+				SizeF size = textView.SizeThatFits (new SizeF (maxWidth, 999999));
+				textView.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
 			} else {
-				text = null;
+				textView = null;
 			}
-			if (content.Type == MessageEntry.sqeInput) {
-				input = new UITextField (new RectangleF (frame, maxHeight - (content.Buttons.Count + 1) * 45, maxWidth, 35)) {
+			if (input != null && input.InputType == InputType.Text) {
+				inputView = new UITextField (new RectangleF (frame, maxHeight - (buttons.Count + 1) * 45, maxWidth, 35)) {
 					BorderStyle = UITextBorderStyle.RoundedRect,
 					ReturnKeyType = UIReturnKeyType.Done
 				};
-				input.ShouldReturn += inputShouldReturn;
-				if (!String.IsNullOrEmpty(content.Edit))
-				    input.Text = content.Edit;
+				inputView.ShouldReturn += inputShouldReturn;
+				if (!String.IsNullOrEmpty(saveInput))
+				    inputView.Text = saveInput;
 			} else {
-				input = null;
+				inputView = null;
 			}
 			buttonView = new UIView (){
 				ContentMode = UIViewContentMode.Center
 			};
-			if (content.Buttons != null && content.Buttons.Count > 0) {
-				buttonView.Bounds = new RectangleF (0, 0, maxWidth, content.Buttons.Count * 45);
+			if (buttons != null && buttons.Count > 0) {
+				buttonView.Bounds = new RectangleF (0, 0, maxWidth, buttons.Count * 45);
 				buttonView.BackgroundColor = UIColor.Clear;
 				int pos = 0;
-				foreach (string s in content.Buttons) {
+				foreach (string s in buttons) {
 					UIButton button = UIButton.FromType (UIButtonType.RoundedRect);
 					button.Tag = pos;
 					button.Bounds = new RectangleF (0, 0, maxWidth, 35);
@@ -254,7 +290,7 @@ namespace WF.Player.iPhone
 					button.SetTitle (s, UIControlState.Normal);
 					button.TouchUpInside += OnTouchUpInside;
 					buttonView.AddSubview (button);
-					buttons.Add (button);
+					buttonViews.Add (button);
 					pos++;
 				}
 			} else {
@@ -262,38 +298,38 @@ namespace WF.Player.iPhone
 			}
 			
 			// Create scroll view, which holds all other views
-			scroll = new UIScrollView (new RectangleF (0, 0, this.View.Bounds.Width, maxHeight)) {
+			scrollView = new UIScrollView (new RectangleF (0, 0, this.View.Bounds.Width, maxHeight)) {
 				BackgroundColor = UIColor.White,
 				ScrollEnabled = true
 			};
 
 			float height = 10;
-			if (image != null) {
-				image.Frame = new RectangleF (frame, height, image.Bounds.Width, image.Bounds.Height);
-				scroll.AddSubview (image);
-				height += image.Bounds.Height + frame;
+			if (imageView != null) {
+				imageView.Frame = new RectangleF (frame, height, imageView.Bounds.Width, imageView.Bounds.Height);
+				scrollView.AddSubview (imageView);
+				height += imageView.Bounds.Height + frame;
 			}
-			if (text != null) {
-				text.Frame = new RectangleF (frame, height, text.Bounds.Width, text.Bounds.Height);
-				scroll.AddSubview (text);
-				height += text.Bounds.Height + frame;
+			if (textView != null) {
+				textView.Frame = new RectangleF (frame, height, textView.Bounds.Width, textView.Bounds.Height);
+				scrollView.AddSubview (textView);
+				height += textView.Bounds.Height + frame;
 			}
-			if (input != null) {
-				text.Frame = new RectangleF (frame, height, input.Bounds.Width, input.Bounds.Height);
-				scroll.AddSubview (input);
-				height += input.Bounds.Height + frame;
+			if (inputView != null) {
+				textView.Frame = new RectangleF (frame, height, inputView.Bounds.Width, inputView.Bounds.Height);
+				scrollView.AddSubview (inputView);
+				height += inputView.Bounds.Height + frame;
 			}
 			if (buttonView != null) { 
 				if (height + buttonView.Bounds.Height + this.NavigationController.NavigationBar.Bounds.Height < maxHeight)
 					height = maxHeight - buttonView.Bounds.Height - this.NavigationController.NavigationBar.Bounds.Height;
 				buttonView.Frame = new RectangleF ( frame, height, buttonView.Bounds.Width, buttonView.Bounds.Height);
-				scroll.AddSubview (buttonView);
+				scrollView.AddSubview (buttonView);
 				height += buttonView.Bounds.Height;
 			}
 			
-			scroll.ContentSize = new SizeF(scroll.Frame.Width,height);
+			scrollView.ContentSize = new SizeF(scrollView.Frame.Width,height);
 		
-			this.View.AddSubview (scroll);
+			this.View.AddSubview (scrollView);
 			this.View.BackgroundColor = UIColor.Clear;
 		}
 
@@ -304,21 +340,21 @@ namespace WF.Player.iPhone
 			float maxWidth = this.View.Bounds.Width - 2 * frame;
 			float maxHeight = this.View.Bounds.Height;
 			
-			scroll.Frame = new RectangleF(0,0,this.View.Bounds.Width,maxHeight);
+			scrollView.Frame = new RectangleF(0,0,this.View.Bounds.Width,maxHeight);
 			
-			if (image != null) {
-				image.Frame = new RectangleF (frame, height, maxWidth, image.Bounds.Height);
-				height += image.Bounds.Height + frame;
+			if (imageView != null) {
+				imageView.Frame = new RectangleF (frame, height, maxWidth, imageView.Bounds.Height);
+				height += imageView.Bounds.Height + frame;
 			}
-			if (text != null) {
-				SizeF size = text.SizeThatFits (new SizeF (maxWidth, 999999));
-				text.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
-				text.Frame = new RectangleF (frame, height, text.Bounds.Width, text.Bounds.Height);
-				height += text.Bounds.Height + frame;
+			if (textView != null) {
+				SizeF size = textView.SizeThatFits (new SizeF (maxWidth, 999999));
+				textView.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
+				textView.Frame = new RectangleF (frame, height, textView.Bounds.Width, textView.Bounds.Height);
+				height += textView.Bounds.Height + frame;
 			}
-			if (input != null) {
-				input.Frame = new RectangleF (frame, height, maxWidth, input.Bounds.Height);
-				height += input.Bounds.Height + frame;
+			if (inputView != null) {
+				inputView.Frame = new RectangleF (frame, height, maxWidth, inputView.Bounds.Height);
+				height += inputView.Bounds.Height + frame;
 			}
 			if (buttonView != null) { 
 				if (height + buttonView.Bounds.Height < maxHeight)
@@ -333,7 +369,7 @@ namespace WF.Player.iPhone
 				height += buttonView.Bounds.Height;
 			}
 			
-			scroll.ContentSize = new SizeF(scroll.Frame.Width,height);
+			scrollView.ContentSize = new SizeF(scrollView.Frame.Width,height);
 		}
 
 	}
