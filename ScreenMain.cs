@@ -1,5 +1,5 @@
 ///
-/// WF.Player.Core - A Wherigo Player Core for different platforms.
+/// WF.Player.iPhone/WF.Player.Android - A Wherigo Player for Android, iPhone which use the Wherigo Foundation Core.
 /// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
