@@ -28,13 +28,14 @@ namespace WF.Player.iPhone
 	// User Interface of the application, as well as listening (and optionally responding) to 
 	// application events from iOS.
 	[Register ("AppDelegate")]
+	[CLSCompliantAttribute(false)]
 	public partial class AppDelegate : UIApplicationDelegate
 	{
 		// class-level declarations
 		UIWindow window;
 		UINavigationController navCartSelect;
-		Engine engine;
 		CartridgeList viewCartSelect;
+		ScreenController screenCtrl;
 
 		//
 		// This method is invoked when the application has loaded and is ready to run. In this 
@@ -43,6 +44,7 @@ namespace WF.Player.iPhone
 		//
 		// You have 17 seconds to return from this method, or iOS will terminate your application.
 		//
+		[CLSCompliantAttribute(false)]
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
 			// create a new window instance based on the screen size
@@ -50,6 +52,11 @@ namespace WF.Player.iPhone
 
 			// Create NavigationControlls
 			navCartSelect = new UINavigationController();
+
+			// Set color of NavigationBar and NavigationButtons (TintColor)
+			navCartSelect.NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
+			navCartSelect.NavigationBar.BackgroundColor = UIColor.FromRGB(0.1992f,0.7070f,0.8945f);
+			navCartSelect.NavigationBar.TintColor = UIColor.FromRGB(1f,0f,0f);
 
 			// Now create list for cartridges
 			viewCartSelect = new CartridgeList(this);
@@ -70,64 +77,66 @@ namespace WF.Player.iPhone
 			return true;
 		}
 
-//		public override bool ApplicationDidBecomeActive()
-//		{
-//			return true;
-//		}
-
-		public void CartStart(Cartridge cart)
+		public override void DidEnterBackground (UIApplication application)
 		{
-			// Create engine
-			engine = new Engine ();
-			
-			// Load cartridge into engine
-			engine.Init(new FileStream(cart.Filename,FileMode.Open),cart);
-
-			// Create main screen handler
-			ScreenController screen = new ScreenController(this);
-
-			// Set engine belonging to this screen
-			screen.Engine = engine;
-			
-			// Set as new navigation controll
-			window.RootViewController = screen;
-			
-			engine.Start ();
-
-			// Refresh screen
-			screen.Refresh();
+			// Save game before going into background
+			if (screenCtrl != null && screenCtrl.Engine != null) {
+				// Save game automatically
+				screenCtrl.Engine.Save (new FileStream (screenCtrl.Engine.Cartridge.SaveFilename, FileMode.Create));
+				// Pause engine until we have focus again
+				screenCtrl.Engine.Pause ();
+			}
 		}
 
-		public void CartRestore(Cartridge cart)
+		public override void WillEnterForeground (UIApplication application)
 		{
-			// Create engine
-			engine = new Engine ();
-			
-			// Load cartridge into engine
-			engine.Init(new FileStream(cart.Filename,FileMode.Open),cart);
+			if (screenCtrl != null && screenCtrl.Engine != null) {
+				// Resume engine, so we continue
+				screenCtrl.Engine.Resume ();
+			}
+		}
 
+		public override void ReceiveMemoryWarning (UIApplication application)
+		{
+			// Save game before we could get killed
+			if (screenCtrl != null && screenCtrl.Engine != null) {
+				// Save game automatically
+				screenCtrl.Engine.Save (new FileStream (screenCtrl.Engine.Cartridge.SaveFilename, FileMode.Create));
+			}
+		}
+
+		[CLSCompliantAttribute(false)]
+		public void CartStart(Cartridge cart)
+		{
 			// Create main screen handler
-			ScreenController screen = new ScreenController(this);
-
-			// Set engine belonging to this screen
-			screen.Engine = engine;
+			screenCtrl = new ScreenController(this, cart);
 
 			// Set as new navigation controll
-			window.RootViewController = screen;
-			
-			engine.Restore (new FileStream(cart.SaveFilename,FileMode.Open));
+			window.RootViewController = screenCtrl;
 
-			// Refresh screen
-			screen.Refresh();
+			screenCtrl.Start ();
+		}
+
+		[CLSCompliantAttribute(false)]
+		public void CartRestore(Cartridge cart)
+		{
+			// Create main screen handler
+			screenCtrl = new ScreenController(this, cart);
+
+			// Set as new navigation controll
+			window.RootViewController = screenCtrl;
+			
+			screenCtrl.Restore();
 		}
 
 		public void CartStop()
 		{
-			engine.Stop();
+			if (screenCtrl != null) {
+				window.RootViewController = navCartSelect;
 
-			var screen = window.RootViewController;
-			window.RootViewController = navCartSelect;
-			screen.Dispose ();
+				screenCtrl.Dispose ();
+				screenCtrl = null;
+			}
 		}
 	}
 }

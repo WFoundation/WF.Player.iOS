@@ -23,6 +23,7 @@ using WF.Player.Core;
 
 namespace WF.Player.iPhone
 {
+	[CLSCompliantAttribute(false)]
 	public partial class CartridgeDetail : UIViewController
 	{
 		private AppDelegate appDelegate;
@@ -33,6 +34,7 @@ namespace WF.Player.iPhone
 			this.appDelegate = appDelegate;
 		}
 
+		[CLSCompliantAttribute(false)]
 		public Cartridge Cartridge { 
 			get { 
 				return cart; 

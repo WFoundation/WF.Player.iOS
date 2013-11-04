@@ -27,16 +27,16 @@ using WF.Player.Core;
 
 namespace WF.Player.iPhone
 {
-	public class MapScreen : UIViewController
+	public class ScreenMap : UIViewController
 	{
 		private ScreenController ctrl;
 		private Thing thing;
 		private MKMapView mapView;
 		
-		public MapScreen (ScreenController ctrl, Thing thing)
+		public ScreenMap (ScreenController ctrl, Thing t)
 		{
 			this.ctrl = ctrl;
-			this.thing = thing;
+			this.thing = t;
 		}
 		
 		public override void ViewDidLoad ()
@@ -57,9 +57,11 @@ namespace WF.Player.iPhone
 			{
 				List<ZonePoint> points = z.Points;
 				CLLocationCoordinate2D[] coords = new CLLocationCoordinate2D [points.Count];
-				for (int i = 0; i < points.Count; i++) {
-					ZonePoint zp = points[i+1];
-					coords[i] = new CLLocationCoordinate2D(zp.Latitude, zp.Longitude);
+				int i = 0;
+				foreach(ZonePoint zp in points) {
+//				for (int i = 0; i < points.Count; i++) {
+//					ZonePoint zp = points[i+1];
+					coords[i++] = new CLLocationCoordinate2D(zp.Latitude, zp.Longitude);
 				}
 				var mkp = MKPolygon.FromCoordinates(coords);
 				mapView.AddOverlay(mkp);

@@ -26,14 +26,13 @@ using WF.Player.Core;
 namespace WF.Player.iPhone
 {
 	
-	public class DialogScreen : UIViewController
+	public class ScreenDialog : UIViewController
 	{
 
 		private float scrollamount = 0.0f;
 		private float bottomPoint = 0.0f;
 		private bool moveViewUp = false;
 
-		private ScreenController ctrl;
 		private List<UIButton> buttonViews = new List<UIButton> ();
 		private List<string> buttons = new List<string>();
 		private UIView buttonView;
@@ -41,16 +40,13 @@ namespace WF.Player.iPhone
 		private Input input;
 		private Media image;
 		private string text;
-		private string button1;
-		private string button2;
 		private UITextField inputView;
 		private UIImageView imageView;
 		private UIScrollView scrollView;
 		private UILabel textView;
 		
-		public DialogScreen (ScreenController ctrl, MessageBox msgBox) : base ()
+		public ScreenDialog (MessageBox msgBox) : base ()
 		{
-			this.ctrl = ctrl;
 			this.msgBox = msgBox;
 			this.text = msgBox.Text;
 			this.image = msgBox.Image;
@@ -61,9 +57,8 @@ namespace WF.Player.iPhone
 			}
 		}
 		
-		public DialogScreen (ScreenController ctrl, Input input) : base ()
+		public ScreenDialog (Input input) : base ()
 		{
-			this.ctrl = ctrl;
 			this.input = input;
 			this.text = input.Text;
 			this.image = input.Image;
@@ -92,21 +87,21 @@ namespace WF.Player.iPhone
 //			createView ();
 			NSNotificationCenter.DefaultCenter.AddObserver ("UIKeyboardDidShowNotification", keyboardUpNotification);
 
-			this.NavigationController.SetNavigationBarHidden(true,false);
-			createView ();
+			this.NavigationController.SetNavigationBarHidden(false,false);
+			CreateView ();
 		}
 
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear(animated);
 			this.NavigationItem.SetHidesBackButton(true,true);
-			resizeView ();
+			Refresh ();
 		}
 		
 		public override void DidRotate(UIInterfaceOrientation fromInterfaceOrientation) 
 		{
 			base.DidRotate(fromInterfaceOrientation);
-			resizeView();
+			Refresh();
 		}
 
 		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
@@ -206,7 +201,7 @@ namespace WF.Player.iPhone
 			if (inputView != null && inputView.Text != null)
 				result = inputView.Text;
 			// TODO: Remove old screen
-			ctrl.RemoveScreen (ScreenType.Dialog);
+			((ScreenController)ParentViewController).RemoveScreen (ScreenType.Dialog);
 			// Show right screen
 			if (input != null) {
 				if (input.InputType == InputType.Text)
@@ -221,12 +216,12 @@ namespace WF.Player.iPhone
 		
 		#endregion
 
-		private void createView ()
+		void CreateView ()
 		{
 			string saveInput = null;
 
 			// If input, than safe text for later use
-			if (input != null)
+			if (input != null && inputView != null)
 				saveInput = inputView.Text;
 
 			// Remove all existing subviews
@@ -333,7 +328,7 @@ namespace WF.Player.iPhone
 			this.View.BackgroundColor = UIColor.Clear;
 		}
 
-		private void resizeView()
+		void Refresh()
 		{
 			float height = 10;
 			float frame = 10;
@@ -368,7 +363,7 @@ namespace WF.Player.iPhone
 				}
 				height += buttonView.Bounds.Height;
 			}
-			
+
 			scrollView.ContentSize = new SizeF(scrollView.Frame.Width,height);
 		}
 

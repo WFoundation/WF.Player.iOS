@@ -24,12 +24,14 @@ using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
 using WF.Player.Core;
+using WF.Player.Core.Live;
 
 namespace WF.Player.iPhone
 {
 
 	#region ItemScreen
 	
+	[CLSCompliantAttribute(false)]
 	public class CartridgeList : UIViewController
 	{
 		CartridgeListSource cartListSource;

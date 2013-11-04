@@ -22,9 +22,10 @@
     <ConsolePause>False</ConsolePause>
     <MtouchDebug>True</MtouchDebug>
     <MtouchLink>None</MtouchLink>
-    <MtouchI18n />
+    <MtouchI18n>
+    </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
-    <AssemblyName>iPhone</AssemblyName>
+    <AssemblyName>Player</AssemblyName>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
@@ -35,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchLink>None</MtouchLink>
-    <AssemblyName>iPhone</AssemblyName>
+    <AssemblyName>Player</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>True</DebugSymbols>
@@ -48,10 +49,13 @@
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer: Dirk Weltz (HN729T3H4S)</CodesignKey>
     <MtouchDebug>True</MtouchDebug>
-    <IpaPackageName />
-    <MtouchI18n />
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
     <MtouchArch>ARMv7, ARMv7s</MtouchArch>
-    <CrashReportingApiKey />
+    <CrashReportingApiKey>
+    </CrashReportingApiKey>
     <CodesignProvision>D493A320-F268-471F-9511-56A1E927ECC9</CodesignProvision>
     <AssemblyName>Player</AssemblyName>
     <MtouchLink>None</MtouchLink>
@@ -65,7 +69,8 @@
     <ConsolePause>False</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchLink>None</MtouchLink>
-    <MtouchI18n />
+    <MtouchI18n>
+    </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
     <AssemblyName>iPhone</AssemblyName>
   </PropertyGroup>
@@ -79,8 +84,10 @@
     <ConsolePause>False</ConsolePause>
     <CodesignProvision>D493A320-F268-471F-9511-56A1E927ECC9</CodesignProvision>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <IpaPackageName />
-    <MtouchI18n />
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
     <AssemblyName>iPhone</AssemblyName>
   </PropertyGroup>
@@ -117,13 +124,17 @@
       <DependentUpon>CartridgeDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="ScreenController.cs" />
-    <Compile Include="MainScreen.cs" />
-    <Compile Include="ItemScreen.cs" />
-    <Compile Include="DetailScreen.cs" />
-    <Compile Include="DialogScreen.cs" />
-    <Compile Include="MapScreen.cs" />
     <Compile Include="CartridgeList.cs" />
     <Compile Include="iOS\AssemblyInfo.cs" />
+    <Compile Include="ScreenDialog.cs" />
+    <Compile Include="ScreenDetail.cs" />
+    <Compile Include="ScreenMap.cs" />
+    <Compile Include="ScreenMain.cs" />
+    <Compile Include="ScreenList.cs" />
+    <Compile Include="IController.cs" />
+    <Compile Include="ScreenDetailiOS.cs" />
+    <Compile Include="ScreenListiOS.cs" />
+    <Compile Include="ScreenMainiOS.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -140,8 +151,5 @@
       <Project>{DFD85D7E-251B-4D9E-BF44-2F054386F46F}</Project>
       <Name>Core.iOS</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="libLua51.a" />
   </ItemGroup>
 </Project>

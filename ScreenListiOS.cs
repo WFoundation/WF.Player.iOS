@@ -1,3 +1,4 @@
+///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
 /// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
 ///
@@ -13,6 +14,7 @@
 /// 
 /// You should have received a copy of the GNU Lesser General Public License
 /// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/// 
 
 using System;
 using System.Collections.Generic;
@@ -23,34 +25,32 @@ using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
 using WF.Player.Core;
+using WF.Player.Core.Engines;
 
 namespace WF.Player.iPhone
 {
 
-	#region ItemScreen
+	#region ScreenList
 	
-	public class ItemScreen : UIViewController
+	public partial class ScreenList : UIViewController
 	{
-		private ScreenController ctrl;
-		ItemScreenSource itemScreenSource;
+		ScreenListSource screenListSource;
 		
 		public UITableView Table;
+
+		#region Constructor
 		
-		public ItemScreen (ScreenController ctrl) : base()
+		public ScreenList (ScreenController ctrl, ScreenType screen) : base()
 		{
 			this.ctrl = ctrl;
+			this.engine = ctrl.Engine;
+			this.screen = screen;
 
 			// Create source for table view
-			itemScreenSource = new ItemScreenSource(ctrl);
-
-			// Create table view
-			Table = new UITableView()
-			{
-				Source = itemScreenSource,
-				AutoresizingMask = UIViewAutoresizing.All,
-				AutosizesSubviews = true
-			};
+			screenListSource = new ScreenListSource(this, ctrl, screen);
 		}
+
+		#endregion
 		
 		#region MonoTouch Functions
 		
@@ -67,11 +67,22 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(screen); }), true);
+
+			// Create table view
+			Table = new UITableView()
+			{
+				Source = screenListSource,
+				AutoresizingMask = UIViewAutoresizing.All,
+				AutosizesSubviews = true
+			};
+
 			// Set the table view to fit the width of the app.
 			Table.SizeToFit();
+
 			// Reposition and resize the receiver
 			Table.Frame = new RectangleF (0, 0, this.View.Frame.Width,this.View.Frame.Height);
+
 			// Add the table view as a subview
 			this.View.AddSubviews(this.Table);
 			this.View.AutoresizingMask = UIViewAutoresizing.All;
@@ -81,13 +92,24 @@ namespace WF.Player.iPhone
 		{
 			base.ViewDidAppear(animated);
 			this.NavigationController.SetNavigationBarHidden(false,false);
-			Table.ReloadData();
+
+			StartEvents ();
+
+			Refresh(true);
 		}
 		
+		public override void ViewDidDisappear (bool animated)
+		{
+			base.ViewDidDisappear(animated);
+
+			StopEvents ();
+		}
+
 		public override void DidRotate(UIInterfaceOrientation fromInterfaceOrientation) 
 		{
 			base.DidRotate(fromInterfaceOrientation);
-			Table.ReloadData();
+
+			Refresh (false);
 		}
 		
 		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
@@ -96,12 +118,16 @@ namespace WF.Player.iPhone
 			return true;
 		}
 
-		public bool UpdateData (ScreenType screenId)
+		#endregion
+
+		#region Private Functions
+
+		void Refresh(bool itemsChanged)
 		{
-			if (itemScreenSource != null)
-				return itemScreenSource.UpdateData (screenId);
-			else
-				return false;
+			if (itemsChanged)
+				NavigationItem.Title = GetContent ();
+
+			Table.ReloadData ();
 		}
 
 		#endregion
@@ -109,45 +135,40 @@ namespace WF.Player.iPhone
 	
 	#endregion
 	
-	#region ItemScreenSource
+	#region ScreenListSource
 	
-	public class ItemScreenSource : UITableViewSource 
+	public class ScreenListSource : UITableViewSource 
 	{ 
-		private ScreenController ctrl;
-		private ScreenType screenType;
-		private List<UIObject> list;
+		ScreenList owner;
+		ScreenController ctrl;
+		ScreenType screen;
 
-		public ItemScreenSource(ScreenController ctrl) 
+		public ScreenListSource(ScreenList owner, ScreenController ctrl, ScreenType screen) 
 		{  
+			this.owner = owner;
 			this.ctrl = ctrl;
+			this.screen = screen;
 		}  
 		
 		public override UITableViewCell GetCell (UITableView tableView, NSIndexPath indexPath)
 		{ 
 			// Reuse a cell if one exists 
-			ItemScreenCell cell = tableView.DequeueReusableCell ("ItemScreenCell") as ItemScreenCell;
+			ScreenListCell cell = tableView.DequeueReusableCell ("ScreenListCell") as ScreenListCell;
 			
-			if (cell == null) 
+			if (cell == null || cell.HasIcon != owner.ShowIcons || cell.HasDirection != owner.ShowDirections) 
 			{  
 				// We have to allocate a cell 
-				cell = new ItemScreenCell();
+				cell = new ScreenListCell(owner.ShowIcons, owner.ShowDirections);
 			}
 			
-			// Set initial data 
-			if (ctrl != null && ctrl.Cartridge != null) 
-			{
-				cell.UpdateData (screenType, ctrl.Engine, list[indexPath.Row]);
-			}
-			
+			cell.RefreshCell (owner, screen, ctrl.Engine, owner.Items[indexPath.Row]);
+
 			return cell; 
 		}  
-		
+
 		public override int RowsInSection (UITableView tableview, int section) 
 		{ 
-			if (list == null)
-				return 0;
-			else
-				return list.Count; 
+			return owner.Items.Count; 
 		} 
 		
 		public override float GetHeightForRow (UITableView tableView, NSIndexPath indexPath)
@@ -158,137 +179,122 @@ namespace WF.Player.iPhone
 		
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
-			// TODO
-			// Remove convert
-			Table obj = list[indexPath.Row];
-			int idx = obj.GetInt ("ObjIndex");
-			ctrl.ShowScreen (ScreenType.Details, idx);
+			owner.EntrySelected(indexPath.Row);
 		}
-
-		public bool UpdateData(ScreenType type)
-		{
-			screenType = type;
-			
-			if (list != null)
-				list.Clear();
-			else
-				list = new List<UIObject>();
-
-			if (screenType == ScreenType.Locations)
-			{
-				List<Zone> zones = ctrl.Engine.ActiveVisibleZones;
-				foreach(Zone z in zones)
-					list.Add (z);
-			}
-			if (screenType == ScreenType.Items)
-			{
-				List<Thing> items = ctrl.Engine.VisibleObjects;
-				foreach(Thing i in items)
-					list.Add (i);
-			}
-			if (screenType == ScreenType.Inventory)
-			{
-				List<Thing> items = ctrl.Engine.VisibleInventory;
-				foreach(Thing i in items)
-					list.Add (i);
-			}
-			if (screenType == ScreenType.Tasks)
-			{
-				List<Task> tasks = ctrl.Engine.ActiveVisibleTasks;
-				foreach(Task t in tasks)
-					list.Add (t);
-			}
-			
-			return list.Count != 0;
-		}
-
 	} 
 	
 	#endregion
 	
-	#region ItemScreenCell
+	#region ScreenListCell
 	
-	public partial class ItemScreenCell : UITableViewCell
+	public partial class ScreenListCell : UITableViewCell
 	{
 		private UILabel textTitle;
 		private UILabel textDistance;
 		private UIImageView imageIcon;
 		private UIImageView imageDirection;
 
-		public ItemScreenCell () : base ()
+		public bool HasIcon;
+		public bool HasDirection;
+
+		public ScreenListCell (bool showIcons, bool showDirections) : base ()
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell (showIcons, showDirections);
 		}
 		
-		public ItemScreenCell (IntPtr handle) : base (handle)
+		public ScreenListCell (IntPtr handle, bool showIcons, bool showDirections) : base (handle)
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell (showIcons, showDirections);
 		}
 		
-		private void createCell ()
+		void CreateCell (bool showIcons, bool showDirections)
 		{
 			float maxWidth = this.Bounds.Width - 20;
 
-			imageIcon = new UIImageView()
+			if (showIcons) 
 			{
-				Frame = new Rectangle(10,10,48,48)
-			};
-			
+				imageIcon = new UIImageView () {
+					Bounds = new Rectangle (0, 0, 48, 48),
+					Frame = new Rectangle (10, 10, 48, 48)
+				};
+				this.AddSubview (imageIcon);
+			}
+
+			HasIcon = showIcons;
+
 			textTitle = new UILabel()
 			{
-				Frame = new RectangleF(72,10,maxWidth - 140,48),
+				Frame = showIcons ? new RectangleF(72,10,maxWidth - (showDirections ? 140 : 0),48) : new RectangleF(10,10,maxWidth - (showDirections ? 140 : 0),48),
 				Font = UIFont.SystemFontOfSize (20),
 				Lines = 2
 			};
-			
-			imageDirection = new UIImageView()
-			{
-				Frame = new RectangleF(maxWidth - 32,10,32,32),
-				ContentMode = UIViewContentMode.ScaleAspectFit
-			};
-			
-			textDistance = new UILabel()
-			{
-				Frame = new RectangleF(maxWidth - 40,46,46,21),
-				Font = UIFont.SystemFontOfSize(10),
-				TextColor = UIColor.Red,
-				TextAlignment = UITextAlignment.Center,
-				Lines = 1,
-				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
-			};
-			
-			this.AddSubview (imageIcon);
+
 			this.AddSubview (textTitle);
-			this.AddSubview (imageDirection);
-			this.AddSubview (textDistance);
+
+			if (showDirections) 
+			{
+				imageDirection = new UIImageView () {
+					Frame = new RectangleF (maxWidth - 32, 10, 32, 32),
+					ContentMode = UIViewContentMode.ScaleAspectFit
+				};
+				
+				textDistance = new UILabel () {
+					Frame = new RectangleF (maxWidth - 40, 46, 46, 21),
+					Font = UIFont.SystemFontOfSize (10),
+					TextColor = UIColor.Red,
+					TextAlignment = UITextAlignment.Center,
+					Lines = 1,
+					LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
+				};
+			
+				this.AddSubview (imageDirection);
+				this.AddSubview (textDistance);
+			}
+
+			HasDirection = showDirections;
 		}
 
-		public void UpdateData (ScreenType screenType, Engine engine, UIObject t)
+		public void RefreshCell (ScreenList owner, ScreenType screenType, Engine engine, UIObject obj)
 		{
-			if (t.Icon == null)
-				this.imageIcon.Image = null;
-			else
-				this.imageIcon.Image = UIImage.LoadFromData (NSData.FromArray (t.Icon.Data));
-
-			this.textTitle.Text = t.Name;
-
-			if (screenType != ScreenType.Tasks && screenType != ScreenType.Inventory) {
-				if(t is Zone && t.GetString ("State").ToLower ().Equals ("inside")) {
-					this.imageDirection.Hidden = false;
-					this.imageDirection.Image = drawCenter ();
-					this.textDistance.Hidden = false;
-					this.textDistance.Text = "Inside";
-				} else {
-					this.imageDirection.Hidden = false;
-					this.imageDirection.Image = drawArrow ((((Thing)t).VectorFromPlayer.Bearing.GetValueOrDefault()+engine.Heading)%360); // * 180.0 / Math.PI);
-					this.textDistance.Hidden = false;
-					this.textDistance.Text = ((Thing)t).VectorFromPlayer.Distance.BestMeasureAs(DistanceUnit.Meters);
+			if (imageIcon != null) 
+			{
+				if (obj.Icon == null)
+					imageIcon.Image = null;
+				else
+				{
+					imageIcon.Image = UIImage.LoadFromData (NSData.FromArray (obj.Icon.Data));
+					imageIcon.ContentMode = UIViewContentMode.ScaleAspectFit;
 				}
-			} else {
-				this.imageDirection.Hidden = true;
-				this.textDistance.Hidden = true;
+			}
+
+			if (screenType == ScreenType.Tasks) 
+			{
+				// If a task, than show CorrectState by character in front of name
+				textTitle.Text = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? owner.TaskNotCorrect : owner.TaskCorrect) + " " : "") + obj.Name;
+			}
+			else
+				textTitle.Text = obj.Name;
+
+			if (HasDirection)
+			{
+				if (screenType != ScreenType.Tasks && screenType != ScreenType.Inventory) {
+					if (obj is Zone && ((Zone)obj).State == PlayerZoneState.Inside) {
+						imageDirection.Hidden = false;
+						imageDirection.Image = drawCenter ();
+						textDistance.Hidden = false;
+						textDistance.Text = "Inside";
+					} else {
+						imageDirection.Hidden = false;
+						imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
+						textDistance.Hidden = false;
+						textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
+					}
+				} else {
+					imageDirection.Hidden = true;
+					textDistance.Hidden = true;
+				}
 			}
 		}
 

@@ -22,22 +22,26 @@ using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using MonoTouch.ObjCRuntime;
 using WF.Player.Core;
+using WF.Player.Core.Engines;
 
 namespace WF.Player.iPhone
 {
 
 	#region MainScreen
 	
-	public class MainScreen : UIViewController
+	public partial class ScreenMain : UIViewController
 	{
-		private ScreenController ctrl;
-
 		public UITableView Table;
 
-		public MainScreen (ScreenController ctrl) : base()
+		#region Constructor
+
+		public ScreenMain (ScreenController ctrl) : base()
 		{
 			this.ctrl = ctrl;
+			this.engine = ctrl.Engine;
 		}
+
+		#endregion
 		
 		#region MonoTouch Functions
 		
@@ -54,9 +58,13 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
+			iconLocation = UIImage.FromFile ("Images/IconLocation.png");
+			iconYouSee = UIImage.FromFile ("Images/IconYouSee.png");
+			iconInventory = UIImage.FromFile ("Images/IconInventory.png");
+			iconTask = UIImage.FromFile ("Images/IconTask.png");
 
 			// Create source for table view
-			MainScreenSource mainListSource = new MainScreenSource(ctrl);
+			MainScreenSource mainListSource = new MainScreenSource(this, ctrl);
 
 			// Create table view
 			Table = new UITableView()
@@ -92,14 +100,26 @@ namespace WF.Player.iPhone
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear(animated);
-			this.NavigationController.SetNavigationBarHidden(false,false);
-			Table.ReloadData ();
+
+			NavigationController.SetNavigationBarHidden(false,false);
+			NavigationItem.Title = engine.Cartridge.Name;
+
+			StartEvents ();
+
+			Refresh();
 		}
 		
+		public override void ViewDidDisappear (bool animated)
+		{
+			base.ViewDidDisappear(animated);
+
+			StopEvents();
+		}
+
 		public override void DidRotate(UIInterfaceOrientation fromInterfaceOrientation) 
 		{
 			base.DidRotate(fromInterfaceOrientation);
-			Table.ReloadData();
+			Refresh();
 		}
 		
 		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
@@ -109,6 +129,15 @@ namespace WF.Player.iPhone
 		}
 		
 		#endregion
+
+		#region Private Functions
+
+		void Refresh()
+		{
+			Table.ReloadData ();
+		}
+
+		#endregion
 	}
 	
 	#endregion
@@ -117,12 +146,20 @@ namespace WF.Player.iPhone
 
 	public class MainScreenSource : UITableViewSource 
 	{ 
-		private ScreenController ctrl;
-		
-		public MainScreenSource(ScreenController ctrl) 
+		ScreenController ctrl;
+		ScreenMain owner;
+
+		#region Constructor
+
+		public MainScreenSource(ScreenMain owner, ScreenController ctrl) 
 		{  
+			this.owner = owner;
 			this.ctrl = ctrl;
 		}  
+
+		#endregion
+
+		#region MonoTouch Functions
 		
 		public override UITableViewCell GetCell (UITableView tableView, NSIndexPath indexPath)
 		{ 
@@ -136,9 +173,9 @@ namespace WF.Player.iPhone
 			}
 			
 			// Set initial data 
-			if (ctrl != null && ctrl.Cartridge != null) 
+			if (ctrl.Engine.GameState == EngineGameState.Playing) 
 			{
-				cell.UpdateData (ctrl.Engine, indexPath.Row);
+				cell.RefreshCell (owner, ctrl.Engine, indexPath.Row);
 			}
 			
 			return cell; 
@@ -148,30 +185,33 @@ namespace WF.Player.iPhone
 		{ 
 			return 4; 
 		} 
-		
+
 		public override float GetHeightForRow (UITableView tableView, NSIndexPath indexPath)
 		{
-			// Insert needed height value
-			return 104.0f;
+			MainScreenCell cell = new MainScreenCell();
+
+			// Set initial data 
+			if (ctrl.Engine.GameState == EngineGameState.Playing) 
+			{
+				cell.RefreshCell (owner, ctrl.Engine, indexPath.Row);
+			}
+
+			float height = 0;
+
+			foreach (UIView v in cell.Subviews)
+				if (v.Frame.Bottom > height)
+					height = v.Frame.Bottom;
+
+			return height + 10;
 		}
 		
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
-			switch (indexPath.Row) {
-			case 0:
-				ctrl.ShowScreen (ScreenType.Locations, 0);
-				break;
-			case 1:
-				ctrl.ShowScreen (ScreenType.Items, 0);
-				break;
-			case 2:
-				ctrl.ShowScreen (ScreenType.Inventory, 0);
-				break;
-			case 3:
-				ctrl.ShowScreen (ScreenType.Tasks, 0);
-				break;
-			}
+			owner.EntrySelected(indexPath.Row);
 		}
+
+		#endregion
+
 	} 
 
 	#endregion
@@ -180,23 +220,29 @@ namespace WF.Player.iPhone
 
 	public partial class MainScreenCell : UITableViewCell
 	{
-		private UILabel textTitle;
-		private UILabel textItems;
-		private UIImageView imageIcon;
+		UILabel textTitle;
+		UILabel textItems;
+		UIImageView imageIcon;
+
+		#region Constructor
 
 		public MainScreenCell () : base ()
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell ();
 		}
 		
 		public MainScreenCell (IntPtr handle) : base (handle)
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell ();
 		}
+
+		#endregion
+
+		#region Helper Functions
 		
-		private void createCell ()
+		void CreateCell ()
 		{
 			float maxWidth = this.Bounds.Width - 20;
 
@@ -207,16 +253,16 @@ namespace WF.Player.iPhone
 			
 			textTitle = new UILabel()
 			{
-				Frame = new RectangleF(88,10,maxWidth - 88,26),
+				Frame = new RectangleF(88,10,maxWidth - 0,26),
 				Font = UIFont.SystemFontOfSize (24)
 			};
 			
 			textItems = new UILabel()
 			{
-				Frame = new RectangleF(88,44,maxWidth - 88,54),
+				Frame = new RectangleF(88,44,maxWidth - 0,54),
 				Font = UIFont.SystemFontOfSize(12),
 				TextAlignment = UITextAlignment.Left,
-				Lines = 3,
+				Lines = 0,
 				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
 			};
 			
@@ -224,71 +270,32 @@ namespace WF.Player.iPhone
 			this.AddSubview(textTitle);
 			this.AddSubview(textItems);
 		}
+
+		#endregion
+
+		#region Common Functions
 		
-		public void UpdateData (Engine engine, int row)
+		public void RefreshCell (ScreenMain owner, Engine engine, int row)
 		{
-			string title = "";
-			string icon = "";
-			string empty = "";
-			StringBuilder itemsText = new StringBuilder ();
-			List<string> itemList = new List<string> ();
+			string header;
+			string items;
+			object image;
 
 			// Are we in the start up
-			if(engine.Cartridge == null)
+			if(engine.GameState != EngineGameState.Playing)
 				return;
 
-			switch (row) {
-			case 0:
-				title = "Locations";
-				icon = "Images/IconLocation.png";
-				empty = engine.Cartridge.EmptyZonesListText;
-				List<Zone> zones = engine.ActiveVisibleZones;
-				foreach(Zone z in zones)
-					itemList.Add (z.Name);
-				break;
-			case 1:
-				title = "You see";
-				icon = "Images/IconYouSee.png";
-				empty = engine.Cartridge.EmptyYouSeeListText;
-				List<Thing> items = engine.VisibleObjects;
-				foreach (Thing i in items)
-					itemList.Add (i.GetString ("Name"));
-				break;
-			case 2:
-				title = "Inventory";
-				icon = "Images/IconInventory.png";
-				empty = engine.Cartridge.EmptyInventoryListText;
-				items = engine.VisibleInventory;
-				foreach (Thing i in items)
-					itemList.Add (i.GetString ("Name"));
-				break;
-			case 3:
-				title = "Tasks";
-				icon = "Images/IconTask.png";
-				empty = engine.Cartridge.EmptyTasksListText;
-				List<Task> tasks = engine.ActiveVisibleTasks;
-				foreach(Task t in tasks)
-					itemList.Add (t.Name);
-				break;
-			}
-			
-			this.textTitle.Text = string.Format ("{0} [{1}]", title, itemList.Count);
+			owner.GetContentEntry (row, out header, out items, out image);
 
-			if (itemList.Count == 0)
-				textItems.Text = empty;
-			else {
-				foreach (string s in itemList) {
-					if (itemsText.Length != 0)
-						itemsText.Append (", ");
-					itemsText.Append (s);
-				}
-				this.textItems.Text = itemsText.ToString ();
-			}
-
+			textTitle.Text = header;
+			textItems.Text = items;
 			textItems.SizeToFit ();
 
-			this.imageIcon.Image = UIImage.FromFile (icon);
+			imageIcon.Image = (UIImage)image;
 		}
+
+		#endregion
+
 	}
 
 	#endregion

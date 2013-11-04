@@ -25,18 +25,20 @@ using MonoTouch.Foundation;
 using MonoTouch.CoreLocation;
 using MonoTouch.AVFoundation;
 using WF.Player.Core;
+using WF.Player.Core.Engines;
 
 namespace WF.Player.iPhone
 {
-	public class ScreenController : UINavigationController
+	[CLSCompliantAttribute(false)]
+	public class ScreenController : UINavigationController, IController
 	{
 		private AppDelegate appDelegate;
 		private AVAudioPlayer soundPlayer; 
-		private Cartridge cartridge;
+		private Cartridge cart;
 		private Engine engine;
-		private MainScreen mainScreen;
-		private ItemScreen itemScreen;
-		private DetailScreen detailScreen;
+		private ScreenMain screenMain;
+		private ScreenList screenList;
+		private ScreenDetail screenDetail;
 		private CLLocationManager locationManager;
 		private bool animation = false;
 		private TextWriter logFile;
@@ -44,14 +46,21 @@ namespace WF.Player.iPhone
 		private int zoomLevel = 16;
 
 		public ScreenType activeScreen;
+		public UIObject activeObject;
 		public bool Transitioning;
 
-		public ScreenController (AppDelegate appDelegate)
+		public ScreenController (AppDelegate appDelegate, Cartridge cart)
 		{
 			// Save for later use
 			this.appDelegate = appDelegate;
+			this.cart = cart;
 
-			// Create Location Manager
+			// Set color of NavigationBar and NavigationButtons (TintColor)
+			NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
+			NavigationBar.BackgroundColor = UIColor.FromRGB(0.1992f,0.7070f,0.8945f);
+			NavigationBar.TintColor = UIColor.FromRGB(1f,0f,0f);
+
+						// Create Location Manager
 			locationManager = new CLLocationManager();
 			locationManager.Delegate = new LocationManagerDelegate(this);
 			//locationManager.DistanceFilter = 5;
@@ -66,59 +75,41 @@ namespace WF.Player.iPhone
 
 				//locationManager.StartMonitoringSignificantLocationChanges();
 
-			// Create mainScreen
-			mainScreen = new MainScreen(this);
+			// Create Engine
+			CreateEngine (cart);
 
-			mainScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Quit",UIBarButtonItemStyle.Plain, (sender,args) => { quit (); }), true);
-			mainScreen.NavigationItem.SetRightBarButtonItem(new UIBarButtonItem(@"Menu",UIBarButtonItemStyle.Plain, (sender,args) => { menu (); }), true);
+			// Create screenMain
+			screenMain = new ScreenMain(this);
 
-			// Creat itemScreen
-			itemScreen = new ItemScreen(this);
-
-			itemScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
+			screenMain.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Quit",UIBarButtonItemStyle.Plain, (sender,args) => { quit (); }), true);
+			screenMain.NavigationItem.SetRightBarButtonItem(new UIBarButtonItem(@"Menu",UIBarButtonItemStyle.Plain, (sender,args) => { menu (); }), true);
 
 			Delegate = new ScreenControllerDelegate();
 
 			// ... and push it to the UINavigationController 
-			PushViewController (mainScreen,animation);
-			// Now start the gps
+			PushViewController (screenMain, animation);
+
+			Title = cart.Name; 
 		}
 
-		public Cartridge Cartridge { get { return cartridge; } }
+		public Cartridge Cartridge 
+		{ 
+			get 
+			{ 
+				return cart; 
+			} 
+		}
 
-		public Engine Engine { 
-			get { 
+		public Engine Engine 
+		{ 
+			get 
+			{ 
 				return engine; 
 			} 
-			set { 
-				if (engine != value) {
-					// Remove old engine
-					if (engine != null) {
-						engine.InputRequested -= OnGetInput;
-						engine.LogMessageRequested -= OnLogMessage;
-						engine.NotifyOS -= OnNotifyOS;
-						engine.PlayMediaRequested -= OnPlayMedia;
-						engine.ShowMessageBoxRequested -= OnShowMessageBox;
-						engine.ShowScreenRequested -= OnShowScreen;
-						engine.ShowStatusTextRequested -= OnShowStatusText;
-						engine.SynchronizeRequested -= OnSynchronize;
-					}
-					// Set new engine
+			internal set
+			{
+				if (engine != value)
 					engine = value;
-					// Add all events
-					engine.InputRequested += OnGetInput;
-					engine.LogMessageRequested += OnLogMessage;
-					engine.NotifyOS += OnNotifyOS;
-					engine.PlayMediaRequested += OnPlayMedia;
-					engine.ShowMessageBoxRequested += OnShowMessageBox;
-					engine.ShowScreenRequested += OnShowScreen;
-					engine.ShowStatusTextRequested += OnShowStatusText;
-					engine.SynchronizeRequested += OnSynchronize;
-				}
-				if (engine != null) {
-					cartridge = engine.Cartridge; 
-					Title = cartridge.Name; 
-				}
 			} 
 		}
 
@@ -126,34 +117,127 @@ namespace WF.Player.iPhone
 		
 		public void Refresh ()
 		{
-			this.InvokeOnMainThread (refresh);
+			if (VisibleViewController == screenMain) {
+				if (screenMain.Table != null) {
+					screenMain.Table.ReloadData();
+				}
+			}
+			if (VisibleViewController == screenList) {
+				if (screenList.Table != null) {
+//					screenList.UpdateData(activeScreen);
+					screenList.Table.ReloadData();
+				}
+			}
+			if (VisibleViewController == screenDetail)
+				ShowScreen (ScreenType.Details,screenDetail.Item);
 		}
 
-		private void refresh ()
+		#region Engine Handling
+
+		public void CreateEngine (Cartridge cart)
 		{
-			if (VisibleViewController == mainScreen) {
-				if (mainScreen.Table != null) {
-					mainScreen.Table.ReloadData();
-				}
+			if (engine != null)
+				DestroyEngine ();
+
+			var helper = new iOSPlatformHelper ();
+			helper.Ctrl = this;
+
+			engine = new Engine (helper);
+
+			// Set all events for engine
+			engine.AttributeChanged += OnAttributeChanged;
+			engine.InventoryChanged += OnInventoryChanged;
+			engine.ZoneStateChanged += OnZoneStateChanged;
+			engine.CartridgeCompleted += OnCartridgeComplete;
+			engine.InputRequested += OnGetInput;
+			engine.LogMessageRequested += OnLogMessage;
+			engine.NotifyOS += OnNotifyOS;
+			engine.PlayMediaRequested += OnPlayMedia;
+			engine.SaveRequested += OnSaveCartridge;
+			engine.ShowMessageBoxRequested += OnShowMessageBox;
+			engine.ShowScreenRequested += OnShowScreen;
+			engine.ShowStatusTextRequested += OnShowStatusText;
+
+			// If there is a old logFile, close it
+			if (logFile != null) {
+				logFile.Flush ();
+				logFile.Close ();
 			}
-			if (VisibleViewController == itemScreen) {
-				if (itemScreen.Table != null) {
-					itemScreen.UpdateData(activeScreen);
-					itemScreen.Table.ReloadData();
-				}
-			}
-			if (VisibleViewController == detailScreen)
-				ShowScreen (ScreenType.Details,detailScreen.Item);
+
+			// Open logFile first time
+			logFile = new StreamWriter(cart.LogFilename, true, System.Text.Encoding.UTF8);
+
+			engine.Init (new FileStream (cart.Filename,FileMode.Open), cart);
 		}
-		
+
+		public void DestroyEngine()
+		{
+			StopSound ();
+
+			if (engine != null) {
+				engine.Stop();
+
+				engine.AttributeChanged -= OnAttributeChanged;
+				engine.InventoryChanged -= OnInventoryChanged;
+				engine.ZoneStateChanged -= OnZoneStateChanged;
+				engine.CartridgeCompleted -= OnCartridgeComplete;
+				engine.InputRequested -= OnGetInput;
+				engine.LogMessageRequested -= OnLogMessage;
+				engine.NotifyOS -= OnNotifyOS;
+				engine.PlayMediaRequested -= OnPlayMedia;
+				engine.SaveRequested -= OnSaveCartridge;
+				engine.ShowMessageBoxRequested -= OnShowMessageBox;
+				engine.ShowScreenRequested -= OnShowScreen;
+				engine.ShowStatusTextRequested -= OnShowStatusText;
+
+				engine.Dispose ();
+
+				engine = null;
+			}
+
+			// If there is a old logFile, close it
+			if (logFile != null) {
+				logFile.Flush ();
+				logFile.Close ();
+			}
+		}
+
+		public void Pause()
+		{
+			if (engine != null)
+				engine.Pause ();
+		}
+
+		public void Restore ()
+		{
+			if (engine != null) 
+			{
+				// TODO: Insert locationManager values
+				engine.RefreshLocation (0,0,0,0);
+				engine.Restore (new FileStream(cart.SaveFilename,FileMode.Open));
+				Refresh ();
+			}
+		}
+
+		public void Resume()
+		{
+			if (engine != null)
+			{
+				engine.RefreshLocation (0,0,0,0);
+				engine.Resume ();
+//				Refresh ();
+			}
+		}
+
 		public void Start()
 		{
-			
-		}
-
-		public void End()
-		{
-			
+			if (engine != null) 
+			{
+				// TODO: Insert locationManager values
+				engine.RefreshLocation (0,0,0,0);
+				engine.Start ();
+				Refresh ();
+			}
 		}
 
 		public void Save()
@@ -165,115 +249,179 @@ namespace WF.Player.iPhone
 			indicatorView.Frame = new RectangleF(width, height,20,20);
 			this.VisibleViewController.View.AddSubview(indicatorView);
 			indicatorView.StartAnimating();
-			engine.Save(new FileStream(cartridge.SaveFilename,FileMode.Create));
+
+			engine.Save(new FileStream(cart.SaveFilename,FileMode.Create));
+
 			indicatorView.StopAnimating();
 		}
 
-		public void ShowError (string msg)
-		{
-			this.InvokeOnMainThread( () => { showError(msg); } );
-		}
-
-		private void showError (string msg)
-		{
-		}
-		
-		public void DebugMsg (string msg)
-		{
-			this.InvokeOnMainThread( () => { debugMsg(msg); } );
-		}
-
-		private void debugMsg (string msg)
-		{
-		}
+		#endregion
 
 		#region Events
 
+		[CLSCompliantAttribute(false)]
+		public void OnCartridgeComplete (object sender, CartridgeEventArgs args)
+		{
+			// TODO: Implement
+			// throw new NotImplementedException ();
+		}
+
+		[CLSCompliantAttribute(false)]
+		public void OnAttributeChanged(Object sender, AttributeChangedEventArgs e)
+		{
+			// The easiest way is to redraw all screens
+			if (engine != null)
+				Refresh ();
+		}
+
+		[CLSCompliantAttribute(false)]
+		public void OnInventoryChanged(Object sender, InventoryChangedEventArgs e)
+		{
+			// The easiest way is to redraw all screens
+			if (engine != null)
+				Refresh ();
+		}
+
+		[CLSCompliantAttribute(false)]
+		public void OnZoneStateChanged(Object sender, ZoneStateChangedEventArgs e)
+		{
+			// The easiest way is to redraw all screens
+			if (engine != null)
+				Refresh ();
+		}
+
+		[CLSCompliantAttribute(false)]
 		public void OnGetInput (Object sender, ObjectEventArgs<Input> input)
 		{
-			this.InvokeOnMainThread( () => { getInput(input.Object); } );
+			ScreenDialog dialogScreen = new ScreenDialog(input.Object);
+			this.NavigationItem.SetHidesBackButton(true, animation);
+			PushViewController (dialogScreen,animation);
+			// Ensure, that screen is updated
+//			NSRunLoop.Current.RunUntil(DateTime.Now);
 		}
 
-		private void getInput (Input input)
-		{
-			ShowScreen (ScreenType.Dialog, input);
-		}
-
+		[CLSCompliantAttribute(false)]
 		public void OnLogMessage ( Object sender, LogMessageEventArgs args )
 		{
-			this.InvokeOnMainThread( () => { logMessage (args.Level, args.Message); } );
+			logMessage (args.Level, args.Message);
 		}
 
-		private void logMessage ( LogLevel level, string text )
-		{
-			if (logFile == null)
-				logFile = new StreamWriter(cartridge.LogFilename,true,Encoding.UTF8);
-
-			if (level <= logLevel)
-				logFile.WriteLine(engine.CreateLogMessage(text));
-
-			// TODO: wieder rausnehmen
-			#if DEBUG
-				Console.WriteLine (text);
-			#endif
-		}
-
+		[CLSCompliantAttribute(false)]
 		public void OnNotifyOS(Object sender, NotifyOSEventArgs args)
 		{
-			this.InvokeOnMainThread( () => { notifyOS(args.Command); } );
-		}
-
-		private void notifyOS(string command)
-		{
 			// TODO
-			switch (command.ToLower()) {
-				case "stopsound":
+			switch (args.Command) {
+				case "StopSound":
 					StopSound();
+					break;
+				case "SaveClose":
+					engine.Save (new FileStream (cart.SaveFilename, FileMode.Create));
+					DestroyEngine ();
+					// Close log file
+					locationManager.StopUpdatingLocation();
+					appDelegate.CartStop();
+					break;
+				case "DriveTo":
+					// TODO: Implement
+					break;
+				case "Alert":
+					// TODO: Implement
 					break;
 			}
 		}
 
+		[CLSCompliantAttribute(false)]
 		public void OnPlayMedia(Object sender, ObjectEventArgs<Media> mediaObj)
 		{
-			this.InvokeOnMainThread( () => { playMedia(mediaObj.Object); } );
+			StartSound (mediaObj.Object);
 		}
 
-		private void playMedia(Media mediaObj)
+		[CLSCompliantAttribute(false)]
+		public void OnSaveCartridge (object sender, CartridgeEventArgs args)
 		{
-			NSError error;
-			soundPlayer = AVAudioPlayer.FromData(NSData.FromArray (mediaObj.Data), out error);
-			if (soundPlayer != null)
-				soundPlayer.Play ();
-			else
-				logMessage (LogLevel.Error,String.Format ("Audio file format of media {0} is not valid",mediaObj.Name));
+			engine.Save (new FileStream (args.Cartridge.SaveFilename, FileMode.Create));
 		}
 
+		[CLSCompliantAttribute(false)]
 		public void OnShowMessageBox(Object sender, MessageBoxEventArgs args)
 		{
-			this.InvokeOnMainThread( () => { showMessageBox(args); } );
+			ScreenDialog dialogScreen = new ScreenDialog(args.Descriptor);
+			this.NavigationItem.SetHidesBackButton(true, animation);
+			PushViewController (dialogScreen,animation);
+			// Ensure, that screen is updated
+//			NSRunLoop.Current.RunUntil(DateTime.Now);
 		}
 
-		private void showMessageBox(MessageBoxEventArgs args)
-		{
-			ShowScreen (ScreenType.Dialog, args.Descriptor);
-		}
-
+		[CLSCompliantAttribute(false)]
 		public void OnShowScreen (Object sender, ScreenEventArgs args)
 		{
-			this.InvokeOnMainThread( () => { ShowScreen(args.Screen, args.Object); } );
+			ShowScreen(args.Screen, args.Object);
 		}
 
+		[CLSCompliantAttribute(false)]
+		public void OnShowStatusText(Object sender, StatusTextEventArgs args)
+		{
+		}
+
+		#endregion
+
+		#region Helper Functions
+
+		[CLSCompliantAttribute(false)]
+		public void RemoveScreen(ScreenType last)
+		{
+			PopViewControllerAnimated(animation);
+
+			switch (last) {
+				//				case ScreenType.Main:
+				//					// ToDo: Main screen is the last screen to show, so stop the cartridge
+				//					ShowScreen (ScreenType.Main, null);
+				//					break;
+				//				case ScreenType.Locations:
+				//				case ScreenType.Items:
+				//				case ScreenType.Inventory:
+				//				case ScreenType.Tasks:
+				//					ShowScreen (ScreenType.Main, null);
+				//					break;
+				case ScreenType.Details:
+				// Show correct list for this zone/item/character/task
+				if (activeObject != null) {
+					// Remove active list from screen
+					PopViewControllerAnimated(animation);
+					// Select the correct list to show
+					UIObject obj = activeObject;
+					activeObject = null;
+					if (obj is Zone)
+						ShowScreen (ScreenType.Locations, null);
+					if (obj is Task)
+						ShowScreen (ScreenType.Tasks, null);
+					if (obj is Item || obj is Character) {
+						if (engine.IsInInventory ((Thing)obj))
+							ShowScreen (ScreenType.Inventory, null);
+						else
+							ShowScreen (ScreenType.Items, null);
+					}
+				} else
+					ShowScreen (ScreenType.Main, null);
+				break;
+				case ScreenType.Dialog:
+				// Which screen to show
+				if (activeScreen == ScreenType.Details && activeObject != null && !activeObject.Visible)
+					RemoveScreen (ScreenType.Details);
+				break;
+			}
+		}
+
+		[CLSCompliantAttribute(false)]
 		public void ShowScreen (ScreenType screenId, object param = null)
 		{
-			activeScreen = screenId;
-
 			// If there is a old DialogScreen active, remove it
-			if (VisibleViewController is DialogScreen) {
+			if (VisibleViewController is ScreenDialog) {
 				PopViewControllerAnimated (animation);
-				if (VisibleViewController is MainScreen)
-					mainScreen.Table.ReloadData ();
-				if (VisibleViewController is ItemScreen)
-					itemScreen.Table.ReloadData ();
+				if (VisibleViewController is ScreenMain)
+					screenMain.Table.ReloadData ();
+				if (VisibleViewController is ScreenList)
+					screenList.Table.ReloadData ();
 				// Ensure, that screen is updated
 				NSRunLoop.Current.RunUntil(DateTime.Now);
 			}
@@ -282,141 +430,86 @@ namespace WF.Player.iPhone
 			{
 				this.NavigationItem.SetHidesBackButton(false, animation);
 				PopToRootViewController(animation);
-				mainScreen.Table.ReloadData();
+				screenMain.Table.ReloadData();
 				// Ensure, that screen is updated
 				NSRunLoop.Current.RunUntil(DateTime.Now);
 			}
 			if (screenId == ScreenType.Locations || screenId == ScreenType.Items || screenId == ScreenType.Inventory || screenId == ScreenType.Tasks)
 			{
-				if (VisibleViewController != mainScreen)
+				if (VisibleViewController != screenMain)
 					PopToRootViewController(animation);
-				if (itemScreen.UpdateData(screenId)) {
+				screenList = new ScreenList (this, screenId);
+//				if (screenList.UpdateData(screenId)) {
 					this.NavigationItem.SetHidesBackButton(false, animation);
-					PushViewController (itemScreen,animation);
-					itemScreen.Table.ReloadData();
+					PushViewController (screenList,animation);
+//					screenList.Table.ReloadData();
 					// Ensure, that screen is updated
-					NSRunLoop.Current.RunUntil(DateTime.Now);
-				}
+//					NSRunLoop.Current.RunUntil(DateTime.Now);
+//				}
 			}
 			if (screenId == ScreenType.Details)
 			{
-				int idxDetail = (int) param;
-				if (idxDetail == -1)
-					return;
-				UIObject detail = (UIObject)engine.GetObject(idxDetail);
-				if (VisibleViewController is DetailScreen)
-					PopViewControllerAnimated(animation);
-				// Create new ViewController
-				detailScreen = new DetailScreen(this,detail);
-				detailScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
-				if (detail is Zone || (detail is Thing && engine.VisibleObjects.Contains((Thing)detail)))
-					detailScreen.NavigationItem.SetRightBarButtonItem(new UIBarButtonItem(@"Map",UIBarButtonItemStyle.Plain, (sender,args) => { map ((Thing)detail); }), true);
-				PushViewController (detailScreen,animation);
-				// Ensure, that screen is updated
-				NSRunLoop.Current.RunUntil(DateTime.Now);
+				if (activeScreen != ScreenType.Details || activeObject != (UIObject)param) {
+					activeObject = (UIObject)param;
+					if (VisibleViewController is ScreenDetail)
+						PopViewControllerAnimated (animation);
+					// Create new ViewController
+					screenDetail = new ScreenDetail (this, activeObject);
+					screenDetail.NavigationItem.SetLeftBarButtonItem (new UIBarButtonItem (@"Back", UIBarButtonItemStyle.Plain, (sender, args) => {
+						back ();
+					}), true);
+					if (activeObject is Zone || (activeObject is Thing && engine.VisibleObjects.Contains ((Thing)activeObject)))
+						screenDetail.NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (@"Map", UIBarButtonItemStyle.Plain, (sender, args) => {
+							map ((Thing)activeObject);
+						}), true);
+					PushViewController (screenDetail, animation);
+					// Ensure, that screen is updated
+					NSRunLoop.Current.RunUntil (DateTime.Now);
+				}
 			}
-			if (screenId == ScreenType.Dialog)
-			{
-				if (param == null)
-					return;
-				DialogScreen dialogScreen;
-				if (param is MessageBox)
-					dialogScreen = new DialogScreen(this, (MessageBox)param);
-				else
-					dialogScreen = new DialogScreen(this, (Input)param);
-				this.NavigationItem.SetHidesBackButton(true, animation);
-				PushViewController (dialogScreen,animation);
-				// Ensure, that screen is updated
-				NSRunLoop.Current.RunUntil(DateTime.Now);
-			}
+
+			activeScreen = screenId;
 		}
 
-		public void RemoveScreen(ScreenType last)
+		[CLSCompliantAttribute(false)]
+		public void StartSound(Media media)
 		{
-			PopViewControllerAnimated(animation);
-			Refresh();
-
-			// TODO: Set right new screen
-			ShowScreen (ScreenType.Dialog, null);
+			NSError error;
+			soundPlayer = AVAudioPlayer.FromData(NSData.FromArray (media.Data), out error);
+			if (soundPlayer != null)
+				soundPlayer.Play ();
+			else
+				logMessage (LogLevel.Error,String.Format ("Audio file format of media {0} is not valid",media.Name));
 		}
 
 		public void StopSound ()
-		{
-			this.InvokeOnMainThread( () => { stopSound (); } );
-		}
-
-		private void stopSound ()
 		{
 			if (soundPlayer != null && soundPlayer.Playing) {
 				soundPlayer.Stop ();
 			}
 		}
 
-		public void OnShowStatusText(Object sender, StatusTextEventArgs args)
-		{
-			this.InvokeOnMainThread( () => { showStatusText (args.Text); } );
-		}
-
-		private void showStatusText(string text)
-		{
-		}
-
-		public void OnSynchronize (Object sender, SynchronizeEventArgs args )
-		{
-			this.InvokeOnMainThread( () => { args.Tick(); } );
-		}
-
 		#endregion
-		
-		public void ZoneStateChanged(List<Zone> zones)
-		{
-			this.InvokeOnMainThread( () => { refresh (); } );;
-		}
 
-		public void InventoryChanged(Thing obj,Thing fromContainer,Thing toContainer)
-		{
-			this.InvokeOnMainThread( () => { refresh (); } );;
-		}
+		#region Private Functions
 
-		public void CartridgeChanged(string type)
+		private void logMessage(LogLevel level, string message)
 		{
-			if (type.ToLower ().Equals("sync"))
+			if (logFile == null)
+				logFile = new StreamWriter(cart.LogFilename,true,Encoding.UTF8);
+
+			if (level <= logLevel)
 			{
-				Engine.Sync (new FileStream(Engine.Cartridge.SaveFilename, FileMode.Create));
+				logFile.WriteLine(engine.CreateLogMessage(message));
+				logFile.Flush ();
 			}
-			else
-				this.InvokeOnMainThread( () => { refresh (); } );;
-		}
 
-		public void CommandChanged(Command obj)
-		{
-			this.InvokeOnMainThread( () => { refresh (); } );;
+			// TODO: wieder rausnehmen
+			#if DEBUG
+			Console.WriteLine (message);
+			#endif
 		}
-
-		public void AttributeChanged(Table obj, string type)
-		{
-			this.InvokeOnMainThread( () => { refresh (); } );;
-		}
-
-		public string GetDevice()
-		{
-			return "iPhone";	
-		}
-
-		public string GetDeviceId()
-		{
-			// Use MAC Adress of en0 as DeviceId
-			foreach (var i in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces ())
-				if (i.Id.Equals ("en0")) 
-					return i.GetPhysicalAddress ().ToString ();
-			return "No Id";	
-		}
-
-		public string GetVersion()
-		{
-			return "0.1.0";	
-		}
-
+		
 		private void quit ()
 		{
 			// Ask, if user wants to save game
@@ -427,12 +520,11 @@ namespace WF.Player.iPhone
 			alert.AddButton("No"); 
 			alert.Clicked += (sender, e) => { 
 				if (e.ButtonIndex == 0) 
-					engine.Save(new FileStream(cartridge.SaveFilename,FileMode.Create)); 
+					engine.Save(new FileStream(cart.SaveFilename,FileMode.Create)); 
 				// Close log file
 				locationManager.StopUpdatingLocation();
+				DestroyEngine();
 				appDelegate.CartStop();
-				if (logFile != null)
-					logFile.Close();
 			};
 			alert.Show();
 		}
@@ -452,7 +544,7 @@ namespace WF.Player.iPhone
 				{
 					var alert = new UIAlertView(); 
 					alert.Title = "WF.Player.iPhone"; 
-					alert.Message = String.Format ("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",GetVersion(),Engine.CoreVersion); 
+					alert.Message = String.Format ("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",0,Engine.CoreVersion); 
 					alert.AddButton("Ok"); 
 //					alert.Clicked += (sender, e) => {
 //					};
@@ -469,11 +561,13 @@ namespace WF.Player.iPhone
 
 		private void map (Thing thing)
 		{
-			MapScreen mapScreen = new MapScreen(this,thing);
+			ScreenMap mapScreen = new ScreenMap(this,thing);
 			mapScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
-			mapScreen.Title = thing.GetString ("Name");
+			mapScreen.Title = thing.Name;
 			PushViewController (mapScreen,animation);
 		}
+
+		#endregion
 
 		/// <summary>
 		/// MonoTouch definition seemed to work without too much trouble
