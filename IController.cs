@@ -62,7 +62,7 @@ namespace WF.Player.iPhone
 		void OnAttributeChanged (Object sender, AttributeChangedEventArgs e);
 
 		[CLSCompliantAttribute(false)]
-		void OnCartridgeComplete (object sender, CartridgeEventArgs args);
+		void OnCartridgeComplete (object sender, WherigoEventArgs args);
 
 		[CLSCompliantAttribute(false)]
 		void OnGetInput (Object sender, ObjectEventArgs<Input> input);
@@ -74,13 +74,10 @@ namespace WF.Player.iPhone
 		void OnLogMessage (Object sender, LogMessageEventArgs args);
 
 		[CLSCompliantAttribute(false)]
-		void OnNotifyOS (Object sender, NotifyOSEventArgs args);
-
-		[CLSCompliantAttribute(false)]
 		void OnPlayMedia (Object sender, ObjectEventArgs<Media> media);
 
 		[CLSCompliantAttribute(false)]
-		void OnSaveCartridge (object sender, CartridgeEventArgs args);
+		void OnSaveCartridge (object sender, SavingEventArgs args);
 
 		[CLSCompliantAttribute(false)]
 		void OnShowMessageBox (Object sender, MessageBoxEventArgs args);
@@ -90,6 +87,9 @@ namespace WF.Player.iPhone
 
 		[CLSCompliantAttribute(false)]
 		void OnShowStatusText (Object sender, StatusTextEventArgs args);
+
+		[CLSCompliantAttribute(false)]
+		void OnStopSound (object sender, WherigoEventArgs args);
 
 		[CLSCompliantAttribute(false)]
 		void OnZoneStateChanged (Object sender, ZoneStateChangedEventArgs e);

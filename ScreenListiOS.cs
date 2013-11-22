@@ -286,10 +286,15 @@ namespace WF.Player.iPhone
 						textDistance.Hidden = false;
 						textDistance.Text = "Inside";
 					} else {
-						imageDirection.Hidden = false;
-						imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
-						textDistance.Hidden = false;
-						textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
+						if (((Thing)obj).VectorFromPlayer != null) {
+							imageDirection.Hidden = false;
+							imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
+							textDistance.Hidden = false;
+							textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
+						} else {
+							imageDirection.Hidden = true;
+							textDistance.Hidden = true;
+						}
 					}
 				} else {
 					imageDirection.Hidden = true;

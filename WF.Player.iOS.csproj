@@ -56,9 +56,11 @@
     <MtouchArch>ARMv7, ARMv7s</MtouchArch>
     <CrashReportingApiKey>
     </CrashReportingApiKey>
-    <CodesignProvision>D493A320-F268-471F-9511-56A1E927ECC9</CodesignProvision>
+    <CodesignProvision>5309B5AC-A735-4EF9-A534-01E3384CF55E</CodesignProvision>
     <AssemblyName>Player</AssemblyName>
     <MtouchLink>None</MtouchLink>
+    <BuildIpa>true</BuildIpa>
+    <MtouchUseSGen>true</MtouchUseSGen>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -73,6 +75,7 @@
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
     <AssemblyName>iPhone</AssemblyName>
+    <BuildIpa>true</BuildIpa>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>

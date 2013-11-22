@@ -57,8 +57,8 @@ namespace WF.Player.iPhone
 
 			// Set color of NavigationBar and NavigationButtons (TintColor)
 			navCartSelect.NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
-			navCartSelect.NavigationBar.BackgroundColor = UIColor.FromRGB(0.1992f,0.7070f,0.8945f);
-			navCartSelect.NavigationBar.TintColor = UIColor.FromRGB(1f,0f,0f);
+			navCartSelect.NavigationBar.BackgroundColor = UIColor.FromRGB(0.1882f,0.2941f,0.3450f);  // 48/75/88
+			navCartSelect.NavigationBar.TintColor = UIColor.FromRGB(0.1882f,0.3098f,03608f);  // 48/79/92
 
 			// Now create list for cartridges
 			viewCartSelect = new CartridgeList(this);
@@ -102,6 +102,8 @@ namespace WF.Player.iPhone
 		{
 			// Save game before we could get killed
 			if (screenCtrl != null && screenCtrl.Engine != null) {
+				// Free memory
+				screenCtrl.Engine.FreeMemory ();
 				// Save game automatically
 				screenCtrl.Engine.Save (new FileStream (screenCtrl.Engine.Cartridge.SaveFilename, FileMode.Create));
 			}

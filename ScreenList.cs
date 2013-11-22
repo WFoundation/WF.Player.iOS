@@ -140,7 +140,8 @@ namespace WF.Player.iPhone
 		{
 			bool newItems = false;
 
-			newItems |= (e is AttributeChangedEventArgs && ((AttributeChangedEventArgs)e).PropertyName.Equals("Active"));
+			newItems |= e is InventoryChangedEventArgs;
+			newItems |= e is AttributeChangedEventArgs && ((AttributeChangedEventArgs)e).PropertyName.Equals("Active");
 			newItems |= e is AttributeChangedEventArgs && ((AttributeChangedEventArgs)e).PropertyName.Equals("Visible");
 			newItems |= e is InventoryChangedEventArgs;
 			newItems |= e is PropertyChangedEventArgs && ((PropertyChangedEventArgs)e).PropertyName.Equals("Active");

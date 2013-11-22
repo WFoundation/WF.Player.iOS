@@ -59,8 +59,8 @@ namespace WF.Player.iPhone
 
 			// Set color of NavigationBar and NavigationButtons (TintColor)
 			NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
-			NavigationBar.BackgroundColor = UIColor.FromRGB(0.1992f,0.7070f,0.8945f);
-			NavigationBar.TintColor = UIColor.FromRGB(1f,0f,0f);
+			NavigationBar.BackgroundColor = UIColor.FromRGB(0.1882f,0.2941f,0.3450f);  // 48/75/88
+			NavigationBar.TintColor = UIColor.FromRGB(0.1882f,0.3098f,03608f);  // 48/79/92
 
 						// Create Location Manager
 			locationManager = new CLLocationManager();
@@ -153,12 +153,12 @@ namespace WF.Player.iPhone
 			engine.CartridgeCompleted += OnCartridgeComplete;
 			engine.InputRequested += OnGetInput;
 			engine.LogMessageRequested += OnLogMessage;
-			engine.NotifyOS += OnNotifyOS;
 			engine.PlayMediaRequested += OnPlayMedia;
 			engine.SaveRequested += OnSaveCartridge;
 			engine.ShowMessageBoxRequested += OnShowMessageBox;
 			engine.ShowScreenRequested += OnShowScreen;
 			engine.ShowStatusTextRequested += OnShowStatusText;
+			engine.StopSoundsRequested += OnStopSound;
 
 			// If there is a old logFile, close it
 			if (logFile != null) {
@@ -174,8 +174,6 @@ namespace WF.Player.iPhone
 
 		public void DestroyEngine()
 		{
-			StopSound ();
-
 			if (engine != null) {
 				engine.Stop();
 
@@ -185,12 +183,12 @@ namespace WF.Player.iPhone
 				engine.CartridgeCompleted -= OnCartridgeComplete;
 				engine.InputRequested -= OnGetInput;
 				engine.LogMessageRequested -= OnLogMessage;
-				engine.NotifyOS -= OnNotifyOS;
 				engine.PlayMediaRequested -= OnPlayMedia;
 				engine.SaveRequested -= OnSaveCartridge;
 				engine.ShowMessageBoxRequested -= OnShowMessageBox;
 				engine.ShowScreenRequested -= OnShowScreen;
 				engine.ShowStatusTextRequested -= OnShowStatusText;
+				engine.StopSoundsRequested -= OnStopSound;
 
 				engine.Dispose ();
 
@@ -262,7 +260,7 @@ namespace WF.Player.iPhone
 		#region Events
 
 		[CLSCompliantAttribute(false)]
-		public void OnCartridgeComplete (object sender, CartridgeEventArgs args)
+		public void OnCartridgeComplete (object sender, WherigoEventArgs args)
 		{
 			// TODO: Implement
 			// throw new NotImplementedException ();
@@ -295,9 +293,10 @@ namespace WF.Player.iPhone
 		[CLSCompliantAttribute(false)]
 		public void OnGetInput (Object sender, ObjectEventArgs<Input> input)
 		{
-			ScreenDialog dialogScreen = new ScreenDialog(input.Object);
-			this.NavigationItem.SetHidesBackButton(true, animation);
-			PushViewController (dialogScreen,animation);
+			ShowScreen (ScreenType.Dialog, input.Object);
+//			ScreenDialog dialogScreen = new ScreenDialog(input.Object);
+//			this.NavigationItem.SetHidesBackButton(true, animation);
+//			PushViewController (dialogScreen,animation);
 			// Ensure, that screen is updated
 //			NSRunLoop.Current.RunUntil(DateTime.Now);
 		}
@@ -308,29 +307,29 @@ namespace WF.Player.iPhone
 			logMessage (args.Level, args.Message);
 		}
 
-		[CLSCompliantAttribute(false)]
-		public void OnNotifyOS(Object sender, NotifyOSEventArgs args)
-		{
-			// TODO
-			switch (args.Command) {
-				case "StopSound":
-					StopSound();
-					break;
-				case "SaveClose":
-					engine.Save (new FileStream (cart.SaveFilename, FileMode.Create));
-					DestroyEngine ();
-					// Close log file
-					locationManager.StopUpdatingLocation();
-					appDelegate.CartStop();
-					break;
-				case "DriveTo":
-					// TODO: Implement
-					break;
-				case "Alert":
-					// TODO: Implement
-					break;
-			}
-		}
+//		[CLSCompliantAttribute(false)]
+//		public void OnNotifyOS(Object sender, NotifyOSEventArgs args)
+//		{
+//			// TODO
+//			switch (args.Command) {
+//				case "StopSound":
+//					StopSound();
+//					break;
+//				case "SaveClose":
+//					engine.Save (new FileStream (cart.SaveFilename, FileMode.Create));
+//					DestroyEngine ();
+//					// Close log file
+//					locationManager.StopUpdatingLocation();
+//					appDelegate.CartStop();
+//					break;
+//				case "DriveTo":
+//					// TODO: Implement
+//					break;
+//				case "Alert":
+//					// TODO: Implement
+//					break;
+//			}
+//		}
 
 		[CLSCompliantAttribute(false)]
 		public void OnPlayMedia(Object sender, ObjectEventArgs<Media> mediaObj)
@@ -339,7 +338,7 @@ namespace WF.Player.iPhone
 		}
 
 		[CLSCompliantAttribute(false)]
-		public void OnSaveCartridge (object sender, CartridgeEventArgs args)
+		public void OnSaveCartridge (object sender, SavingEventArgs args)
 		{
 			engine.Save (new FileStream (args.Cartridge.SaveFilename, FileMode.Create));
 		}
@@ -347,9 +346,10 @@ namespace WF.Player.iPhone
 		[CLSCompliantAttribute(false)]
 		public void OnShowMessageBox(Object sender, MessageBoxEventArgs args)
 		{
-			ScreenDialog dialogScreen = new ScreenDialog(args.Descriptor);
-			this.NavigationItem.SetHidesBackButton(true, animation);
-			PushViewController (dialogScreen,animation);
+			ShowScreen (ScreenType.Dialog, args);
+//			ScreenDialog dialogScreen = new ScreenDialog(args.Descriptor);
+//			this.NavigationItem.SetHidesBackButton(true, animation);
+//			PushViewController (dialogScreen,animation);
 			// Ensure, that screen is updated
 //			NSRunLoop.Current.RunUntil(DateTime.Now);
 		}
@@ -363,6 +363,32 @@ namespace WF.Player.iPhone
 		[CLSCompliantAttribute(false)]
 		public void OnShowStatusText(Object sender, StatusTextEventArgs args)
 		{
+		}
+
+		[CLSCompliantAttribute(false)]
+		public void OnStopSound(Object sender, WherigoEventArgs args)
+		{
+			StopSound ();
+
+			// TODO
+//			switch (args.Command) {
+//				case "StopSound":
+//				StopSound();
+//				break;
+//				case "SaveClose":
+//				engine.Save (new FileStream (cart.SaveFilename, FileMode.Create));
+//				DestroyEngine ();
+//				// Close log file
+//				locationManager.StopUpdatingLocation();
+//				appDelegate.CartStop();
+//				break;
+//				case "DriveTo":
+//				// TODO: Implement
+//				break;
+//				case "Alert":
+//				// TODO: Implement
+//				break;
+//			}
 		}
 
 		#endregion
@@ -467,6 +493,19 @@ namespace WF.Player.iPhone
 					PushViewController (screenDetail, animation);
 					// Ensure, that screen is updated
 					NSRunLoop.Current.RunUntil (DateTime.Now);
+				}
+			}
+			if (screenId == ScreenType.Dialog)
+			{
+				if (param is MessageBoxEventArgs) {
+					ScreenDialog dialogScreen = new ScreenDialog(((MessageBoxEventArgs)param).Descriptor);
+					this.NavigationItem.SetHidesBackButton(true, animation);
+					PushViewController (dialogScreen,animation);
+				}
+				if (param is Input) {
+					ScreenDialog dialogScreen = new ScreenDialog ((Input)param);
+					this.NavigationItem.SetHidesBackButton (true, animation);
+					PushViewController (dialogScreen, animation);
 				}
 			}
 
