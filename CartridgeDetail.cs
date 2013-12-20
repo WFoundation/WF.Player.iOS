@@ -44,7 +44,8 @@ namespace WF.Player.iPhone
 			set { 
 				if (cart != value) {
 					cart = value;
-					updateData ();
+					if (TextTitle != null)
+						updateData ();
 				}
 			}
 		}
@@ -62,6 +63,8 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
+			if (TextTitle != null && cart != null)
+				updateData ();
 		}
 		
 		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
@@ -82,9 +85,9 @@ namespace WF.Player.iPhone
 		
 		private void updateData ()
 		{
-			this.TextTitle.Text = cart.Name;
-			this.TextDescription.Text = cart.LongDescription;
-			this.TextDescription.SizeToFit();
+			TextTitle.Text = cart.Name;
+			TextDescription.Text = cart.LongDescription;
+			TextDescription.SizeToFit();
 			if (cart.Poster != null)
 				this.ImagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Poster.Data));
 			else

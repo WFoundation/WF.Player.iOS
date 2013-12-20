@@ -57,6 +57,13 @@ namespace WF.Player.iPhone
 				if (!String.IsNullOrWhiteSpace (msgBox.SecondButtonLabel))
 					this.buttons.Add (msgBox.SecondButtonLabel);
 			}
+
+			// OS specific details
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+			{
+				// Code that uses features from Xamarin.iOS 7.0
+				this.EdgesForExtendedLayout = UIRectEdge.None;
+			}
 		}
 		
 		public ScreenDialog (Input input) : base ()
@@ -270,6 +277,7 @@ namespace WF.Player.iPhone
 			} else {
 				inputView = null;
 			}
+
 			buttonView = new UIView (){
 				ContentMode = UIViewContentMode.Center
 			};
@@ -284,6 +292,9 @@ namespace WF.Player.iPhone
 					button.Frame = new RectangleF (0, pos * 45, maxWidth, 35);
 					button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
 					button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
+					button.SetTitleColor(Colors.ButtonText,UIControlState.Normal);
+					button.SetBackgroundImage(Images.Button, UIControlState.Normal);
+					button.SetBackgroundImage(Images.ButtonHighlight, UIControlState.Highlighted);
 					button.SetTitle (s, UIControlState.Normal);
 					button.TouchUpInside += OnTouchUpInside;
 					buttonView.AddSubview (button);

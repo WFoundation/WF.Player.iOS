@@ -33,9 +33,6 @@ namespace WF.Player.iPhone
 		ScreenType screen;
 		string[] properties = {"Name", "Icon", "Active", "Visible", "ObjectLocation"};
 
-		public string TaskCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    // UTF-8 2713
-		public string TaskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  // UTF-8 2717
-				
 		public List<UIObject> Items = new List<UIObject>();
 		public bool ShowIcons;
 		public bool ShowDirections;

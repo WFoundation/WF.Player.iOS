@@ -44,6 +44,13 @@ namespace WF.Player.iPhone
 		{
 			this.ctrl = ctrl;
 			this.obj = obj;
+
+			// OS specific details
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+			{
+				// Code that uses features from Xamarin.iOS 7.0
+				this.EdgesForExtendedLayout = UIRectEdge.None;
+			}
 		}
 
 		public UIObject Item { get { return obj; } }
@@ -64,11 +71,12 @@ namespace WF.Player.iPhone
 			
 			// Perform any additional setup after loading the view, typically from a nib.
 			// Get all commands for this object
-			commands = new List<Command> ();
+			commands = null;
 			targets = null;
 			if (!(obj is Task)) {
-				foreach(Command c in ((Thing)obj).ActiveCommands)
-					commands.Add (c);
+				commands = ((Thing)obj).ActiveCommands;
+//				foreach(Command c in ((Thing)obj).ActiveCommands)
+//					commands.Add (c);
 			}
 			// Create view
 			CreateView ();
@@ -128,7 +136,7 @@ namespace WF.Player.iPhone
 				}
 				actionCommand = null;
 				actionCommandEmpty = null;
-				commands = new List<Command> ();
+				commands = null;
 				targets = null;
 				if (!(obj is Task)) {
 					commands = ((Thing)obj).ActiveCommands;
@@ -154,13 +162,14 @@ namespace WF.Player.iPhone
 
 			if (image == null)
 				image = new UIImageView () {
+					BackgroundColor = UIColor.Clear, // UIColor.Yellow, 
 					ContentMode = UIViewContentMode.Center | UIViewContentMode.ScaleAspectFit,
 					Hidden = true
 				};
 
 			if (text == null)
 				text = new UILabel () {
-					BackgroundColor = UIColor.Clear,
+				BackgroundColor = UIColor.Clear, // UIColor.Red,
 					Lines = 0,
 					LineBreakMode = UILineBreakMode.WordWrap,
 					TextAlignment = UITextAlignment.Center,
@@ -171,7 +180,7 @@ namespace WF.Player.iPhone
 
 			if (actionText == null)
 				actionText = new UILabel(new RectangleF(0, 0, maxWidth, 35)) {
-					BackgroundColor = UIColor.Clear,
+					BackgroundColor = UIColor.Clear, // UIColor.Green,
 					Lines = 0,
 					LineBreakMode = UILineBreakMode.WordWrap,
 					TextAlignment = UITextAlignment.Center,
@@ -182,6 +191,7 @@ namespace WF.Player.iPhone
 
 			if (buttonView == null)
 				buttonView = new UIView () {
+					BackgroundColor = UIColor.Clear, // UIColor.Blue
 					ContentMode = UIViewContentMode.Center,
 					Hidden = true
 				};
@@ -213,7 +223,7 @@ namespace WF.Player.iPhone
 			if (what.Equals ("") || what.Equals ("Name")) 
 			{
 				if (obj is Task)
-					this.NavigationItem.Title = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? taskNotCorrect : taskCorrect) + " " : "") + obj.Name;
+					this.NavigationItem.Title = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + obj.Name;
 				else
 					this.NavigationItem.Title = obj.Name;
 			}
@@ -222,7 +232,10 @@ namespace WF.Player.iPhone
 				if (obj.Image != null) {
 					image.Image = UIImage.LoadFromData (NSData.FromArray (obj.Image.Data));
 					image.Hidden = false;
-					image.Bounds = new RectangleF (0, 0, maxWidth, image.Image.Size.Height * maxWidth / image.Image.Size.Width);
+					if (image.Image.Size.Width > image.Image.Size.Height)
+						image.Bounds = new RectangleF (0, 0, maxWidth, image.Image.Size.Height * maxWidth / image.Image.Size.Width);
+					else
+						image.Bounds = new RectangleF (0, 0, maxWidth, image.Image.Size.Height);
 				} else {
 					image.Image = null;
 					image.Hidden = true;
@@ -247,7 +260,7 @@ namespace WF.Player.iPhone
 				actionCommandEmpty = null;
 			}
 
-			if ((what.Equals ("") && actionCommand == null) || what.Equals ("Commands")) {
+			if (commands != null && ((what.Equals ("") && actionCommand == null) || what.Equals ("Commands"))) {
 				// Set size
 				buttonView.Bounds = new RectangleF (0, 0, maxWidth, 45 * commands.Count);
 				// Make all buttons we need
@@ -332,6 +345,9 @@ namespace WF.Player.iPhone
 				button.Bounds = new RectangleF (0, 0, maxWidth, 35);
 				button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
 				button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
+				button.SetTitleColor(Colors.ButtonText,UIControlState.Normal);
+				button.SetBackgroundImage(Images.Button, UIControlState.Normal);
+				button.SetBackgroundImage(Images.ButtonHighlight, UIControlState.Highlighted);
 				button.TouchUpInside += OnTouchUpInside;
 				buttons.Add (button);
 				buttonView.AddSubview (button);

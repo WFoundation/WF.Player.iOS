@@ -59,8 +59,8 @@ namespace WF.Player.iPhone
 
 			// Set color of NavigationBar and NavigationButtons (TintColor)
 			NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
-			NavigationBar.BackgroundColor = UIColor.FromRGB(0.1882f,0.2941f,0.3450f);  // 48/75/88
-			NavigationBar.TintColor = UIColor.FromRGB(0.1882f,0.3098f,03608f);  // 48/79/92
+			NavigationBar.BackgroundColor = Colors.NavBar;
+			NavigationBar.TintColor = Colors.NavBarButton;
 
 						// Create Location Manager
 			locationManager = new CLLocationManager();
@@ -83,8 +83,17 @@ namespace WF.Player.iPhone
 			// Create screenMain
 			screenMain = new ScreenMain(this);
 
-			screenMain.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Quit",UIBarButtonItemStyle.Plain, (sender,args) => { quit (); }), true);
-			screenMain.NavigationItem.SetRightBarButtonItem(new UIBarButtonItem(@"Menu",UIBarButtonItemStyle.Plain, (sender,args) => { menu (); }), true);
+			var leftBarButton = new UIBarButtonItem (@"Quit", UIBarButtonItemStyle.Plain, (sender, args) => {
+				quit ();
+			});
+			leftBarButton.TintColor = Colors.NavBarButton;
+			screenMain.NavigationItem.SetLeftBarButtonItem(leftBarButton, true);
+
+			var rightBarButton = new UIBarButtonItem (@"Menu", UIBarButtonItemStyle.Plain, (sender, args) => {
+				menu ();
+			});
+			rightBarButton.TintColor = Colors.NavBarButton;
+			screenMain.NavigationItem.SetRightBarButtonItem(rightBarButton, true);
 
 			Delegate = new ScreenControllerDelegate();
 
@@ -347,11 +356,6 @@ namespace WF.Player.iPhone
 		public void OnShowMessageBox(Object sender, MessageBoxEventArgs args)
 		{
 			ShowScreen (ScreenType.Dialog, args);
-//			ScreenDialog dialogScreen = new ScreenDialog(args.Descriptor);
-//			this.NavigationItem.SetHidesBackButton(true, animation);
-//			PushViewController (dialogScreen,animation);
-			// Ensure, that screen is updated
-//			NSRunLoop.Current.RunUntil(DateTime.Now);
 		}
 
 		[CLSCompliantAttribute(false)]
@@ -369,26 +373,6 @@ namespace WF.Player.iPhone
 		public void OnStopSound(Object sender, WherigoEventArgs args)
 		{
 			StopSound ();
-
-			// TODO
-//			switch (args.Command) {
-//				case "StopSound":
-//				StopSound();
-//				break;
-//				case "SaveClose":
-//				engine.Save (new FileStream (cart.SaveFilename, FileMode.Create));
-//				DestroyEngine ();
-//				// Close log file
-//				locationManager.StopUpdatingLocation();
-//				appDelegate.CartStop();
-//				break;
-//				case "DriveTo":
-//				// TODO: Implement
-//				break;
-//				case "Alert":
-//				// TODO: Implement
-//				break;
-//			}
 		}
 
 		#endregion
@@ -424,7 +408,7 @@ namespace WF.Player.iPhone
 					if (obj is Task)
 						ShowScreen (ScreenType.Tasks, null);
 					if (obj is Item || obj is Character) {
-						if (engine.IsInInventory ((Thing)obj))
+						if (engine.VisibleInventory.Contains((Thing)obj))
 							ShowScreen (ScreenType.Inventory, null);
 						else
 							ShowScreen (ScreenType.Items, null);
@@ -472,7 +456,7 @@ namespace WF.Player.iPhone
 					PushViewController (screenList,animation);
 //					screenList.Table.ReloadData();
 					// Ensure, that screen is updated
-//					NSRunLoop.Current.RunUntil(DateTime.Now);
+					NSRunLoop.Current.RunUntil(DateTime.Now);
 //				}
 			}
 			if (screenId == ScreenType.Details)
@@ -585,7 +569,7 @@ namespace WF.Player.iPhone
 				{
 					var alert = new UIAlertView(); 
 					alert.Title = "WF.Player.iPhone"; 
-					alert.Message = String.Format ("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",0,Engine.CoreVersion); 
+					alert.Message = String.Format ("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz, Brice Clocher\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",0,Engine.CoreVersion); 
 					alert.AddButton("Ok"); 
 //					alert.Clicked += (sender, e) => {
 //					};
@@ -628,16 +612,18 @@ namespace WF.Player.iPhone
 			/// </summary>
 			public override void UpdatedLocation (CLLocationManager manager, CLLocation newLocation, CLLocation oldLocation)
 			{
-				ctrl.Engine.RefreshLocation(newLocation.Coordinate.Latitude, newLocation.Coordinate.Longitude, newLocation.Altitude, newLocation.HorizontalAccuracy);
+				if (ctrl != null && ctrl.Engine != null && ctrl.Engine.GameState == EngineGameState.Playing)
+					ctrl.Engine.RefreshLocation(newLocation.Coordinate.Latitude, newLocation.Coordinate.Longitude, newLocation.Altitude, newLocation.HorizontalAccuracy);
 			}
 
 			public override void UpdatedHeading(CLLocationManager manager, CLHeading newHeading)
 			{
-				if (ctrl.Engine.Heading != newHeading.TrueHeading)
-				{
-					ctrl.Engine.RefreshHeading(newHeading.TrueHeading);
-					ctrl.Refresh();
-				}
+				if (ctrl != null && ctrl.Engine != null && ctrl.Engine.GameState == EngineGameState.Playing)
+					if (ctrl.Engine.Heading != newHeading.TrueHeading)
+					{
+						ctrl.Engine.RefreshHeading(newHeading.TrueHeading);
+						ctrl.Refresh();
+					}
 			}
 
 			public override void Failed (CLLocationManager manager, NSError error)

@@ -55,7 +55,7 @@ namespace WF.Player.iPhone
 			switch (pos) 
 			{
 				case 0:
-					List<Zone> listZones = ctrl.Engine.ActiveVisibleZones;
+				var listZones = ctrl.Engine.ActiveVisibleZones;
 					if (listZones.Count > 0) 
 					{
 //						if (listZones.Count == 1) 
@@ -69,7 +69,7 @@ namespace WF.Player.iPhone
 					}
 					break;
 				case 1:
-					List<Thing> listObjects = ctrl.Engine.VisibleObjects;
+					var listObjects = ctrl.Engine.VisibleObjects;
 					if (listObjects.Count > 0) 
 					{
 //						if (listObjects.Count == 1) 
@@ -90,7 +90,7 @@ namespace WF.Player.iPhone
 					}
 					break;
 				case 2:
-					List<Thing> listInventory = ctrl.Engine.VisibleInventory;
+					var listInventory = ctrl.Engine.VisibleInventory;
 					if (listInventory.Count > 0) 
 					{
 //						if (listInventory.Count == 1) 
@@ -111,7 +111,7 @@ namespace WF.Player.iPhone
 					}
 					break;
 				case 3:
-					List<Task> listTasks = ctrl.Engine.ActiveVisibleTasks;
+					var listTasks = ctrl.Engine.ActiveVisibleTasks;
 					if (listTasks.Count > 0) 
 					{
 //						if (listTasks.Count == 1) 

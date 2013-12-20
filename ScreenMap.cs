@@ -38,6 +38,13 @@ namespace WF.Player.iPhone
 		{
 			this.ctrl = ctrl;
 			this.thing = t;
+
+			// OS specific details
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+			{
+				// Code that uses features from Xamarin.iOS 7.0
+				this.EdgesForExtendedLayout = UIRectEdge.None;
+			}
 		}
 		
 		public override void ViewDidLoad ()
@@ -56,7 +63,7 @@ namespace WF.Player.iPhone
 			var zones = ctrl.Engine.ActiveVisibleZones;
 			foreach(Zone z in zones)
 			{
-				List<ZonePoint> points = z.Points;
+				var points = z.Points;
 				CLLocationCoordinate2D[] coords = new CLLocationCoordinate2D [points.Count];
 				int i = 0;
 				foreach(ZonePoint zp in points) {
@@ -133,7 +140,7 @@ namespace WF.Player.iPhone
 				return;
 
 			// Check all active objects, if they are inside
-			List<Zone> zones = ctrl.Engine.ActiveVisibleZones;
+			var zones = ctrl.Engine.ActiveVisibleZones;
 			foreach(Zone z in zones)
 			{
 				//Add pin annoation here

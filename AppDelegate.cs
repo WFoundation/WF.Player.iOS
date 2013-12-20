@@ -49,6 +49,9 @@ namespace WF.Player.iPhone
 		[CLSCompliantAttribute(false)]
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
+			// TODO: Delete
+			Console.WriteLine ("FinishedLaunching");
+
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
@@ -57,8 +60,8 @@ namespace WF.Player.iPhone
 
 			// Set color of NavigationBar and NavigationButtons (TintColor)
 			navCartSelect.NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
-			navCartSelect.NavigationBar.BackgroundColor = UIColor.FromRGB(0.1882f,0.2941f,0.3450f);  // 48/75/88
-			navCartSelect.NavigationBar.TintColor = UIColor.FromRGB(0.1882f,0.3098f,03608f);  // 48/79/92
+			navCartSelect.NavigationBar.BackgroundColor = UIColor.FromRGB(0.2118f,0.4588f,0.7333f);  // 48/75/88
+			navCartSelect.NavigationBar.TintColor = UIColor.FromRGB(0.2000f,0.2824f,0.3725f);  // 48/79/92
 
 			// Now create list for cartridges
 			viewCartSelect = new CartridgeList(this);
@@ -81,8 +84,38 @@ namespace WF.Player.iPhone
 
 		public override void DidEnterBackground (UIApplication application)
 		{
+			// TODO: Delete
+			Console.WriteLine ("DidEnterBackground");
+
 			// Save game before going into background
-			if (screenCtrl != null && screenCtrl.Engine != null) {
+			if (screenCtrl != null && screenCtrl.Engine != null && screenCtrl.Engine.GameState == WF.Player.Core.Engines.EngineGameState.Playing) {
+				// Save game automatically
+				Console.WriteLine ("Start Save");
+				screenCtrl.Engine.Save (new FileStream (screenCtrl.Engine.Cartridge.SaveFilename, FileMode.Create));
+				Console.WriteLine ("Ende Save");
+				// Pause engine until we have focus again
+				screenCtrl.Engine.Pause ();
+			}
+		}
+
+		public override void WillEnterForeground(UIApplication application)
+		{
+			// TODO: Delete
+			Console.WriteLine ("WillEnterForeground");
+
+			if (screenCtrl != null && screenCtrl.Engine != null && screenCtrl.Engine.GameState == WF.Player.Core.Engines.EngineGameState.Paused) {
+				// Resume engine, so we continue
+				screenCtrl.Engine.Resume ();
+			}
+		}
+
+		public override void OnResignActivation(UIApplication application)
+		{
+			// TODO: Delete
+			Console.WriteLine ("OnResignActivation");
+
+			// Save game before going into background
+			if (screenCtrl != null && screenCtrl.Engine != null && screenCtrl.Engine.GameState == WF.Player.Core.Engines.EngineGameState.Playing) {
 				// Save game automatically
 				screenCtrl.Engine.Save (new FileStream (screenCtrl.Engine.Cartridge.SaveFilename, FileMode.Create));
 				// Pause engine until we have focus again
@@ -90,9 +123,12 @@ namespace WF.Player.iPhone
 			}
 		}
 
-		public override void WillEnterForeground (UIApplication application)
+		public override void OnActivated(UIApplication application)
 		{
-			if (screenCtrl != null && screenCtrl.Engine != null) {
+			// TODO: Delete
+			Console.WriteLine ("OnActivated");
+
+			if (screenCtrl != null && screenCtrl.Engine != null && screenCtrl.Engine.GameState == WF.Player.Core.Engines.EngineGameState.Paused) {
 				// Resume engine, so we continue
 				screenCtrl.Engine.Resume ();
 			}
@@ -100,6 +136,9 @@ namespace WF.Player.iPhone
 
 		public override void ReceiveMemoryWarning (UIApplication application)
 		{
+			// TODO: Delete
+			Console.WriteLine ("ReceiveMemoryWarning");
+
 			// Save game before we could get killed
 			if (screenCtrl != null && screenCtrl.Engine != null) {
 				// Free memory
@@ -112,6 +151,8 @@ namespace WF.Player.iPhone
 		[CLSCompliantAttribute(false)]
 		public void CartStart(Cartridge cart)
 		{
+			UIApplication.SharedApplication.IdleTimerDisabled = true;
+
 			// Create main screen handler
 			screenCtrl = new ScreenController(this, cart);
 
@@ -124,6 +165,8 @@ namespace WF.Player.iPhone
 		[CLSCompliantAttribute(false)]
 		public void CartRestore(Cartridge cart)
 		{
+			UIApplication.SharedApplication.IdleTimerDisabled = true;
+
 			// Create main screen handler
 			screenCtrl = new ScreenController(this, cart);
 
@@ -141,6 +184,8 @@ namespace WF.Player.iPhone
 				screenCtrl.Dispose ();
 				screenCtrl = null;
 			}
+
+			UIApplication.SharedApplication.IdleTimerDisabled = false;
 		}
 	}
 }

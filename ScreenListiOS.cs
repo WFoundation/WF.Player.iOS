@@ -48,6 +48,13 @@ namespace WF.Player.iPhone
 
 			// Create source for table view
 			screenListSource = new ScreenListSource(this, ctrl, screen);
+
+			// OS specific details
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+			{
+				// Code that uses features from Xamarin.iOS 7.0
+				this.EdgesForExtendedLayout = UIRectEdge.None;
+			}
 		}
 
 		#endregion
@@ -67,7 +74,8 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(screen); }), true);
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(screen); }), false);
+			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
 
 			// Create table view
 			Table = new UITableView()
@@ -231,7 +239,7 @@ namespace WF.Player.iPhone
 				Lines = 2
 			};
 
-			this.AddSubview (textTitle);
+			this.ContentView.AddSubview (textTitle);
 
 			if (showDirections) 
 			{
@@ -249,8 +257,8 @@ namespace WF.Player.iPhone
 					LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
 				};
 			
-				this.AddSubview (imageDirection);
-				this.AddSubview (textDistance);
+				this.ContentView.AddSubview (imageDirection);
+				this.ContentView.AddSubview (textDistance);
 			}
 
 			HasDirection = showDirections;
@@ -272,7 +280,7 @@ namespace WF.Player.iPhone
 			if (screenType == ScreenType.Tasks) 
 			{
 				// If a task, than show CorrectState by character in front of name
-				textTitle.Text = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? owner.TaskNotCorrect : owner.TaskCorrect) + " " : "") + obj.Name;
+				textTitle.Text = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + obj.Name;
 			}
 			else
 				textTitle.Text = obj.Name;

@@ -1,0 +1,48 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.6.1" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="DetailScreen.cs">
+    <Files>
+      <File FileName="ScreenController.cs" Line="263" Column="1" />
+      <File FileName="../WF.Player.Android/ScreenActivity.cs" Line="207" Column="10" />
+      <File FileName="WF.Player.Core/Core/Model/Enums.cs" Line="1" Column="1" />
+      <File FileName="AppDelegate.cs" Line="98" Column="1" />
+      <File FileName="DialogScreen.cs" Line="230" Column="20" />
+      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
+      <File FileName="ItemScreen.cs" Line="164" Column="12" />
+      <File FileName="MainScreen.cs" Line="1" Column="1" />
+      <File FileName="CartridgeList.cs" Line="1" Column="1" />
+      <File FileName="DetailScreen.cs" Line="125" Column="8" />
+      <File FileName="MapScreen.cs" Line="64" Column="16" />
+      <File FileName="WF.Player.Core/Core/Model/Cartridge.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Loaders/FileGWC.cs" Line="1" Column="1" />
+      <File FileName="iOS/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engine/WIGInternalImpl.cs" Line="176" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engine/Extensions.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engine/Engine.cs" Line="699" Column="1" />
+      <File FileName="WF.Player.Core/Core/Model/Events.cs" Line="149" Column="1" />
+      <File FileName="WF.Player.Core/Core/Model/Table.cs" Line="128" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Core.iOS" expanded="True">
+            <Node name="Engine" expanded="True" />
+            <Node name="Loaders" expanded="True" />
+            <Node name="Model" expanded="True" />
+            <Node name="Resources" expanded="True" />
+          </Node>
+          <Node name="WF.Player.iOS" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="Images" expanded="True" />
+            <Node name="iOS" expanded="True" />
+            <Node name="DetailScreen.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

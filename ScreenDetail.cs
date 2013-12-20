@@ -34,13 +34,9 @@ namespace WF.Player.iPhone
 		Engine engine;
 		UIObject obj;
 		Command com;
-		List<Command> commands;
-		List<Thing> targets;
+		WherigoCollection<Command> commands;
+		WherigoCollection<Thing> targets;
 		string[] properties = {"Name", "Description", "Media", "Commands"};
-
-		string taskCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    // UTF-8 2713
-		string taskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  // UTF-8 2717
-
 
 		#region Common Functions
 

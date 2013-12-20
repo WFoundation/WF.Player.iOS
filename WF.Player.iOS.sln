@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WF.Player.iOS", "WF.Player.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.iOS", "WF.Player.Core\Core\Core.iOS.csproj", "{DFD85D7E-251B-4D9E-BF44-2F054386F46F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant.iOS", "WF.Player.Core\Eluant\Eluant\Eluant.iOS.csproj", "{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -59,6 +61,26 @@ Global
 		{DFD85D7E-251B-4D9E-BF44-2F054386F46F}.Release|x64.Build.0 = Release|iPhoneSimulator
 		{DFD85D7E-251B-4D9E-BF44-2F054386F46F}.Release|x86.ActiveCfg = Release|iPhoneSimulator
 		{DFD85D7E-251B-4D9E-BF44-2F054386F46F}.Release|x86.Build.0 = Release|iPhoneSimulator
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Ad-Hoc|iPhone.ActiveCfg = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Ad-Hoc|iPhone.Build.0 = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.AppStore|iPhone.ActiveCfg = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.AppStore|iPhone.Build.0 = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|x64.Build.0 = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Debug|x86.Build.0 = Debug|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|iPhone.Build.0 = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|x64.ActiveCfg = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|x64.Build.0 = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0C12CBA-CA0D-46D0-8106-D17247C7EA0B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = WF.Player.iOS.csproj

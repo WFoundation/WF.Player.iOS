@@ -41,6 +41,14 @@ namespace WF.Player.iPhone
 		{
 			this.ctrl = ctrl;
 			this.engine = ctrl.Engine;
+
+			// OS specific details
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+			{
+				// Code that uses features from Xamarin.iOS 7.0
+				this.EdgesForExtendedLayout = UIRectEdge.None;
+				this.ExtendedLayoutIncludesOpaqueBars = false;
+			}
 		}
 
 		#endregion
@@ -60,10 +68,10 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			iconLocation = UIImage.FromFile ("Images/IconLocation.png");
-			iconYouSee = UIImage.FromFile ("Images/IconYouSee.png");
-			iconInventory = UIImage.FromFile ("Images/IconInventory.png");
-			iconTask = UIImage.FromFile ("Images/IconTask.png");
+			iconLocation = Images.IconLocation;
+			iconYouSee = Images.IconYouSee;
+			iconInventory = Images.IconInventory;
+			iconTask = Images.IconTask;
 
 			// Create source for table view
 			MainScreenSource mainListSource = new MainScreenSource(this, ctrl);
@@ -200,7 +208,7 @@ namespace WF.Player.iPhone
 
 			float height = 0;
 
-			foreach (UIView v in cell.Subviews)
+			foreach (UIView v in cell.ContentView)
 				if (v.Frame.Bottom > height)
 					height = v.Frame.Bottom;
 
@@ -268,9 +276,9 @@ namespace WF.Player.iPhone
 				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
 			};
 			
-			this.AddSubview(imageIcon);
-			this.AddSubview(textTitle);
-			this.AddSubview(textItems);
+			this.ContentView.AddSubview(imageIcon);
+			this.ContentView.AddSubview(textTitle);
+			this.ContentView.AddSubview(textItems);
 		}
 
 		#endregion

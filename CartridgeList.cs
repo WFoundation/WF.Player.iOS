@@ -47,6 +47,13 @@ namespace WF.Player.iPhone
 		{
 			this.appDelegate = app;
 
+			// OS specific details
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+			{
+				// Code that uses features from Xamarin.iOS 7.0
+				this.EdgesForExtendedLayout = UIRectEdge.None;
+			}
+
 			// Create source for table view
 			cartListSource = new CartridgeListSource();
 			cartListSource.OnSelect = OnSelect;
@@ -223,7 +230,8 @@ namespace WF.Player.iPhone
 
 			imagePoster = new UIImageView()
 			{
-				Frame = new Rectangle(10,10,48,48)
+				Frame = new Rectangle(10,10,48,48),
+				ContentMode = UIViewContentMode.ScaleAspectFit
 			};
 			
 			textTitle = new UILabel()

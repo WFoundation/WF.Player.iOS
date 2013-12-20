@@ -26,7 +26,6 @@
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
     <AssemblyName>Player</AssemblyName>
-    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -138,6 +137,7 @@
     <Compile Include="ScreenDetailiOS.cs" />
     <Compile Include="ScreenListiOS.cs" />
     <Compile Include="ScreenMainiOS.cs" />
+    <Compile Include="iOS\Settings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -145,6 +145,10 @@
     <Content Include="Images\IconLocation.png" />
     <Content Include="Images\IconTask.png" />
     <Content Include="Images\IconYouSee.png" />
+    <Content Include="Images\blueButton.png" />
+    <Content Include="Images\blueButton%402x.png" />
+    <Content Include="Images\blueButtonHighlight.png" />
+    <Content Include="Images\blueButtonHighlight%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="CartridgeDetail.xib" />
