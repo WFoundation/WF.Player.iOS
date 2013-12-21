@@ -1,6 +1,7 @@
 # Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
 [Bb]in/
 [Oo]bj/
+WF.Player.Core/
 
 # mstest test results
 TestResults
@@ -11,6 +12,7 @@ TestResults
 # User-specific files
 *.suo
 *.user
+*.userprefs
 *.sln.docstates
 
 # Build results
