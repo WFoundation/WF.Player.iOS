@@ -230,7 +230,7 @@ namespace WF.Player.iPhone
 
 			imagePoster = new UIImageView()
 			{
-				Frame = new Rectangle(10,10,48,48),
+				Frame = new Rectangle(10,10,48,64),
 				ContentMode = UIViewContentMode.ScaleAspectFit
 			};
 			

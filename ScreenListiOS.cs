@@ -35,7 +35,7 @@ namespace WF.Player.iPhone
 	public partial class ScreenList : UIViewController
 	{
 		ScreenListSource screenListSource;
-		
+
 		public UITableView Table;
 
 		#region Constructor
@@ -99,6 +99,7 @@ namespace WF.Player.iPhone
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear(animated);
+
 			this.NavigationController.SetNavigationBarHidden(false,false);
 
 			StartEvents ();
@@ -116,6 +117,14 @@ namespace WF.Player.iPhone
 		public override void DidRotate(UIInterfaceOrientation fromInterfaceOrientation) 
 		{
 			base.DidRotate(fromInterfaceOrientation);
+
+			// Check orientation
+			// UIInterfaceOrientation io = UIApplication.SharedApplication.StatusBarOrientation;
+			//
+			// if (io == 0 || io == UIInterfaceOrientation.Portrait || io == UIInterfaceOrientation.PortraitUpsideDown)
+			//   Orientation = "P";
+			// else
+			//   Orientation = "L";
 
 			Refresh (false);
 		}
@@ -166,7 +175,7 @@ namespace WF.Player.iPhone
 			if (cell == null || cell.HasIcon != owner.ShowIcons || cell.HasDirection != owner.ShowDirections) 
 			{  
 				// We have to allocate a cell 
-				cell = new ScreenListCell(owner.ShowIcons, owner.ShowDirections);
+				cell = new ScreenListCell(tableView.Frame.Width, owner.ShowIcons, owner.ShowDirections);
 			}
 			
 			cell.RefreshCell (owner, screen, ctrl.Engine, owner.Items[indexPath.Row]);
@@ -205,21 +214,21 @@ namespace WF.Player.iPhone
 		public bool HasIcon;
 		public bool HasDirection;
 
-		public ScreenListCell (bool showIcons, bool showDirections) : base ()
+		public ScreenListCell (float width, bool showIcons, bool showDirections) : base ()
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			CreateCell (showIcons, showDirections);
+			CreateCell (width, showIcons, showDirections);
 		}
 		
-		public ScreenListCell (IntPtr handle, bool showIcons, bool showDirections) : base (handle)
+		public ScreenListCell (IntPtr handle, float width, bool showIcons, bool showDirections) : base (handle)
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			CreateCell (showIcons, showDirections);
+			CreateCell (width, showIcons, showDirections);
 		}
 		
-		void CreateCell (bool showIcons, bool showDirections)
+		void CreateCell (float width, bool showIcons, bool showDirections)
 		{
-			float maxWidth = this.Bounds.Width - 20;
+			float maxWidth = width - 20;
 
 			if (showIcons) 
 			{
