@@ -160,4 +160,18 @@
   <ItemGroup>
     <InterfaceDefinition Include="CartridgeDetail.xib" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Images\greenButton.png" />
+    <BundleResource Include="Images\greenButton%402x.png" />
+    <BundleResource Include="Images\greenButtonHighlight.png" />
+    <BundleResource Include="Images\greenButtonHighlight%402x.png" />
+    <BundleResource Include="Images\orangeButton.png" />
+    <BundleResource Include="Images\orangeButton%402x.png" />
+    <BundleResource Include="Images\orangeButtonHighlight.png" />
+    <BundleResource Include="Images\orangeButtonHighlight%402x.png" />
+    <BundleResource Include="Images\blue.png" />
+    <BundleResource Include="Images\blue%402x.png" />
+    <BundleResource Include="Images\blueTop.png" />
+    <BundleResource Include="Images\blueTop%402x.png" />
+  </ItemGroup>
 </Project>

@@ -53,14 +53,14 @@ namespace WF.Player.iPhone
 				BarItemStore = null;
 			}
 
-			if (PagesView != null) {
-				PagesView.Dispose ();
-				PagesView = null;
-			}
-
 			if (PagesController != null) {
 				PagesController.Dispose ();
 				PagesController = null;
+			}
+
+			if (PagesView != null) {
+				PagesView.Dispose ();
+				PagesView = null;
 			}
 		}
 	}

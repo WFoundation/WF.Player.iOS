@@ -85,6 +85,10 @@ namespace WF.Player.iPhone
 			// Perform any additional setup after loading the view, typically from a nib.
 			PagesController.CurrentPage = 0;
 			PagesController.Pages = 3;
+			PagesController.ValueChanged += delegate(object sender, EventArgs e) {
+				var pageWidth = PagesView.Bounds.Width;
+				PagesView.ContentOffset = new PointF(pageWidth * PagesController.CurrentPage, 0.0f);
+			};
 
 			// Resize ScrollView
 			PagesView.ContentSize = new SizeF(PagesView.Bounds.Width * PagesController.Pages, PagesView.Bounds.Height - 6f);

@@ -54,7 +54,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 </scrollView>
                 <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" id="pyG-fG-gLd">
-                    <rect key="frame" x="0.0" y="407" width="320" height="37"/>
+                    <rect key="frame" x="0.0" y="405" width="320" height="37"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <color key="pageIndicatorTintColor" red="0.59999999999999998" green="0.78823529410000004" blue="0.94117647059999998" alpha="1" colorSpace="deviceRGB"/>
                     <color key="currentPageIndicatorTintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>

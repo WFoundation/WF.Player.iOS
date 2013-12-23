@@ -66,8 +66,10 @@ namespace WF.Player.iPhone
 			if (e.PropertyName.Equals("Container") && !(obj is Task) && ((Thing)obj).Container == null)
 				remove = true;
 
-			if (remove)
-				ctrl.RemoveScreen(ScreenType.Details);
+			if (remove) {
+				StopEvents ();
+				ctrl.RemoveScreen (ScreenType.Details);
+			}
 		}
 
 		#endregion

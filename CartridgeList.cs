@@ -208,25 +208,26 @@ namespace WF.Player.iPhone
 	
 	public partial class CartridgeListCell : UITableViewCell
 	{
-		private UILabel textTitle;
-		private UILabel textDetail;
-		private UILabel textVersion;
-		private UILabel textAuthor;
-		private UIImageView imagePoster;
+		float directWidth = 0;
+		UILabel textTitle;
+		UILabel textDetail;
+		UILabel textVersion;
+		UILabel textAuthor;
+		UIImageView imagePoster;
 
 		public CartridgeListCell () : base ()
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell ();
 		}
 		
 		public CartridgeListCell (IntPtr handle) : base (handle)
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell ();
 		}
 		
-		private void createCell ()
+		void CreateCell ()
 		{
 			float maxWidth = this.Bounds.Width - 2 * Values.Frame;
 
@@ -238,15 +239,15 @@ namespace WF.Player.iPhone
 			
 			textTitle = new UILabel()
 			{
-				Frame = new RectangleF(72,10,maxWidth - 140,120),
-				Font = UIFont.SystemFontOfSize (20),
+				Frame = new RectangleF(72,10,maxWidth - directWidth - 72,120),
+				Font = UIFont.BoldSystemFontOfSize(1.3f * UIFont.SystemFontSize),
 				Lines = 2
 			};
 			
 			textVersion = new UILabel()
 			{
-				Frame = new RectangleF(72,55,maxWidth - 140,40),
-				Font = UIFont.SystemFontOfSize(10),
+				Frame = new RectangleF(72,55,maxWidth - directWidth - 72,40),
+				Font = UIFont.SystemFontOfSize(UIFont.SystemFontSize),
 				TextAlignment = UITextAlignment.Left,
 				Lines = 1,
 				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
@@ -254,8 +255,8 @@ namespace WF.Player.iPhone
 
 			textAuthor = new UILabel()
 			{
-				Frame = new RectangleF(72,67,maxWidth - 140,40),
-				Font = UIFont.SystemFontOfSize(10),
+				Frame = new RectangleF(72,67,maxWidth - directWidth - 72,40),
+				Font = UIFont.SystemFontOfSize(UIFont.SystemFontSize),
 				TextAlignment = UITextAlignment.Left,
 				Lines = 1,
 				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
@@ -269,8 +270,11 @@ namespace WF.Player.iPhone
 
 		public void UpdateData (Cartridge cart)
 		{
+			float maxWidth = this.Bounds.Width - 2 * Values.Frame;
+			float maxHeight = 104.0f;
+			float height = Values.Frame;
+
 			textTitle.Text = cart.Name;
-			textTitle.SizeToFit();
 			if (!String.IsNullOrEmpty (cart.Version))
 				textVersion.Text += "Version " + cart.Version;
 			else
@@ -283,6 +287,21 @@ namespace WF.Player.iPhone
 				this.imagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Poster.Data));
 			else
 				this.imagePoster.Image = null;
+
+			// Do this, because of wrong values after rotating
+			textTitle.Frame = new RectangleF (72, Values.Frame, maxWidth - directWidth - 72, 999999);
+			textTitle.SizeToFit ();
+			textTitle.Frame = new RectangleF (72, height, maxWidth - directWidth - 72, textTitle.Bounds.Height);
+
+			textAuthor.Frame = new RectangleF (72, Values.Frame, maxWidth - directWidth - 72, 999999);
+			textAuthor.SizeToFit ();
+			textAuthor.Frame = new RectangleF (72, maxHeight - textAuthor.Bounds.Height - Values.Frame, maxWidth - directWidth - 72, textAuthor.Bounds.Height);
+
+			height += textAuthor.Frame.Location.Y - Values.Frame;
+
+			textVersion.Frame = new RectangleF (72, Values.Frame, maxWidth - directWidth - 72, 999999);
+			textVersion.SizeToFit ();
+			textVersion.Frame = new RectangleF (72, height - textVersion.Bounds.Height, maxWidth - directWidth - 72, textVersion.Bounds.Height);
 		}
 
 	}

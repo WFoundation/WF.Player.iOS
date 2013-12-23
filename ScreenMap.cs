@@ -94,7 +94,8 @@ namespace WF.Player.iPhone
 			else
 				loc = ((Character)thing).ObjectLocation;
 
-			SetCenterCoordinate(new CLLocationCoordinate2D(loc.Latitude,loc.Longitude),ctrl.ZoomLevel,false);
+			if (loc != null)
+				SetCenterCoordinate(new CLLocationCoordinate2D(loc.Latitude,loc.Longitude),ctrl.ZoomLevel,false);
 		}
 		
 		private MKMapView BuildMapView(bool showUserLocation)
