@@ -31,9 +31,7 @@ namespace WF.Player.iPhone
 	public partial class ScreenDetail
 	{
 		ScreenController ctrl;
-		Engine engine;
 		UIObject obj;
-		Command com;
 		WherigoCollection<Command> commands;
 		WherigoCollection<Thing> targets;
 		string[] properties = {"Name", "Description", "Media", "Commands"};

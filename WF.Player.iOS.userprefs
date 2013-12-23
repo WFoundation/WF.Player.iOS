@@ -1,13 +1,19 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="WF.Player.Core/Core/Live/Cartridges.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CartridgeDetail.cs">
     <Files>
-      <File FileName="ScreenController.cs" Line="263" Column="1" />
+      <File FileName="ScreenController.cs" Line="1" Column="1" />
       <File FileName="AppDelegate.cs" Line="1" Column="1" />
-      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
-      <File FileName="CartridgeList.cs" Line="1" Column="1" />
-      <File FileName="iOS/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="28" Column="7" />
+      <File FileName="CartridgeDetail.cs" Line="90" Column="113" />
+      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="1" Column="1" />
+      <File FileName="CartridgeList.cs" Line="272" Column="31" />
+      <File FileName="Main.cs" Line="34" Column="1" />
+      <File FileName="ScreenMap.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Formats/FileGWS.cs" Line="1" Column="1" />
+      <File FileName="CartridgeDetail.designer.cs" Line="1" Column="1" />
+      <File FileName="ScreenDetailiOS.cs" Line="1" Column="1" />
+      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
+      <File FileName="ScreenListiOS.cs" Line="132" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

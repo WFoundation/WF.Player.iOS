@@ -210,6 +210,8 @@ namespace WF.Player.iPhone
 	{
 		private UILabel textTitle;
 		private UILabel textDetail;
+		private UILabel textVersion;
+		private UILabel textAuthor;
 		private UIImageView imagePoster;
 
 		public CartridgeListCell () : base ()
@@ -226,7 +228,7 @@ namespace WF.Player.iPhone
 		
 		private void createCell ()
 		{
-			float maxWidth = this.Bounds.Width - 20;
+			float maxWidth = this.Bounds.Width - 2 * Values.Frame;
 
 			imagePoster = new UIImageView()
 			{
@@ -241,27 +243,42 @@ namespace WF.Player.iPhone
 				Lines = 2
 			};
 			
-			textDetail = new UILabel()
+			textVersion = new UILabel()
 			{
-				Frame = new RectangleF(72,62,maxWidth - 140,40),
+				Frame = new RectangleF(72,55,maxWidth - 140,40),
 				Font = UIFont.SystemFontOfSize(10),
 				TextAlignment = UITextAlignment.Left,
 				Lines = 1,
 				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
 			};
-			
+
+			textAuthor = new UILabel()
+			{
+				Frame = new RectangleF(72,67,maxWidth - 140,40),
+				Font = UIFont.SystemFontOfSize(10),
+				TextAlignment = UITextAlignment.Left,
+				Lines = 1,
+				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
+			};
+
 			this.AddSubview (imagePoster);
 			this.AddSubview (textTitle);
-			this.AddSubview (textDetail);
+			this.AddSubview (textVersion);
+			this.AddSubview (textAuthor);
 		}
 
 		public void UpdateData (Cartridge cart)
 		{
-			this.textTitle.Text = cart.Name;
-			this.textTitle.SizeToFit();
-			if (cart.AuthorName != null && !cart.AuthorName.Equals (String.Empty))
-				this.textDetail.Text = "by " + cart.AuthorName + " ";
-			this.textDetail.Text += "(Version " + cart.Version + ")";
+			textTitle.Text = cart.Name;
+			textTitle.SizeToFit();
+			if (!String.IsNullOrEmpty (cart.Version))
+				textVersion.Text += "Version " + cart.Version;
+			else
+				textVersion.Text = "";
+			if (!String.IsNullOrEmpty(cart.AuthorName) || !String.IsNullOrEmpty(cart.AuthorCompany))
+				textAuthor.Text = "By " + (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany);
+			else
+				textAuthor.Text = "";
 			if (cart.Poster != null)
 				this.imagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Poster.Data));
 			else

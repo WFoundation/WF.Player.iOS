@@ -4,6 +4,11 @@ using MonoTouch.UIKit;
 
 namespace WF.Player.iPhone
 {
+	public class Values
+	{
+		static public float Frame = 10.0f;
+	}
+
 	public class Colors
 	{
 		static public UIColor NavBar = UIColor.FromRGB(0.2118f,0.4588f,0.7333f);
