@@ -79,7 +79,7 @@ namespace WF.Player.iPhone
 //					commands.Add (c);
 			}
 			// Create view
-			CreateView ();
+			CreateViews ();
 		}
 
 		public override void ViewDidAppear (bool animated)
@@ -149,14 +149,14 @@ namespace WF.Player.iPhone
 
 		#region Private Functions
 
-		void CreateView ()
+		void CreateViews ()
 		{
 			// Remove all existing subviews
 			foreach (UIView view in this.View.Subviews) {
 				view.RemoveFromSuperview ();
 			}
 
-			float frame = 10;
+			float frame = Values.Frame;
 			float maxWidth = this.View.Bounds.Width - 2 * frame;
 			float maxHeight = this.View.Bounds.Height;
 
@@ -169,7 +169,7 @@ namespace WF.Player.iPhone
 
 			if (text == null)
 				text = new UILabel () {
-				BackgroundColor = UIColor.Clear, // UIColor.Red,
+					BackgroundColor = UIColor.Clear, // UIColor.Red,
 					Lines = 0,
 					LineBreakMode = UILineBreakMode.WordWrap,
 					TextAlignment = UITextAlignment.Center,
@@ -346,8 +346,8 @@ namespace WF.Player.iPhone
 				button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
 				button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
 				button.SetTitleColor(Colors.ButtonText,UIControlState.Normal);
-				button.SetBackgroundImage(Images.Button, UIControlState.Normal);
-				button.SetBackgroundImage(Images.ButtonHighlight, UIControlState.Highlighted);
+				button.SetBackgroundImage(Images.BlueButton, UIControlState.Normal);
+				button.SetBackgroundImage(Images.BlueButtonHighlight, UIControlState.Highlighted);
 				button.TouchUpInside += OnTouchUpInside;
 				buttons.Add (button);
 				buttonView.AddSubview (button);

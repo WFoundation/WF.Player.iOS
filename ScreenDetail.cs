@@ -31,9 +31,7 @@ namespace WF.Player.iPhone
 	public partial class ScreenDetail
 	{
 		ScreenController ctrl;
-		Engine engine;
 		UIObject obj;
-		Command com;
 		WherigoCollection<Command> commands;
 		WherigoCollection<Thing> targets;
 		string[] properties = {"Name", "Description", "Media", "Commands"};
@@ -68,8 +66,10 @@ namespace WF.Player.iPhone
 			if (e.PropertyName.Equals("Container") && !(obj is Task) && ((Thing)obj).Container == null)
 				remove = true;
 
-			if (remove)
-				ctrl.RemoveScreen(ScreenType.Details);
+			if (remove) {
+				StopEvents ();
+				ctrl.RemoveScreen (ScreenType.Details);
+			}
 		}
 
 		#endregion

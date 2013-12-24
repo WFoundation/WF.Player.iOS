@@ -55,13 +55,20 @@ namespace WF.Player.iPhone
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
+			// Set default color for NavigationButtons
+			UIBarButtonItem.Appearance.TintColor = Colors.NavBarButton;
+
 			// Create NavigationControlls
 			navCartSelect = new UINavigationController();
 
 			// Set color of NavigationBar and NavigationButtons (TintColor)
-			navCartSelect.NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
-			navCartSelect.NavigationBar.BackgroundColor = UIColor.FromRGB(0.2118f,0.4588f,0.7333f);  // 48/75/88
-			navCartSelect.NavigationBar.TintColor = UIColor.FromRGB(0.2000f,0.2824f,0.3725f);  // 48/79/92
+			// OS specific details
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+				navCartSelect.NavigationBar.SetBackgroundImage (Images.BlueTop, UIBarMetrics.Default);
+			else
+				navCartSelect.NavigationBar.SetBackgroundImage (Images.Blue, UIBarMetrics.Default);
+
+			navCartSelect.NavigationBar.TintColor = Colors.NavBarButton;
 
 			// Now create list for cartridges
 			viewCartSelect = new CartridgeList(this);
@@ -151,29 +158,13 @@ namespace WF.Player.iPhone
 		[CLSCompliantAttribute(false)]
 		public void CartStart(Cartridge cart)
 		{
-			UIApplication.SharedApplication.IdleTimerDisabled = true;
-
-			// Create main screen handler
-			screenCtrl = new ScreenController(this, cart);
-
-			// Set as new navigation controll
-			window.RootViewController = screenCtrl;
-
-			screenCtrl.Start ();
+			Start (cart, false);
 		}
 
 		[CLSCompliantAttribute(false)]
 		public void CartRestore(Cartridge cart)
 		{
-			UIApplication.SharedApplication.IdleTimerDisabled = true;
-
-			// Create main screen handler
-			screenCtrl = new ScreenController(this, cart);
-
-			// Set as new navigation controll
-			window.RootViewController = screenCtrl;
-			
-			screenCtrl.Restore();
+			Start (cart, true);
 		}
 
 		public void CartStop()
@@ -187,5 +178,20 @@ namespace WF.Player.iPhone
 
 			UIApplication.SharedApplication.IdleTimerDisabled = false;
 		}
+
+		#region Private Functions
+
+		void Start(Cartridge cart, Boolean restore = false)
+		{
+			UIApplication.SharedApplication.IdleTimerDisabled = true;
+
+			// Create main screen handler
+			screenCtrl = new ScreenController(this, cart, restore);
+
+			// Set as new navigation controll
+			window.RootViewController = screenCtrl;
+		}
+
+		#endregion
 	}
 }

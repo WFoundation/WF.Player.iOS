@@ -10,6 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>WF.Player.iPhone</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <StartupObject>WF.Player.iPhone.Application</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>True</DebugSymbols>
@@ -100,9 +101,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <CodesignKey>iPhone Distribution</CodesignKey>
-    <CodesignProvision>Automatic:AppStore</CodesignProvision>
+    <CodesignKey>iPhone Developer: Dirk Weltz (HN729T3H4S)</CodesignKey>
     <AssemblyName>iPhone</AssemblyName>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchArch>ARMv7</MtouchArch>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -138,6 +143,7 @@
     <Compile Include="ScreenListiOS.cs" />
     <Compile Include="ScreenMainiOS.cs" />
     <Compile Include="iOS\Settings.cs" />
+    <Compile Include="CheckLocation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -151,12 +157,26 @@
     <Content Include="Images\blueButtonHighlight%402x.png" />
   </ItemGroup>
   <ItemGroup>
-    <InterfaceDefinition Include="CartridgeDetail.xib" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="WF.Player.Core\Core\Core.iOS.csproj">
       <Project>{DFD85D7E-251B-4D9E-BF44-2F054386F46F}</Project>
       <Name>Core.iOS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="CartridgeDetail.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Images\greenButton.png" />
+    <BundleResource Include="Images\greenButton%402x.png" />
+    <BundleResource Include="Images\greenButtonHighlight.png" />
+    <BundleResource Include="Images\greenButtonHighlight%402x.png" />
+    <BundleResource Include="Images\orangeButton.png" />
+    <BundleResource Include="Images\orangeButton%402x.png" />
+    <BundleResource Include="Images\orangeButtonHighlight.png" />
+    <BundleResource Include="Images\orangeButtonHighlight%402x.png" />
+    <BundleResource Include="Images\blue.png" />
+    <BundleResource Include="Images\blue%402x.png" />
+    <BundleResource Include="Images\blueTop.png" />
+    <BundleResource Include="Images\blueTop%402x.png" />
   </ItemGroup>
 </Project>

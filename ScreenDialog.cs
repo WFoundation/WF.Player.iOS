@@ -293,8 +293,8 @@ namespace WF.Player.iPhone
 					button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
 					button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
 					button.SetTitleColor(Colors.ButtonText,UIControlState.Normal);
-					button.SetBackgroundImage(Images.Button, UIControlState.Normal);
-					button.SetBackgroundImage(Images.ButtonHighlight, UIControlState.Highlighted);
+					button.SetBackgroundImage(Images.BlueButton, UIControlState.Normal);
+					button.SetBackgroundImage(Images.BlueButtonHighlight, UIControlState.Highlighted);
 					button.SetTitle (s, UIControlState.Normal);
 					button.TouchUpInside += OnTouchUpInside;
 					buttonView.AddSubview (button);

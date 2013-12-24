@@ -34,48 +34,69 @@ namespace WF.Player.iPhone
 	[CLSCompliantAttribute(false)]
 	public class ScreenController : UINavigationController, IController
 	{
-		private AppDelegate appDelegate;
-		private AVAudioPlayer soundPlayer; 
-		private Cartridge cart;
-		private Engine engine;
-		private ScreenMain screenMain;
-		private ScreenList screenList;
-		private ScreenDetail screenDetail;
-		private CLLocationManager locationManager;
-		private bool animation = false;
-		private TextWriter logFile;
-		private LogLevel logLevel = LogLevel.Error;
-		private int zoomLevel = 16;
+		AppDelegate appDelegate;
+		AVAudioPlayer soundPlayer; 
+		Cartridge cart;
+		Engine engine;
+		CheckLocation checkLocation;
+		ScreenMain screenMain;
+		ScreenList screenList;
+		ScreenDetail screenDetail;
+		CLLocationManager locationManager;
+		bool animation = false;
+		bool restore = false;
+		TextWriter logFile;
+		LogLevel logLevel = LogLevel.Error;
+		int zoomLevel = 16;
 
 		public ScreenType activeScreen;
 		public UIObject activeObject;
 		public bool Transitioning;
 
-		public ScreenController (AppDelegate appDelegate, Cartridge cart)
+		public ScreenController (AppDelegate appDelegate, Cartridge cart, Boolean restore)
 		{
 			// Save for later use
 			this.appDelegate = appDelegate;
 			this.cart = cart;
+			this.restore = restore;
 
 			// Set color of NavigationBar and NavigationButtons (TintColor)
-			NavigationBar.SetBackgroundImage (new UIImage(), UIBarMetrics.Default);
-			NavigationBar.BackgroundColor = Colors.NavBar;
-			NavigationBar.TintColor = Colors.NavBarButton;
+			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
+				NavigationBar.SetBackgroundImage (Images.BlueTop, UIBarMetrics.Default);
+			else
+				NavigationBar.SetBackgroundImage (Images.Blue, UIBarMetrics.Default);
+			//NavigationBar.BackgroundColor = Colors.NavBar;
+			//			NavigationBar.TintColor = Colors.NavBarButton;
 
-						// Create Location Manager
-			locationManager = new CLLocationManager();
-			locationManager.Delegate = new LocationManagerDelegate(this);
-			//locationManager.DistanceFilter = 5;
-			locationManager.DistanceFilter = 2.0;
-			locationManager.HeadingFilter = 5.0;
+			// Create Location Manager
+			locationManager = new CLLocationManager ();
 			locationManager.DesiredAccuracy = CLLocation.AccurracyBestForNavigation;
-			if (CLLocationManager.LocationServicesEnabled)
-			{
+			if (CLLocationManager.LocationServicesEnabled) {
 				locationManager.StartUpdatingLocation ();
-				locationManager.StartUpdatingHeading ();
 			}
 
-				//locationManager.StartMonitoringSignificantLocationChanges();
+			// Now check, if location is accurate enough
+			checkLocation = new CheckLocation(this, locationManager);
+			PushViewController (checkLocation, true);
+		}
+
+		public void InitController(Boolean stop)
+		{
+			if (stop) {
+				// Check location was aborted with quit
+				locationManager.StopUpdatingLocation ();
+				DestroyEngine ();
+				appDelegate.CartStop ();
+
+				return;
+			}
+
+			locationManager.StopUpdatingLocation ();
+			locationManager.DistanceFilter = 2.0;
+			locationManager.HeadingFilter = 5.0;
+			locationManager.Delegate = new LocationManagerDelegate (this);
+			locationManager.StartUpdatingLocation ();
+			locationManager.StartUpdatingHeading ();
 
 			// Create Engine
 			CreateEngine (cart);
@@ -84,7 +105,7 @@ namespace WF.Player.iPhone
 			screenMain = new ScreenMain(this);
 
 			var leftBarButton = new UIBarButtonItem (@"Quit", UIBarButtonItemStyle.Plain, (sender, args) => {
-				quit ();
+				quit();
 			});
 			leftBarButton.TintColor = Colors.NavBarButton;
 			screenMain.NavigationItem.SetLeftBarButtonItem(leftBarButton, true);
@@ -97,10 +118,15 @@ namespace WF.Player.iPhone
 
 			Delegate = new ScreenControllerDelegate();
 
-			// ... and push it to the UINavigationController 
-			PushViewController (screenMain, animation);
+			// ... and push it to the UINavigationController while replacing the CheckLocation
+			SetViewControllers (new UIViewController[] { screenMain }, animation);
 
 			Title = cart.Name; 
+
+			if (restore)
+				Restore();
+			else
+				Start ();
 		}
 
 		public Cartridge Cartridge 
@@ -594,6 +620,8 @@ namespace WF.Player.iPhone
 
 		#endregion
 
+		#region Location Manager Delegate
+
 		/// <summary>
 		/// MonoTouch definition seemed to work without too much trouble
 		/// </summary>
@@ -629,9 +657,12 @@ namespace WF.Player.iPhone
 			public override void Failed (CLLocationManager manager, NSError error)
 			{
 				Console.WriteLine("Failed to find location");
-				base.Failed (manager, error);
+				// TODO: Do nothing, if there is no signal or start a timer, which says after a short time, that the signal is lost.
+				// base.Failed (manager, error);
 			}
 		}
+
+		#endregion
 
 		private class ScreenControllerDelegate : UINavigationControllerDelegate
 		{

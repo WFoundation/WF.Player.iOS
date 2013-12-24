@@ -208,25 +208,28 @@ namespace WF.Player.iPhone
 	
 	public partial class CartridgeListCell : UITableViewCell
 	{
-		private UILabel textTitle;
-		private UILabel textDetail;
-		private UIImageView imagePoster;
+		float directWidth = 0;
+		UILabel textTitle;
+		UILabel textDetail;
+		UILabel textVersion;
+		UILabel textAuthor;
+		UIImageView imagePoster;
 
 		public CartridgeListCell () : base ()
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell ();
 		}
 		
 		public CartridgeListCell (IntPtr handle) : base (handle)
 		{
 			this.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
-			createCell ();
+			CreateCell ();
 		}
 		
-		private void createCell ()
+		void CreateCell ()
 		{
-			float maxWidth = this.Bounds.Width - 20;
+			float maxWidth = this.Bounds.Width - 2 * Values.Frame;
 
 			imagePoster = new UIImageView()
 			{
@@ -236,36 +239,69 @@ namespace WF.Player.iPhone
 			
 			textTitle = new UILabel()
 			{
-				Frame = new RectangleF(72,10,maxWidth - 140,120),
-				Font = UIFont.SystemFontOfSize (20),
+				Frame = new RectangleF(72,10,maxWidth - directWidth - 72,120),
+				Font = UIFont.BoldSystemFontOfSize(1.3f * UIFont.SystemFontSize),
 				Lines = 2
 			};
 			
-			textDetail = new UILabel()
+			textVersion = new UILabel()
 			{
-				Frame = new RectangleF(72,62,maxWidth - 140,40),
-				Font = UIFont.SystemFontOfSize(10),
+				Frame = new RectangleF(72,55,maxWidth - directWidth - 72,40),
+				Font = UIFont.SystemFontOfSize(UIFont.SystemFontSize),
 				TextAlignment = UITextAlignment.Left,
 				Lines = 1,
 				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
 			};
-			
+
+			textAuthor = new UILabel()
+			{
+				Frame = new RectangleF(72,67,maxWidth - directWidth - 72,40),
+				Font = UIFont.SystemFontOfSize(UIFont.SystemFontSize),
+				TextAlignment = UITextAlignment.Left,
+				Lines = 1,
+				LineBreakMode = UILineBreakMode.TailTruncation | UILineBreakMode.WordWrap
+			};
+
 			this.AddSubview (imagePoster);
 			this.AddSubview (textTitle);
-			this.AddSubview (textDetail);
+			this.AddSubview (textVersion);
+			this.AddSubview (textAuthor);
 		}
 
 		public void UpdateData (Cartridge cart)
 		{
-			this.textTitle.Text = cart.Name;
-			this.textTitle.SizeToFit();
-			if (cart.AuthorName != null && !cart.AuthorName.Equals (String.Empty))
-				this.textDetail.Text = "by " + cart.AuthorName + " ";
-			this.textDetail.Text += "(Version " + cart.Version + ")";
+			float maxWidth = this.Bounds.Width - 2 * Values.Frame;
+			float maxHeight = 104.0f;
+			float height = Values.Frame;
+
+			textTitle.Text = cart.Name;
+			if (!String.IsNullOrEmpty (cart.Version))
+				textVersion.Text += "Version " + cart.Version;
+			else
+				textVersion.Text = "";
+			if (!String.IsNullOrEmpty(cart.AuthorName) || !String.IsNullOrEmpty(cart.AuthorCompany))
+				textAuthor.Text = "By " + (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany);
+			else
+				textAuthor.Text = "";
 			if (cart.Poster != null)
 				this.imagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Poster.Data));
 			else
 				this.imagePoster.Image = null;
+
+			// Do this, because of wrong values after rotating
+			textTitle.Frame = new RectangleF (72, Values.Frame, maxWidth - directWidth - 72, 999999);
+			textTitle.SizeToFit ();
+			textTitle.Frame = new RectangleF (72, height, maxWidth - directWidth - 72, textTitle.Bounds.Height);
+
+			textAuthor.Frame = new RectangleF (72, Values.Frame, maxWidth - directWidth - 72, 999999);
+			textAuthor.SizeToFit ();
+			textAuthor.Frame = new RectangleF (72, maxHeight - textAuthor.Bounds.Height - Values.Frame, maxWidth - directWidth - 72, textAuthor.Bounds.Height);
+
+			height += textAuthor.Frame.Location.Y - Values.Frame;
+
+			textVersion.Frame = new RectangleF (72, Values.Frame, maxWidth - directWidth - 72, 999999);
+			textVersion.SizeToFit ();
+			textVersion.Frame = new RectangleF (72, height - textVersion.Bounds.Height, maxWidth - directWidth - 72, textVersion.Bounds.Height);
 		}
 
 	}

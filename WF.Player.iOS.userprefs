@@ -1,13 +1,25 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="WF.Player.Core/Core/Live/Cartridges.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="AppStore|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Main.cs">
     <Files>
-      <File FileName="ScreenController.cs" Line="263" Column="1" />
-      <File FileName="AppDelegate.cs" Line="1" Column="1" />
-      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
+      <File FileName="ScreenController.cs" Line="32" Column="21" />
+      <File FileName="CheckLocation.cs" Line="1" Column="1" />
+      <File FileName="AppDelegate.cs" Line="58" Column="1" />
+      <File FileName="CartridgeDetail.cs" Line="107" Column="1" />
+      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="1" Column="1" />
       <File FileName="CartridgeList.cs" Line="1" Column="1" />
-      <File FileName="iOS/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="28" Column="7" />
+      <File FileName="Main.cs" Line="33" Column="43" />
+      <File FileName="ScreenMap.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Formats/FileGWS.cs" Line="1" Column="1" />
+      <File FileName="ScreenDetailiOS.cs" Line="1" Column="1" />
+      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
+      <File FileName="ScreenListiOS.cs" Line="1" Column="1" />
+      <File FileName="ScreenMainiOS.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="1" Column="1" />
+      <File FileName="ScreenDetail.cs" Line="70" Column="1" />
+      <File FileName="WF.Player.Core/Core/UIObject.cs" Line="1" Column="1" />
+      <File FileName="ScreenList.cs" Line="96" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
