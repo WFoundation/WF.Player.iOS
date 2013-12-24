@@ -55,6 +55,9 @@ namespace WF.Player.iPhone
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
 
+			// Set default color for NavigationButtons
+			UIBarButtonItem.Appearance.TintColor = Colors.NavBarButton;
+
 			// Create NavigationControlls
 			navCartSelect = new UINavigationController();
 
@@ -64,7 +67,8 @@ namespace WF.Player.iPhone
 				navCartSelect.NavigationBar.SetBackgroundImage (Images.BlueTop, UIBarMetrics.Default);
 			else
 				navCartSelect.NavigationBar.SetBackgroundImage (Images.Blue, UIBarMetrics.Default);
-			UIBarButtonItem.Appearance.TintColor = Colors.NavBarButton;
+
+			navCartSelect.NavigationBar.TintColor = Colors.NavBarButton;
 
 			// Now create list for cartridges
 			viewCartSelect = new CartridgeList(this);

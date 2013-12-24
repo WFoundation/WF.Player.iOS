@@ -1,30 +1,29 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ScreenDetail.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="AppStore|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Main.cs">
     <Files>
-      <File FileName="ScreenController.cs" Line="384" Column="1" />
-      <File FileName="CheckLocation.cs" Line="41" Column="16" />
-      <File FileName="AppDelegate.cs" Line="188" Column="21" />
-      <File FileName="CartridgeDetail.cs" Line="49" Column="1" />
+      <File FileName="ScreenController.cs" Line="32" Column="21" />
+      <File FileName="CheckLocation.cs" Line="1" Column="1" />
+      <File FileName="AppDelegate.cs" Line="58" Column="1" />
+      <File FileName="CartridgeDetail.cs" Line="107" Column="1" />
       <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="1" Column="1" />
-      <File FileName="CartridgeList.cs" Line="121" Column="1" />
-      <File FileName="Main.cs" Line="34" Column="1" />
-      <File FileName="ScreenMap.cs" Line="98" Column="5" />
+      <File FileName="CartridgeList.cs" Line="1" Column="1" />
+      <File FileName="Main.cs" Line="33" Column="43" />
+      <File FileName="ScreenMap.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Formats/FileGWS.cs" Line="1" Column="1" />
-      <File FileName="ScreenDetailiOS.cs" Line="325" Column="1" />
-      <File FileName="iOS/Settings.cs" Line="16" Column="56" />
-      <File FileName="ScreenListiOS.cs" Line="266" Column="55" />
+      <File FileName="ScreenDetailiOS.cs" Line="1" Column="1" />
+      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
+      <File FileName="ScreenListiOS.cs" Line="1" Column="1" />
       <File FileName="ScreenMainiOS.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1434" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="314" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="1" Column="1" />
       <File FileName="ScreenDetail.cs" Line="70" Column="1" />
-      <File FileName="WF.Player.Core/Core/UIObject.cs" Line="198" Column="1" />
+      <File FileName="WF.Player.Core/Core/UIObject.cs" Line="1" Column="1" />
+      <File FileName="ScreenList.cs" Line="96" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/Entwicklung/WF.Player.iOS/ScreenController.cs" line="384" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

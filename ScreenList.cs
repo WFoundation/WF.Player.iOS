@@ -93,7 +93,7 @@ namespace WF.Player.iPhone
 					}
 					break;
 				case ScreenType.Tasks:
-					header = "Task";
+					header = "Tasks";
 					foreach (UIObject item in engine.ActiveVisibleTasks)
 					{
 						ShowIcons |= item.Icon != null;

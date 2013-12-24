@@ -81,7 +81,7 @@ namespace WF.Player.iPhone
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
-			
+
 			// Perform any additional setup after loading the view, typically from a nib.
 			PagesController.CurrentPage = 0;
 			PagesController.Pages = 3;
@@ -278,7 +278,7 @@ namespace WF.Player.iPhone
 					textAuthor.Hidden = true;
 				else {
 					textAuthor.Hidden = false;
-					textAuthor.Text = "By " + (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany);
+					textAuthor.Text = "By " + (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? "\n" : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany);
 					size = textAuthor.SizeThatFits (new SizeF (maxWidth, 999999));
 					textAuthor.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
 					textAuthor.Frame = new RectangleF(Values.Frame, height, textAuthor.Bounds.Width, textAuthor.Bounds.Height);
