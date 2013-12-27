@@ -25,10 +25,11 @@ using MonoTouch.CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
+using GNU.Gettext;
 using WF.Player.Core;
 using WF.Player.Core.Live;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 
 	#region ItemScreen
@@ -38,12 +39,12 @@ namespace WF.Player.iPhone
 	{
 		CartridgeListSource cartListSource;
 		AppDelegate appDelegate;
-		
+
 		public UITableView Table;
 		public CartridgeDetail cartDetail;
 
 		
-		public CartridgeList (AppDelegate app) : base()
+		public CartridgeList (AppDelegate app, GettextResourceManager catalog) : base()
 		{
 			this.appDelegate = app;
 
@@ -82,7 +83,7 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			this.Title = "Cartridges";
+			this.Title = Strings.GetString("Cartridges");
 
 			// Set the table view to fit the width of the app.
 			Table.SizeToFit();
@@ -276,11 +277,12 @@ namespace WF.Player.iPhone
 
 			textTitle.Text = cart.Name;
 			if (!String.IsNullOrEmpty (cart.Version))
-				textVersion.Text += "Version " + cart.Version;
+				// GETTEXT: Version for cartridge list in one line
+				textVersion.Text += Strings.GetStringFmt("Version {0}", cart.Version);
 			else
 				textVersion.Text = "";
 			if (!String.IsNullOrEmpty(cart.AuthorName) || !String.IsNullOrEmpty(cart.AuthorCompany))
-				textAuthor.Text = "By " + (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany);
+				textAuthor.Text = Strings.GetStringFmt("By {0}", (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany));
 			else
 				textAuthor.Text = "";
 			if (cart.Poster != null)

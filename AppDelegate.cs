@@ -18,13 +18,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using GNU.Gettext;
 using WF.Player.Core;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	// The UIApplicationDelegate for the application. This class is responsible for launching the 
 	// User Interface of the application, as well as listening (and optionally responding) to 
@@ -38,6 +40,7 @@ namespace WF.Player.iPhone
 		UINavigationController navCartSelect;
 		CartridgeList viewCartSelect;
 		ScreenController screenCtrl;
+		GettextResourceManager catalog;
 
 		//
 		// This method is invoked when the application has loaded and is ready to run. In this 
@@ -51,6 +54,8 @@ namespace WF.Player.iPhone
 		{
 			// TODO: Delete
 			Console.WriteLine ("FinishedLaunching");
+
+			//			System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
 
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
@@ -71,7 +76,7 @@ namespace WF.Player.iPhone
 			navCartSelect.NavigationBar.TintColor = Colors.NavBarButton;
 
 			// Now create list for cartridges
-			viewCartSelect = new CartridgeList(this);
+			viewCartSelect = new CartridgeList(this, catalog);
 
 			// Add the cartridge view to the navigation controller
 			// (it'll be the top most screen)

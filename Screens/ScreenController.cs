@@ -29,7 +29,7 @@ using MonoTouch.AVFoundation;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	[CLSCompliantAttribute(false)]
 	public class ScreenController : UINavigationController, IController
@@ -104,13 +104,13 @@ namespace WF.Player.iPhone
 			// Create screenMain
 			screenMain = new ScreenMain(this);
 
-			var leftBarButton = new UIBarButtonItem (@"Quit", UIBarButtonItemStyle.Plain, (sender, args) => {
+			var leftBarButton = new UIBarButtonItem (Strings.GetString("Quit"), UIBarButtonItemStyle.Plain, (sender, args) => {
 				quit();
 			});
 			leftBarButton.TintColor = Colors.NavBarButton;
 			screenMain.NavigationItem.SetLeftBarButtonItem(leftBarButton, true);
 
-			var rightBarButton = new UIBarButtonItem (@"Menu", UIBarButtonItemStyle.Plain, (sender, args) => {
+			var rightBarButton = new UIBarButtonItem (Strings.GetString("Menu"), UIBarButtonItemStyle.Plain, (sender, args) => {
 				menu ();
 			});
 			rightBarButton.TintColor = Colors.NavBarButton;
@@ -493,11 +493,11 @@ namespace WF.Player.iPhone
 						PopViewControllerAnimated (animation);
 					// Create new ViewController
 					screenDetail = new ScreenDetail (this, activeObject);
-					screenDetail.NavigationItem.SetLeftBarButtonItem (new UIBarButtonItem (@"Back", UIBarButtonItemStyle.Plain, (sender, args) => {
+					screenDetail.NavigationItem.SetLeftBarButtonItem (new UIBarButtonItem (Strings.GetString("Back"), UIBarButtonItemStyle.Plain, (sender, args) => {
 						back ();
 					}), true);
 					if (activeObject is Zone || (activeObject is Thing && engine.VisibleObjects.Contains ((Thing)activeObject)))
-						screenDetail.NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (@"Map", UIBarButtonItemStyle.Plain, (sender, args) => {
+						screenDetail.NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
 							map ((Thing)activeObject);
 						}), true);
 					PushViewController (screenDetail, animation);
@@ -565,10 +565,10 @@ namespace WF.Player.iPhone
 		{
 			// Ask, if user wants to save game
 			var alert = new UIAlertView(); 
-			alert.Title = "Quit"; 
-			alert.Message = "Would you save before quit?"; 
-			alert.AddButton("Yes"); 
-			alert.AddButton("No"); 
+			alert.Title = Strings.GetString("Quit"); 
+			alert.Message = Strings.GetString("Would you save before quit?"); 
+			alert.AddButton(Strings.GetString("Yes")); 
+			alert.AddButton(Strings.GetString("No")); 
 			alert.Clicked += (sender, e) => { 
 				if (e.ButtonIndex == 0) 
 					engine.Save(new FileStream(cart.SaveFilename,FileMode.Create)); 
@@ -583,9 +583,9 @@ namespace WF.Player.iPhone
 		private void menu ()
 		{
 			UIActionSheet actionSheet = new UIActionSheet ();
-			actionSheet.AddButton("Save");
-			actionSheet.AddButton("About");
-			actionSheet.AddButton ("Cancel");
+			actionSheet.AddButton(Strings.GetString("Save"));
+			actionSheet.AddButton(Strings.GetString("About"));
+			actionSheet.AddButton (Strings.GetString("Cancel"));
 			actionSheet.DestructiveButtonIndex = 0;  // Red button
 			actionSheet.CancelButtonIndex = 2;       // Black button
 			actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
@@ -594,9 +594,9 @@ namespace WF.Player.iPhone
 				if (b.ButtonIndex == 1)
 				{
 					var alert = new UIAlertView(); 
-					alert.Title = "WF.Player.iPhone"; 
-					alert.Message = String.Format ("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz, Brice Clocher\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",0,Engine.CoreVersion); 
-					alert.AddButton("Ok"); 
+					alert.Title = Strings.GetString("WF.Player.iOS"); 
+					alert.Message = Strings.GetStringFmt("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz, Brice Clocher\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",0,Engine.CoreVersion); 
+					alert.AddButton(Strings.GetString("Ok")); 
 //					alert.Clicked += (sender, e) => {
 //					};
 					alert.Show();
@@ -613,7 +613,7 @@ namespace WF.Player.iPhone
 		private void map (Thing thing)
 		{
 			ScreenMap mapScreen = new ScreenMap(this,thing);
-			mapScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
+			mapScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
 			mapScreen.Title = thing.Name;
 			PushViewController (mapScreen,animation);
 		}

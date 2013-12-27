@@ -26,7 +26,7 @@ using MonoTouch.ObjCRuntime;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 
 	#region MainScreen
@@ -263,7 +263,7 @@ namespace WF.Player.iPhone
 			
 			textTitle = new UILabel()
 			{
-				Frame = new RectangleF(88,10,maxWidth - 0,26),
+				Frame = new RectangleF(88,10,maxWidth - 0,30),
 				Font = UIFont.SystemFontOfSize (24)
 			};
 			

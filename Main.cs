@@ -22,7 +22,7 @@ using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	public class Application
 	{
