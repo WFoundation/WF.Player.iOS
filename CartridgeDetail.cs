@@ -28,7 +28,7 @@ using MonoTouch.CoreLocation;
 using MonoTouch.CoreGraphics;
 using WF.Player.Core;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	[CLSCompliantAttribute(false)]
 	public partial class CartridgeDetail : UIViewController
@@ -268,7 +268,7 @@ namespace WF.Player.iPhone
 					textVersion.Hidden = true;
 				else {
 					textVersion.Hidden = false;
-					textVersion.Text = "Version " + cart.Version;
+					textVersion.Text = Strings.GetStringFmt("Version {0}", cart.Version);
 					size = textVersion.SizeThatFits (new SizeF (maxWidth, 999999));
 					textVersion.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
 					textVersion.Frame = new RectangleF(Values.Frame, height, textVersion.Bounds.Width, textVersion.Bounds.Height);
@@ -278,7 +278,7 @@ namespace WF.Player.iPhone
 					textAuthor.Hidden = true;
 				else {
 					textAuthor.Hidden = false;
-					textAuthor.Text = "By " + (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? "\n" : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany);
+					textAuthor.Text = Strings.GetStringFmt("By {0}", (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? "\n" : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany));
 					size = textAuthor.SizeThatFits (new SizeF (maxWidth, 999999));
 					textAuthor.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
 					textAuthor.Frame = new RectangleF(Values.Frame, height, textAuthor.Bounds.Width, textAuthor.Bounds.Height);
@@ -294,45 +294,47 @@ namespace WF.Player.iPhone
 				List<string> dataValue = new List<string> ();
 
 				if (!String.IsNullOrEmpty (cart.AuthorName)) {
-					dataKey.Add ("Author");
+					dataKey.Add (Strings.GetString("Author"));
 					dataValue.Add (cart.AuthorName);
 				}
 
 				if (!String.IsNullOrEmpty (cart.AuthorCompany)) {
-					dataKey.Add ("Company");
+					dataKey.Add (Strings.GetString("Company"));
 					dataValue.Add (cart.AuthorCompany);
 				}
 
 				if (!String.IsNullOrEmpty (cart.Version)) {
-					dataKey.Add ("Version");
+					dataKey.Add (Strings.GetString("Version"));
 					dataValue.Add (cart.Version);
 				}
 
 				if (!String.IsNullOrEmpty (cart.Device)) {
-					dataKey.Add ("Designed for");
+					dataKey.Add (Strings.GetString("Designed for"));
 					dataValue.Add (cart.Device);
 				}
 
 				if (cart.CreateDate != null) {
-					dataKey.Add ("Create Date");
+					dataKey.Add (Strings.GetString("Create Date"));
 					dataValue.Add (cart.CreateDate.ToString("d", CultureInfo.CurrentCulture));
 				}
 
 				if (cart.DateLastUpdated != null) {
-					dataKey.Add ("Last Update");
+					dataKey.Add (Strings.GetString("Last Update"));
 					dataValue.Add (((DateTime)cart.DateLastUpdated).ToString("d", CultureInfo.CurrentCulture));
 				}
 
 				if (cart.DateAdded != null) {
-					dataKey.Add ("Upload Date");
+					dataKey.Add (Strings.GetString("Upload Date"));
 					dataValue.Add (((DateTime)cart.DateAdded).ToString("d", CultureInfo.CurrentCulture));
 				}
 
 				page3.Source = new CartridgeDetailSource (dataKey, dataValue);
 			}
 
-			BarItemStore.Title = File.Exists (cart.Filename) ? "Delete" : "Save";
+			BarItemStore.Title = File.Exists (cart.Filename) ? Strings.GetString("Delete") : Strings.GetString("Save");
+			BarItemRestore.Title = Strings.GetString("Restore");
 			BarItemRestore.Enabled = File.Exists (cart.SaveFilename);
+			BarItemStart.Title = Strings.GetString ("Start");
 			BarItemStart.Enabled = File.Exists (cart.Filename);
 		}
 

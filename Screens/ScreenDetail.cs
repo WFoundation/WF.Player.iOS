@@ -24,7 +24,7 @@ using System.Text;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	#region ScreenDetail
 

@@ -24,7 +24,7 @@ using System.Text;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	/// <summary>
 	/// Screen main fragment.
@@ -35,9 +35,6 @@ namespace WF.Player.iPhone
 		ScreenController ctrl;
 
 		string[] properties = {"Name", "Visible"};
-
-		string taskCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    // UTF-8 2713
-		string taskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  // UTF-8 2717
 
 		object iconLocation;
 		object iconYouSee;
@@ -149,41 +146,41 @@ namespace WF.Player.iPhone
 				switch (position) 
 				{
 					case 0:
-					header = "Locations";
-					empty = engine.Cartridge.EmptyZonesListText;
-					image = iconLocation;
-					foreach (UIObject o in engine.ActiveVisibleZones) 
-					{
-						itemsList.Add(o.Name);
-					}
-					break;
+						header = Strings.GetString("Locations");
+						empty = engine.Cartridge.EmptyZonesListText;
+						image = iconLocation;
+						foreach (UIObject o in engine.ActiveVisibleZones) 
+						{
+							itemsList.Add(o.Name);
+						}
+						break;
 					case 1:
-					header = "You see";
-					empty = engine.Cartridge.EmptyYouSeeListText;
-					image = iconYouSee;
-					foreach (UIObject o in engine.VisibleObjects) 
-					{
-						itemsList.Add(o.Name);
-					}
-					break;
+						header = Strings.GetString("You see");
+						empty = engine.Cartridge.EmptyYouSeeListText;
+						image = iconYouSee;
+						foreach (UIObject o in engine.VisibleObjects) 
+						{
+							itemsList.Add(o.Name);
+						}
+						break;
 					case 2:
-					header = "Inventory";
-					empty = engine.Cartridge.EmptyInventoryListText;
-					image = iconInventory;
-					foreach (UIObject o in engine.VisibleInventory) 
-					{
-						itemsList.Add(o.Name);
-					}
-					break;
+						header = Strings.GetString("Inventory");
+						empty = engine.Cartridge.EmptyInventoryListText;
+						image = iconInventory;
+						foreach (UIObject o in engine.VisibleInventory) 
+						{
+							itemsList.Add(o.Name);
+						}
+						break;
 					case 3:
-					header = "Tasks";
-					empty = engine.Cartridge.EmptyTasksListText;
-					image = iconTask;
-					foreach (UIObject o in engine.ActiveVisibleTasks) 
-					{
-						itemsList.Add((((Task)o).Complete ? (((Task)o).CorrectState == TaskCorrectness.NotCorrect ? taskNotCorrect : taskCorrect) + " " : "") + o.Name);
-					}
-					break;
+						header = Strings.GetString("Tasks");
+						empty = engine.Cartridge.EmptyTasksListText;
+						image = iconTask;
+						foreach (UIObject o in engine.ActiveVisibleTasks) 
+						{
+						itemsList.Add((((Task)o).Complete ? (((Task)o).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + o.Name);
+						}
+						break;
 				}
 
 				header = String.Format("{0} [{1}]", header, itemsList.Count);

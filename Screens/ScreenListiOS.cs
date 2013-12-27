@@ -27,7 +27,7 @@ using MonoTouch.UIKit;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 
 	#region ScreenList
@@ -74,7 +74,7 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(@"Back",UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(screen); }), false);
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(screen); }), false);
 			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
 
 			// Create table view
@@ -301,7 +301,7 @@ namespace WF.Player.iPhone
 						imageDirection.Hidden = false;
 						imageDirection.Image = drawCenter ();
 						textDistance.Hidden = false;
-						textDistance.Text = "Inside";
+						textDistance.Text = Strings.GetString("Inside");
 					} else {
 						if (((Thing)obj).VectorFromPlayer != null) {
 							imageDirection.Hidden = false;

@@ -26,7 +26,7 @@ using MonoTouch.CoreLocation;
 using MonoTouch.CoreGraphics;
 using WF.Player.Core;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	public class ScreenMap : UIViewController
 	{

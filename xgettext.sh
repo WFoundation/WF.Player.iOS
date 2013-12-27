@@ -1,0 +1,2 @@
+/Library/Frameworks/Mono.framework/Versions//3.2.5//bin/xgettext --output=./de/de.po --from-code=utf-8 --join-existing --add-comments=TRANSLATION -k -kGetString -kGetStringFmt -kGetPluralString -kGetPluralStringFmt -kGetParticularString -kGetParticularPluralString ./*.cs
+/Library/Frameworks/Mono.framework/Versions//3.2.5//bin/xgettext --output=./de/de.po --from-code=utf-8 --join-existing --add-comments=TRANSLATION -k -kGetString -kGetStringFmt -kGetPluralString -kGetPluralStringFmt -kGetParticularString -kGetParticularPluralString ./Screens/*.cs

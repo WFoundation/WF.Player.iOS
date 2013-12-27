@@ -1,8 +1,9 @@
-﻿﻿﻿using System;
+﻿using System;
 using System.Text;
 using MonoTouch.UIKit;
+using GNU.Gettext;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	public class Values
 	{
@@ -34,11 +35,43 @@ namespace WF.Player.iPhone
 		static public UIImage GreenButtonHighlight = UIImage.FromFile ("Images/greenButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
 	}
 
-	public class Strings
+	public sealed class Strings
 	{
-		static public string TaskCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    // UTF-8 2713
-		static public string TaskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  // UTF-8 2717
-		static public string Infinite = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E } );  // UTF-8 221E
+		static GettextResourceManager catalog = new GettextResourceManager("WF.Player.iOS");
+
+		public static string TaskCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    	// UTF-8 2713
+		public static string TaskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  	// UTF-8 2717
+		public static string Infinite = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E } );  		// UTF-8 221E
+
+		public static string GetString(string text)
+		{
+			return catalog.GetString (text);
+		}
+
+		public static string GetStringFmt(string text, params object[] args)
+		{
+			return String.Format(catalog.GetString(text), args);
+		}
+
+		public static string GetPluralString(string singular, string plural, long n)
+		{
+			return catalog.GetPluralString(singular, plural, n);
+		}
+
+		public static string GetPluralStringFmt(string singular, string plural, long n, params object[] args)
+		{
+			return String.Format(catalog.GetPluralString(singular, plural, n), args);
+		}
+
+		public static string GetParticularString(string context, string text)
+		{
+			return catalog.GetParticularString(context, text);
+		}
+
+		public static string GetParticularPluralString(string context, string singular, string plural, long n)
+		{
+			return catalog.GetParticularPluralString(context, singular, plural, n);
+		}
 	}
 }
 

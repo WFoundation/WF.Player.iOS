@@ -25,7 +25,7 @@ using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
 using WF.Player.Core;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 
 	public partial class ScreenDetail : UIViewController
@@ -290,7 +290,7 @@ namespace WF.Player.iPhone
 				}
 				else
 					// Show empty text
-					buttons[0].SetTitle ("Ok", UIControlState.Normal);
+					buttons[0].SetTitle (Strings.GetString("Ok"), UIControlState.Normal);
 
 				buttonView.Hidden = num == 0;
 			}

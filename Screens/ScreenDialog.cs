@@ -25,7 +25,7 @@ using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
 using WF.Player.Core;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	
 	public class ScreenDialog : UIViewController
@@ -72,7 +72,7 @@ namespace WF.Player.iPhone
 			this.text = input.Text;
 			this.image = input.Image;
 			if (input.InputType == InputType.Text)
-				buttons.Add ("Ok");
+				buttons.Add (Strings.GetString("Ok"));
 			if (input.InputType == InputType.MultipleChoice)
 				foreach (string s in input.Choices)
 					buttons.Add (s);

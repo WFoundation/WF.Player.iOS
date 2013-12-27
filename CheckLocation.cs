@@ -5,7 +5,7 @@ using MonoTouch.CoreLocation;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	[CLSCompliantAttribute(false)]
 	public class CheckLocation : UIViewController
@@ -38,9 +38,9 @@ namespace WF.Player.iPhone
 			base.ViewDidLoad ();
 
 			// Perform any additional setup after loading the view, typically from a nib.
-			Title = "GPS Check";
+			Title = Strings.GetString("GPS Check");
 
-			var leftBarButton = new UIBarButtonItem (@"Quit", UIBarButtonItemStyle.Plain, (sender, args) => {
+			var leftBarButton = new UIBarButtonItem (Strings.GetString("Quit"), UIBarButtonItemStyle.Plain, (sender, args) => {
 				quit ();
 			});
 			leftBarButton.TintColor = Colors.NavBarButton;
@@ -61,7 +61,7 @@ namespace WF.Player.iPhone
 			View.BackgroundColor = UIColor.White;
 
 			textDescription = new UILabel () {
-				Text = "For much fun with the cartridge, you should wait for a good accuracy of your GPS signal.",
+				Text = Strings.GetString("For much fun with the cartridge, you should wait for a good accuracy of your GPS signal."),
 				Frame = new RectangleF (Values.Frame, Values.Frame, View.Bounds.Width - 2f * Values.Frame, 999999),
 				BackgroundColor = UIColor.Clear,
 				Lines = 0,
@@ -70,7 +70,7 @@ namespace WF.Player.iPhone
 			};
 
 			textCoordinates = new UILabel () {
-				Text = "Current Coordinates\nN 00° 00.000   E 000° 00.000",
+				Text = Strings.GetStringFmt("Current Coordinates\n{0}", "N 00° 00.000   E 000° 00.000"),
 				Frame = new RectangleF (Values.Frame, Values.Frame, View.Bounds.Width - 2f * Values.Frame, 999999),
 				BackgroundColor = UIColor.Clear,
 				Lines = 2,
@@ -79,7 +79,7 @@ namespace WF.Player.iPhone
 			};
 
 			textAccuracy = new UILabel () {
-				Text = "Current Accuracy\n" + Strings.Infinite + " m",
+				Text = Strings.GetStringFmt("Current Accuracy\n{0} m", Strings.Infinite),
 				Frame = new RectangleF (Values.Frame, Values.Frame, View.Bounds.Width - 2f * Values.Frame, 999999),
 				BackgroundColor = UIColor.Clear,
 				Lines = 2,
@@ -87,11 +87,11 @@ namespace WF.Player.iPhone
 				TextAlignment = UITextAlignment.Center
 			};
 
-			formatAccuracy = "Current Accuracy\n{0:0} m";
+			formatAccuracy = Strings.GetString("Current Accuracy\n{0} m");
 
 			button = UIButton.FromType (UIButtonType.RoundedRect);
 			button.Frame = new RectangleF (Values.Frame, View.Bounds.Height - Values.ButtonHeight - Values.Frame, View.Bounds.Width - 2f * Values.Frame, Values.ButtonHeight);
-			button.SetTitle("Start anyway",UIControlState.Normal);
+			button.SetTitle(Strings.GetString("Start anyway"),UIControlState.Normal);
 			button.SetTitleColor(Colors.ButtonText,UIControlState.Normal);
 			button.HorizontalAlignment = UIControlContentHorizontalAlignment.Center;
 			button.AutoresizingMask = UIViewAutoresizing.FlexibleTopMargin;
@@ -112,14 +112,14 @@ namespace WF.Player.iPhone
 		public void Refresh(CLLocation loc)
 		{
 			if (loc != null) {
-				textCoordinates.Text = "Current Coordinates\n" + coordinatesToString (loc.Coordinate.Latitude, loc.Coordinate.Longitude);
-				textAccuracy.Text = String.Format(formatAccuracy,loc.HorizontalAccuracy);
+				textCoordinates.Text = Strings.GetStringFmt("Current Coordinates\n{0}", coordinatesToString (loc.Coordinate.Latitude, loc.Coordinate.Longitude));
+				textAccuracy.Text = String.Format(formatAccuracy,Convert.ToInt32(Math.Floor(loc.HorizontalAccuracy)));
 				if (loc.HorizontalAccuracy > 20.0) {
-					button.SetTitle ("Start anyway",UIControlState.Normal);
+					button.SetTitle (Strings.GetString("Start anyway"),UIControlState.Normal);
 					button.SetBackgroundImage(Images.OrangeButton, UIControlState.Normal);
 					button.SetBackgroundImage(Images.OrangeButtonHighlight, UIControlState.Highlighted);
 				} else {
-					button.SetTitle ("Start",UIControlState.Normal);
+					button.SetTitle (Strings.GetString("Start"),UIControlState.Normal);
 					button.SetBackgroundImage(Images.GreenButton, UIControlState.Normal);
 					button.SetBackgroundImage(Images.GreenButtonHighlight, UIControlState.Highlighted);
 				}
@@ -172,8 +172,8 @@ namespace WF.Player.iPhone
 			double latDecimalMin;
 			double lonDecimalMin;
 
-			latDirect = lat > 0 ? "N" : "S";
-			lonDirect = lon > 0 ? "E" : "W";
+			latDirect = lat > 0 ? Strings.GetString("N") : Strings.GetString("S");
+			lonDirect = lon > 0 ? Strings.GetString("E") : Strings.GetString("W");
 
 			latDegrees = Convert.ToInt32 (Math.Floor(lat));
 			lonDegrees = Convert.ToInt32 (Math.Floor(lon));
@@ -187,7 +187,7 @@ namespace WF.Player.iPhone
 			latDecimalMin = Math.Round((lat - latDegrees) * 60.0, 3);
 			lonDecimalMin = Math.Round((lon - lonDegrees) * 60.0, 3);
 
-			return String.Format("{0} {1:00}° {2:00.000}   {3} {4:000}° {5:00.000}", new object[] {latDirect, latDegrees, latDecimalMin, lonDirect, lonDegrees, lonDecimalMin});
+			return String.Format("{0} {1:00}° {2:00.000}'   {3} {4:000}° {5:00.000}'", new object[] {latDirect, latDegrees, latDecimalMin, lonDirect, lonDegrees, lonDecimalMin});
 		}
 
 		#endregion

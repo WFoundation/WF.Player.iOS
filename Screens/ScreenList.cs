@@ -24,7 +24,7 @@ using System.Text;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	public partial class ScreenList
 	{
@@ -67,7 +67,7 @@ namespace WF.Player.iPhone
 			switch (screen) 
 			{
 				case ScreenType.Locations:
-					header = "Locations";
+					header = Strings.GetString("Locations");
 					ShowDirections = true;
 					foreach (UIObject item in engine.ActiveVisibleZones) 
 					{
@@ -76,7 +76,7 @@ namespace WF.Player.iPhone
 					}
 					break;
 				case ScreenType.Items:
-					header = "You see";
+					header = Strings.GetString("You see");
 					ShowDirections = true;
 					foreach (UIObject item in engine.VisibleObjects)
 					{
@@ -85,7 +85,7 @@ namespace WF.Player.iPhone
 					}
 					break;
 				case ScreenType.Inventory:
-					header = "Inventory";
+					header = Strings.GetString("Inventory");
 					foreach (UIObject item in engine.VisibleInventory)
 					{
 						ShowIcons |= item.Icon != null;
@@ -93,7 +93,7 @@ namespace WF.Player.iPhone
 					}
 					break;
 				case ScreenType.Tasks:
-					header = "Tasks";
+					header = Strings.GetString("Tasks");
 					foreach (UIObject item in engine.ActiveVisibleTasks)
 					{
 						ShowIcons |= item.Icon != null;

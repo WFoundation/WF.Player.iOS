@@ -7,7 +7,7 @@
 using MonoTouch.Foundation;
 using System.CodeDom.Compiler;
 
-namespace WF.Player.iPhone
+namespace WF.Player.iOS
 {
 	[Register ("CartridgeDetail")]
 	partial class CartridgeDetail

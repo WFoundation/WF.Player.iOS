@@ -1,29 +1,23 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="AppStore|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Main.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CartridgeDetail.cs">
     <Files>
-      <File FileName="ScreenController.cs" Line="32" Column="21" />
-      <File FileName="CheckLocation.cs" Line="1" Column="1" />
-      <File FileName="AppDelegate.cs" Line="58" Column="1" />
-      <File FileName="CartridgeDetail.cs" Line="107" Column="1" />
-      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="1" Column="1" />
+      <File FileName="AppDelegate.cs" Line="29" Column="24" />
       <File FileName="CartridgeList.cs" Line="1" Column="1" />
-      <File FileName="Main.cs" Line="33" Column="43" />
-      <File FileName="ScreenMap.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Formats/FileGWS.cs" Line="1" Column="1" />
-      <File FileName="ScreenDetailiOS.cs" Line="1" Column="1" />
       <File FileName="iOS/Settings.cs" Line="1" Column="1" />
-      <File FileName="ScreenListiOS.cs" Line="1" Column="1" />
-      <File FileName="ScreenMainiOS.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="1" Column="1" />
-      <File FileName="ScreenDetail.cs" Line="70" Column="1" />
-      <File FileName="WF.Player.Core/Core/UIObject.cs" Line="1" Column="1" />
-      <File FileName="ScreenList.cs" Line="96" Column="6" />
+      <File FileName="CheckLocation.cs" Line="116" Column="105" />
+      <File FileName="CartridgeDetail.cs" Line="337" Column="53" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Entwicklung/WF.Player.iOS/GNU.Gettext/intl.cs" line="6" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
+    <IPhoneTestFlightSettings_27CRelease ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="d8fc2051-04bd-4612-b83f-19786b749aab" ReleaseNotes="Erste Version für Betatester.&#xA;&#xA;Es ist noch nicht alles perfekt, aber einen ersten Blick ist es auf alle Fälle wert. Ich wünsche viel Spaß. Und gerne höre ich von Euren Erfahrungen.&#xA;&#xA;Viele Grüße&#xA;Dirk (Charlenni)&#xA;&#xA;First version for betatester.&#xA;&#xA;Not all perfect, but worth a first look. Enjoy it. And if you find a bug, please send me an e-mail.&#xA;&#xA;Best regards&#xA;Dirk (Charlenni)" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Die erste Version für Betatester, sicher nicht perfekt, aber ein Anfang.&#xA;&#xA;Einfach mal anscheune und ausprobieren, ob etwas gravierend unklar ist oder umgehender Bearbeitung bedarf. Das meiste sollte funktionieren, aber es kann noch immer zu Abstürzen kommen.&#xA;&#xA;Ich bin für jede Rückmeldung dankbar.&#xA;&#xA;Vielen Dank und viele Grüße&#xA;Dirk (Charlenni)&#xA;&#xA;This is the first version for betatester. Not perfect, but a begining.&#xA;&#xA;Test and check it, if it is so ok (handling and so on). You could get some crashes, so be aware.&#xA;&#xA;Any suggestions?&#xA;&#xA;Thank you and best wishes&#xA;Dirk (Charlenni)" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+    <MonoDevelop.MacDev.AppleDevelopmentTeam DeveloperId="568GFG8P5M" TeamId="CE232943X3" />
+  </MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
 </Properties>
