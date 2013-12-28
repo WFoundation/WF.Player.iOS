@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
+using Google.Maps;
 using GNU.Gettext;
 using WF.Player.Core;
 
@@ -42,6 +43,9 @@ namespace WF.Player.iOS
 		ScreenController screenCtrl;
 		NSObject observerSettings;
 
+		// Google Maps API Key for iOS
+		const string MapsApiKey = "AIzaSyCgldJMI1uFzqYWU7kEjRz_-kVkDRZxBN0";
+
 		//
 		// This method is invoked when the application has loaded and is ready to run. In this 
 		// method you should instantiate the window, load the UI into it and then make the window
@@ -58,6 +62,9 @@ namespace WF.Player.iOS
 			//			System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
 			observerSettings = NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"NSUserDefaultsDidChangeNotification", DefaultsChanged);
 			DefaultsChanged (null);
+
+			// Set Google Maps API Key
+			MapServices.ProvideAPIKey (MapsApiKey);
 
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);

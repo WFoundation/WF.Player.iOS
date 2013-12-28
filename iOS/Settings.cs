@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Text;
 using MonoTouch.UIKit;
 using GNU.Gettext;
@@ -16,6 +16,8 @@ namespace WF.Player.iOS
 		static public UIColor NavBar = UIColor.FromRGB(0.2118f,0.4588f,0.7333f);
 		static public UIColor NavBarButton = UIColor.FromRGB(0.1569f,0.3608f,0.5961f);
 		static public UIColor ButtonText = UIColor.FromRGB(1.0f,1.0f,1.0f);
+		public static UIColor ZoneFill = UIColor.FromRGBA (1.0f, 0, 0, 0.1f);
+		public static UIColor ZoneStroke = UIColor.FromRGBA (1.0f, 0, 0, 0.3f);
 	}
 
 	public class Images
@@ -24,6 +26,8 @@ namespace WF.Player.iOS
 		static public UIImage IconYouSee = UIImage.FromFile ("Images/IconYouSee.png");
 		static public UIImage IconInventory = UIImage.FromFile ("Images/IconInventory.png");
 		static public UIImage IconTask = UIImage.FromFile ("Images/IconTask.png");
+
+		public static UIImage IconMapZone = UIImage.FromFile ("Images/glow-marker.png");
 
 		static public UIImage Blue = UIImage.FromFile ("Images/blue.png").StretchableImage(0, 0);
 		static public UIImage BlueTop = UIImage.FromFile ("Images/blueTop.png").StretchableImage(0, 0);

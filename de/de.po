@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: WF.Player.iOS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-27 14:03+0100\n"
-"PO-Revision-Date: 2013-12-27 14:05+0100\n"
+"PO-Revision-Date: 2013-12-28 20:53+0100\n"
 "Last-Translator: Dirk Weltz <web@weltz-online.de>\n"
 "Language-Team: German <web@weltz-online.de>\n"
 "Language: de\n"
@@ -235,61 +235,21 @@ msgid "Inside"
 msgstr "Innerhalb"
 
 #: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Cartridge.cs:365
-msgid "EmptyInventoryListText"
-msgstr ""
+msgid "No items"
+msgstr "Keine Dinge"
 
 #: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Cartridge.cs:377
-msgid "EmptyTasksListText"
-msgstr ""
+msgid "No new tasks"
+msgstr "Keine neuen Aufgaben"
 
 #: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Cartridge.cs:389
-msgid "EmptyYouSeeListText"
-msgstr ""
+msgid "Nothing of interest"
+msgstr "Nichts von Interesse"
 
 #: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Cartridge.cs:401
-msgid "EmptyZonesListText"
-msgstr ""
+msgid "Nowhere to go"
+msgstr "Keine Orte"
 
 #: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Command.cs:77
-msgid "EmptyTargetListText"
-msgstr ""
-
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Command.cs:120
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Input.cs:83
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Input.cs:124
-msgid "Text"
-msgstr ""
-
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Input.cs:104
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Media.cs:82
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/UIObject.cs:123
-msgid "Name"
-msgstr ""
-
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Media.cs:93
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/UIObject.cs:65
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/UIObject.cs:88
-msgid "Description"
-msgstr ""
-
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Media.cs:104
-msgid "AltText"
-msgstr ""
-
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Media.cs:113
-msgid "Filename"
-msgstr ""
-
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs:765
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Formats/FileGWS.cs:239
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Formats/FileGWS.cs:390
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Formats/FileGWS.cs:395
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Formats/FileGWS.cs:399
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Formats/FileGWS.cs:412
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Formats/FileGWS.cs:503
-msgid "ClassName"
-msgstr ""
-
-#: /Entwicklung/WF.Player.iOS/WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs:835
-msgid "Id"
-msgstr ""
+msgid "Nothing available"
+msgstr "Nichts verfügbar"

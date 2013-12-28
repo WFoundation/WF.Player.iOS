@@ -1,11 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="CheckLocation.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="WF.Player.Core/Core/Engines/IPlatformHelper.cs">
     <Files>
       <File FileName="AppDelegate.cs" Line="1" Column="1" />
-      <File FileName="CartridgeList.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenMap.cs" Line="1" Column="1" />
       <File FileName="iOS/Settings.cs" Line="1" Column="1" />
-      <File FileName="CheckLocation.cs" Line="201" Column="3" />
+      <File FileName="CartridgeList.cs" Line="1" Column="1" />
+      <File FileName="CheckLocation.cs" Line="1" Column="1" />
       <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
       <File FileName="de/de.po" />
       <File FileName="Screens/ScreenListiOS.cs" Line="1" Column="1" />
@@ -15,7 +16,32 @@
       <File FileName="WF.Player.Core/Core/Enums.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Live/Reference.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenController.cs" Line="1" Column="1" />
+      <File FileName="Components/googlemapsios-1.5.0/samples/GoogleMapsAdvSample/GoogleMapsAdvSample/Samples/Map Demos/MapTypesViewController.cs" Line="1" Column="1" />
+      <File FileName="Components/googlemapsios-1.5.0/samples/GoogleMapsAdvSample/GoogleMapsAdvSample/Samples/Map Demos/TrafficMapViewController.cs" Line="1" Column="1" />
+      <File FileName="Components/googlemapsios-1.5.0/samples/GoogleMapsAdvSample/GoogleMapsAdvSample/Samples/Map Demos/MyLocationViewController.cs" Line="1" Column="1" />
+      <File FileName="Components/googlemapsios-1.5.0/samples/GoogleMapsAdvSample/GoogleMapsAdvSample/Samples/Overlay Demos/PolygonsViewController.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenList.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/iOSPlatformHelper.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenDetailiOS.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenDetail.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/DefaultPlatformHelper.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenMain.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/IPlatformHelper.cs" Line="70" Column="3" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Core.iOS" expanded="True">
+            <Node name="Engines" expanded="True" />
+            <Node name="Threading" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>

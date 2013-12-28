@@ -121,7 +121,7 @@ namespace WF.Player.iOS
 					targets = command.TargetObjects;
 					// If things has no entry, than there are no targets for this command
 					if (targets.Count == 0) {
-						actionCommandEmpty = command.EmptyTargetListText;
+						actionCommandEmpty = Strings.GetString(command.EmptyTargetListText);
 					}
 					actionCommand = command;
 					Refresh ();
