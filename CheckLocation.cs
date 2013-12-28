@@ -187,7 +187,43 @@ namespace WF.Player.iOS
 			latDecimalMin = Math.Round((lat - latDegrees) * 60.0, 3);
 			lonDecimalMin = Math.Round((lon - lonDegrees) * 60.0, 3);
 
-			return String.Format("{0} {1:00}° {2:00.000}'   {3} {4:000}° {5:00.000}'", new object[] {latDirect, latDegrees, latDecimalMin, lonDirect, lonDegrees, lonDecimalMin});
+			var format = NSUserDefaults.StandardUserDefaults.IntForKey("CoordFormat");
+			string result = "";
+
+			switch (format) {
+				case 0:
+					result = String.Format ("{0} {1:0.00000}°   {2} {3:0.00000}°", new object[] {
+						latDirect,
+						lat,
+						lonDirect,
+						lon
+					});
+					break;
+				case 1:
+					result = String.Format ("{0} {1:00}° {2:00.000}'   {3} {4:000}° {5:00.000}'", new object[] {
+						latDirect,
+						latDegrees,
+						latDecimalMin,
+						lonDirect,
+						lonDegrees,
+						lonDecimalMin
+					});
+					break;
+				case 2:
+					result = String.Format ("{0} {1:00}° {2:00}' {3:00.0}\"   {4} {5:000}° {6:00}' {7:00.0}\"", new object[] {
+						latDirect,
+						latDegrees,
+						latMin,
+						latSec,
+						lonDirect,
+						lonDegrees,
+						lonMin,
+						lonSec
+					});
+					break;
+			}
+
+			return result;
 		}
 
 		#endregion

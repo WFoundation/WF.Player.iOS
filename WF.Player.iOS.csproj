@@ -133,6 +133,8 @@
     <Folder Include="Images\" />
     <Folder Include="iOS\" />
     <Folder Include="Screens\" />
+    <Folder Include="Settings.bundle\" />
+    <Folder Include="Settings.bundle\de.lproj\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -196,5 +198,7 @@
     <BundleResource Include="de\WF.Player.iOS.Messages.resources.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </BundleResource>
+    <BundleResource Include="Settings.bundle\Root.plist" />
+    <BundleResource Include="Settings.bundle\de.lproj\Root.strings" />
   </ItemGroup>
 </Project>
