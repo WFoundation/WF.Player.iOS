@@ -40,7 +40,7 @@ namespace WF.Player.iOS
 		UINavigationController navCartSelect;
 		CartridgeList viewCartSelect;
 		ScreenController screenCtrl;
-		GettextResourceManager catalog;
+		NSObject observerSettings;
 
 		//
 		// This method is invoked when the application has loaded and is ready to run. In this 
@@ -56,6 +56,8 @@ namespace WF.Player.iOS
 			Console.WriteLine ("FinishedLaunching");
 
 			//			System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
+			observerSettings = NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"NSUserDefaultsDidChangeNotification", DefaultsChanged);
+			DefaultsChanged (null);
 
 			// create a new window instance based on the screen size
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
@@ -76,7 +78,7 @@ namespace WF.Player.iOS
 			navCartSelect.NavigationBar.TintColor = Colors.NavBarButton;
 
 			// Now create list for cartridges
-			viewCartSelect = new CartridgeList(this, catalog);
+			viewCartSelect = new CartridgeList(this);
 
 			// Add the cartridge view to the navigation controller
 			// (it'll be the top most screen)
@@ -185,6 +187,11 @@ namespace WF.Player.iOS
 		}
 
 		#region Private Functions
+
+		void DefaultsChanged(NSNotification obj)
+		{
+			//			_label.Text = NSUserDefaults.StandardUserDefaults.StringForKey("Server_IP_Adress");
+		}
 
 		void Start(Cartridge cart, Boolean restore = false)
 		{

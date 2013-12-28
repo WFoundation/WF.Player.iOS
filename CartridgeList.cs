@@ -44,7 +44,7 @@ namespace WF.Player.iOS
 		public CartridgeDetail cartDetail;
 
 		
-		public CartridgeList (AppDelegate app, GettextResourceManager catalog) : base()
+		public CartridgeList (AppDelegate app) : base()
 		{
 			this.appDelegate = app;
 
