@@ -24,7 +24,8 @@ using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using Google.Maps;
-using GNU.Gettext;
+using MonoTouch.Foundation;
+using Vernacular;
 using WF.Player.Core;
 
 namespace WF.Player.iOS
@@ -58,6 +59,15 @@ namespace WF.Player.iOS
 		{
 			// TODO: Delete
 			Console.WriteLine ("FinishedLaunching");
+
+
+			// Activate Vernacular Catalog
+			Catalog.Implementation = new ResourceCatalog {
+				GetResourceById = id => {
+					var resource = 	NSBundle.MainBundle.LocalizedString(id, null);
+					return resource == id ? null : resource;
+				},
+			};
 
 			//			System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
 			observerSettings = NSNotificationCenter.DefaultCenter.AddObserver ((NSString)"NSUserDefaultsDidChangeNotification", DefaultsChanged);

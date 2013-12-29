@@ -125,11 +125,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
-    <Reference Include="GNU.Gettext">
-      <HintPath>Libs\GNU.Gettext.dll</HintPath>
-    </Reference>
     <Reference Include="GoogleMaps">
       <HintPath>Components\googlemapsios-1.5.0\lib\ios\GoogleMaps.dll</HintPath>
+    </Reference>
+    <Reference Include="Vernacular.Catalog">
+      <HintPath>Libs\Vernacular.Catalog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -139,10 +139,11 @@
     <Folder Include="Screens\" />
     <Folder Include="Settings.bundle\" />
     <Folder Include="Settings.bundle\de.lproj\" />
+    <Folder Include="de.lproj\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
-    <None Include="de\de.po" />
+    <None Include="de.lproj\de.po" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -203,12 +204,7 @@
     <BundleResource Include="Settings.bundle\de.lproj\Root.strings" />
     <BundleResource Include="Images\glow-marker.png" />
     <BundleResource Include="Images\glow-marker%402x.png" />
-    <BundleResource Include="de\WF.Player.iOS.Messages.resources.dll">
-      <DeployService-Deploy>True</DeployService-Deploy>
-      <DeployService-RelativeDeployPath>de/WF.Player.iOS.Messages.resources.dll</DeployService-RelativeDeployPath>
-      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
-      <DeployService-UseProjectRelativePath>True</DeployService-UseProjectRelativePath>
-    </BundleResource>
+    <BundleResource Include="de.lproj\Localizable.strings" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googlemapsios">

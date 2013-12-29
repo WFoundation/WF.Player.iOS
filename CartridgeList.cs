@@ -25,7 +25,6 @@ using MonoTouch.CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
-using GNU.Gettext;
 using WF.Player.Core;
 using WF.Player.Core.Live;
 
