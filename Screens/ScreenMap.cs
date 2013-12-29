@@ -33,6 +33,7 @@ namespace WF.Player.iOS
 {
 	public class ScreenMap : UIViewController
 	{
+		int zoom = 16;
 		Engine engine;
 		ScreenController ctrl;
 		Thing thing;
@@ -54,6 +55,11 @@ namespace WF.Player.iOS
 				// Code that uses features from Xamarin.iOS 7.0
 				this.EdgesForExtendedLayout = UIRectEdge.None;
 			}
+
+			zoom = NSUserDefaults.StandardUserDefaults.IntForKey("MapZoom");
+
+			if (zoom == 0)
+				zoom = 16;
 		}
 		
 		public override void ViewDidLoad ()
@@ -66,9 +72,9 @@ namespace WF.Player.iOS
 			CameraPosition camera;
 
 			if (thing != null && thing.ObjectLocation != null)
-				camera = CameraPosition.FromCamera (thing.ObjectLocation.Latitude, thing.ObjectLocation.Longitude, zoom: 12);
+				camera = CameraPosition.FromCamera (thing.ObjectLocation.Latitude, thing.ObjectLocation.Longitude, zoom);
 			else
-				camera = CameraPosition.FromCamera (latitude: 37.797865, longitude: -122.402526, zoom: 12);
+				camera = CameraPosition.FromCamera (engine.Latitude, engine.Longitude, zoom);
 
 			mapView = MapView.FromCamera (RectangleF.Empty, camera);
 			mapView.MyLocationEnabled = true;

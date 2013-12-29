@@ -68,6 +68,7 @@
     <BuildIpa>true</BuildIpa>
     <MtouchUseSGen>true</MtouchUseSGen>
     <StartupObject>WF.Player.iPhone.Application</StartupObject>
+    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -151,7 +152,6 @@
       <DependentUpon>CartridgeDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="CartridgeList.cs" />
-    <Compile Include="iOS\AssemblyInfo.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="iOS\Settings.cs" />
     <Compile Include="CheckLocation.cs" />
@@ -164,6 +164,7 @@
     <Compile Include="Screens\ScreenMain.cs" />
     <Compile Include="Screens\ScreenMainiOS.cs" />
     <Compile Include="Screens\ScreenMap.cs" />
+    <Compile Include="iOS\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -198,13 +199,16 @@
     <BundleResource Include="Images\blue%402x.png" />
     <BundleResource Include="Images\blueTop.png" />
     <BundleResource Include="Images\blueTop%402x.png" />
-    <BundleResource Include="de\WF.Player.iOS.Messages.resources.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\de.lproj\Root.strings" />
     <BundleResource Include="Images\glow-marker.png" />
     <BundleResource Include="Images\glow-marker%402x.png" />
+    <BundleResource Include="de\WF.Player.iOS.Messages.resources.dll">
+      <DeployService-Deploy>True</DeployService-Deploy>
+      <DeployService-RelativeDeployPath>de/WF.Player.iOS.Messages.resources.dll</DeployService-RelativeDeployPath>
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+      <DeployService-UseProjectRelativePath>True</DeployService-UseProjectRelativePath>
+    </BundleResource>
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googlemapsios">
