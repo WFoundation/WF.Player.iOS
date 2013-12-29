@@ -1,7 +1,7 @@
-﻿﻿using System;
+using System;
 using System.Text;
 using MonoTouch.UIKit;
-using GNU.Gettext;
+using Vernacular;
 
 namespace WF.Player.iOS
 {
@@ -41,40 +41,28 @@ namespace WF.Player.iOS
 
 	public sealed class Strings
 	{
-		static GettextResourceManager catalog = new GettextResourceManager("WF.Player.iOS");
-
 		public static string TaskCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    	// UTF-8 2713
 		public static string TaskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  	// UTF-8 2717
 		public static string Infinite = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E } );  		// UTF-8 221E
 
 		public static string GetString(string text)
 		{
-			return catalog.GetString (text);
+			return Catalog.GetString (text);
 		}
 
 		public static string GetStringFmt(string text, params object[] args)
 		{
-			return String.Format(catalog.GetString(text), args);
+			return Catalog.Format(Catalog.GetString(text), args);
 		}
 
-		public static string GetPluralString(string singular, string plural, long n)
+		public static string GetPluralString(string singular, string plural, int n)
 		{
-			return catalog.GetPluralString(singular, plural, n);
+			return Catalog.GetPluralString(singular, plural, n);
 		}
 
-		public static string GetPluralStringFmt(string singular, string plural, long n, params object[] args)
+		public static string GetPluralStringFmt(string singular, string plural, int n, params object[] args)
 		{
-			return String.Format(catalog.GetPluralString(singular, plural, n), args);
-		}
-
-		public static string GetParticularString(string context, string text)
-		{
-			return catalog.GetParticularString(context, text);
-		}
-
-		public static string GetParticularPluralString(string context, string singular, string plural, long n)
-		{
-			return catalog.GetParticularPluralString(context, singular, plural, n);
+			return Catalog.Format(Catalog.GetPluralString(singular, plural, n), args);
 		}
 	}
 }
