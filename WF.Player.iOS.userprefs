@@ -1,22 +1,29 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="iOS/Settings.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Ad-Hoc|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenMap.cs">
     <Files>
-      <File FileName="AppDelegate.cs" Line="29" Column="1" />
-      <File FileName="Screens/ScreenMap.cs" Line="1" Column="1" />
-      <File FileName="iOS/Settings.cs" Line="63" Column="26" />
-      <File FileName="CartridgeList.cs" Line="1" Column="1" />
+      <File FileName="AppDelegate.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenMap.cs" Line="157" Column="1" />
+      <File FileName="iOS/Settings.cs" Line="35" Column="78" />
+      <File FileName="CartridgeList.cs" Line="193" Column="34" />
       <File FileName="CheckLocation.cs" Line="1" Column="1" />
-      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenListiOS.cs" Line="1" Column="1" />
+      <File FileName="CartridgeDetail.cs" Line="95" Column="44" />
+      <File FileName="Screens/ScreenListiOS.cs" Line="132" Column="1" />
       <File FileName="Screens/ScreenMainiOS.cs" Line="1" Column="1" />
-      <File FileName="Settings.bundle/Root.plist" />
       <File FileName="Settings.bundle/de.lproj/Root.strings" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Enums.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Live/Reference.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="1" Column="1" />
-      <File FileName="iOS/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/iOSPlatformHelper.cs" Line="24" Column="1" />
+      <File FileName="WF.Player.Core/Core/ZonePoint.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenDetailiOS.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenDialog.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenController.cs" Line="584" Column="1" />
+      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="97" Column="1" />
+      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="48" Column="37" />
+      <File FileName="WF.Player.Core/Core/Zone.cs" Line="52" Column="3" />
+      <File FileName="WF.Player.Core/Core/LocationVector.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Utils/Utils.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Utils/Extensions.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="49" Column="30" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -27,7 +34,7 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
     <IPhoneTestFlightSettings_27CRelease ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="d8fc2051-04bd-4612-b83f-19786b749aab" ReleaseNotes="Erste Version für Betatester.&#xA;&#xA;Es ist noch nicht alles perfekt, aber einen ersten Blick ist es auf alle Fälle wert. Ich wünsche viel Spaß. Und gerne höre ich von Euren Erfahrungen.&#xA;&#xA;Viele Grüße&#xA;Dirk (Charlenni)&#xA;&#xA;First version for betatester.&#xA;&#xA;Not all perfect, but worth a first look. Enjoy it. And if you find a bug, please send me an e-mail.&#xA;&#xA;Best regards&#xA;Dirk (Charlenni)" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
-    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Die erste Version für Betatester, sicher nicht perfekt, aber ein Anfang.&#xA;&#xA;Einfach mal anscheune und ausprobieren, ob etwas gravierend unklar ist oder umgehender Bearbeitung bedarf. Das meiste sollte funktionieren, aber es kann noch immer zu Abstürzen kommen.&#xA;&#xA;Ich bin für jede Rückmeldung dankbar.&#xA;&#xA;Vielen Dank und viele Grüße&#xA;Dirk (Charlenni)&#xA;&#xA;This is the first version for betatester. Not perfect, but a begining.&#xA;&#xA;Test and check it, if it is so ok (handling and so on). You could get some crashes, so be aware.&#xA;&#xA;Any suggestions?&#xA;&#xA;Thank you and best wishes&#xA;Dirk (Charlenni)" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Dritte Version&#xA;&#xA;- Karte überarbeitet. Funktioniert noch immer nicht alles, aber schon deutlich mehr&#xA;- Fehler Poster statt Icon in der Cartridge-Liste behoben&#xA;- Löschen von Cartridges funktioniert&#xA;- Abbruch im Beenden Dialog hinzugefügt&#xA;- Rollen-Problem in der Cartridge Detailansicht behoben&#xA;- Menü auf &quot;Sichern&quot; reduziert&#xA;&#xA;Alle anderen Fehler müssen bis nächstes Jahr warten.&#xA;&#xA;Einen guten Rutsch und ein schönes neues Jahr 2014&#xA;&#xA;Viele Grüße&#xA;Dirk&#xA;&#xA;Hello RangerFox,&#xA;&#xA;sorry, no time, you have to use the Google translator :(&#xA;&#xA;Enjoy it! And best wishes for 2014!&#xA;&#xA;Best regards&#xA;Dirk " NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
     <MonoDevelop.MacDev.AppleDevelopmentTeam DeveloperId="568GFG8P5M" TeamId="CE232943X3" />
   </MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
 </Properties>

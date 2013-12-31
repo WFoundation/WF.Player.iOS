@@ -33,11 +33,14 @@ namespace WF.Player.iOS
 {
 	public class ScreenMap : UIViewController
 	{
-		int zoom = 16;
+		float zoom = 16f;
 		Engine engine;
 		ScreenController ctrl;
 		Thing thing;
 		MapView mapView;
+		UIButton btnCenter;
+		UIButton btnOrientation;
+		UIButton btnMapType;
 		Dictionary<int,Overlay> overlays = new Dictionary<int, Overlay> ();
 		Dictionary<int,Marker> markers = new Dictionary<int, Marker> ();
 		string[] properties = {"Name", "Icon", "Active", "Visible", "ObjectLocation"};
@@ -55,20 +58,19 @@ namespace WF.Player.iOS
 				// Code that uses features from Xamarin.iOS 7.0
 				this.EdgesForExtendedLayout = UIRectEdge.None;
 			}
-
-			zoom = NSUserDefaults.StandardUserDefaults.IntForKey("MapZoom");
-
-			if (zoom == 0)
-				zoom = 16;
 		}
 		
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 
-//			CLLocationCoordinate2D coord = new CLLocationCoordinate2D (ctrl.Engine.Latitude, ctrl.Engine.Longitude);
-//			MKCoordinateRegion visibleRegion = BuildVisibleRegion (coord);
+			// Get zoom factor
+			zoom = NSUserDefaults.StandardUserDefaults.FloatForKey("MapZoom");
 
+			if (zoom == 0f)
+				zoom = 16f;
+
+			// Create camera position
 			CameraPosition camera;
 
 			if (thing != null && thing.ObjectLocation != null)
@@ -76,20 +78,61 @@ namespace WF.Player.iOS
 			else
 				camera = CameraPosition.FromCamera (engine.Latitude, engine.Longitude, zoom);
 
+			// Init MapView
 			mapView = MapView.FromCamera (RectangleF.Empty, camera);
 			mapView.MyLocationEnabled = true;
 			mapView.SizeToFit ();
+			mapView.AutoresizingMask = UIViewAutoresizing.All;
 			mapView.Frame = new RectangleF (0, 0, View.Frame.Width, View.Frame.Height);
 			mapView.MyLocationEnabled = true;
-			mapView.Settings.CompassButton = true;
-			mapView.Settings.MyLocationButton = true;
+			mapView.Settings.CompassButton = false;
+			mapView.Settings.MyLocationButton = false;
+			mapView.Settings.RotateGestures = false;
+			mapView.Settings.TiltGestures = false;
 
 			mapView.TappedOverlay += OnTappedOverlay;
 			mapView.TappedInfo += OnTappedInfo;
 
-			Refresh ();
+			View.AddSubview(mapView);
 
-			View = mapView;
+			btnCenter = UIButton.FromType (UIButtonType.RoundedRect);
+			btnCenter.Tag = 1;
+			btnCenter.Frame = new RectangleF (12f, 12f, 36f, 36f);
+			btnCenter.TintColor = UIColor.White;
+			btnCenter.SetBackgroundImage(Images.BlueButton, UIControlState.Normal);
+			btnCenter.SetBackgroundImage(Images.BlueButtonHighlight, UIControlState.Highlighted);
+			btnCenter.SetImage (Images.ButtonCenter, UIControlState.Normal);
+			btnCenter.ContentMode = UIViewContentMode.Center;
+			btnCenter.TouchUpInside += OnTouchUpInside;
+
+			View.AddSubview (btnCenter);
+
+			btnOrientation = UIButton.FromType (UIButtonType.RoundedRect);
+			btnOrientation.Tag = 2;
+			btnOrientation.Frame = new RectangleF (12f, 61f, 36f, 36f);
+			btnOrientation.TintColor = UIColor.White;
+			btnOrientation.SetBackgroundImage(Images.BlueButton, UIControlState.Normal);
+			btnOrientation.SetBackgroundImage(Images.BlueButtonHighlight, UIControlState.Highlighted);
+			btnOrientation.SetImage (Images.ButtonOrientation, UIControlState.Normal);
+			btnOrientation.ContentMode = UIViewContentMode.Center;
+			btnOrientation.TouchUpInside += OnTouchUpInside;
+
+			View.AddSubview (btnOrientation);
+
+			btnMapType = UIButton.FromType (UIButtonType.RoundedRect);
+			btnMapType.Tag = 3;
+			btnMapType.Frame = new RectangleF (mapView.Frame.Width - 12f - 36f, 12f, 36f, 36f);
+			btnMapType.AutoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleBottomMargin;
+			btnMapType.TintColor = UIColor.White;
+			btnMapType.SetBackgroundImage(Images.BlueButton, UIControlState.Normal);
+			btnMapType.SetBackgroundImage(Images.BlueButtonHighlight, UIControlState.Highlighted);
+			btnMapType.SetImage (Images.ButtonMapType, UIControlState.Normal);
+			btnMapType.ContentMode = UIViewContentMode.Center;
+			btnMapType.TouchUpInside += OnTouchUpInside;
+
+			View.AddSubview (btnMapType);
+
+			Refresh ();
 		}
 
 		public override void ViewWillAppear (bool animated)
@@ -104,6 +147,9 @@ namespace WF.Player.iOS
 		{	
 			StopEvents ();
 			mapView.StopRendering ();
+
+			// Save zoom factor
+			NSUserDefaults.StandardUserDefaults.SetFloat(mapView.Camera.Zoom, "MapZoom");
 
 			base.ViewWillDisappear (animated);
 		}
@@ -146,6 +192,97 @@ namespace WF.Player.iOS
 				ctrl.ShowScreen(ScreenType.Details, obj); 
 			} else
 				ctrl.ShowScreen(ScreenType.Details, obj); 
+		}
+
+		void OnTouchUpInside (object sender, EventArgs e)
+		{
+			if (sender is UIButton && ((UIButton)sender).Tag == 1) {
+				if (thing == null) {
+					// No thing, so show location immediatly
+				} else {
+					// Ask, which to show
+					UIActionSheet actionSheet = new UIActionSheet (Strings.GetString ("Focus on"));
+					actionSheet.AddButton (thing.Name);
+					actionSheet.AddButton (Strings.GetString ("Playing area"));
+					actionSheet.AddButton (Strings.GetString ("Location"));
+					actionSheet.AddButton (Strings.GetString ("Cancel"));
+					actionSheet.CancelButtonIndex = 3;       // Black button
+					actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
+						CameraUpdate cu = null;
+						if (b.ButtonIndex == 0) {
+							// Location of thing is selected and thing is a zone
+							if (thing is Zone) {
+								WherigoCollection<ZonePoint> points = ((Zone)thing).Points;
+								double lat1 = points[0].Latitude;
+								double lon1 = points[0].Longitude;
+								double lat2 = points[0].Latitude;
+								double lon2 = points[0].Longitude;
+								foreach(ZonePoint zp in points) {
+									lat1 = zp.Latitude < lat1 ? zp.Latitude : lat1;
+									lon1 = zp.Longitude < lon1 ? zp.Longitude : lon1;
+									lat2 = zp.Latitude > lat2 ? zp.Latitude : lat2;
+									lon2 = zp.Longitude > lon2 ? zp.Longitude : lon2;
+								}
+//								cu = CameraUpdate.FitBounds(new CoordinateBounds(new CLLocationCoordinate2D(lat1, lon1),new CLLocationCoordinate2D(lat2, lon2)),30f);
+								cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(lat1+(lat2-lat1)/2.0, lon1+(lon2-lon1)/2.0));
+							} else {
+								// Location of thing is selected and thing is no zone
+								if (thing.ObjectLocation != null) {
+									cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(thing.ObjectLocation.Latitude,thing.ObjectLocation.Longitude));
+								}
+							}
+						}
+						if (b.ButtonIndex == 2) {
+							// Location of player is selected
+							cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(engine.Latitude,engine.Longitude));
+						}
+						if (cu != null)
+							mapView.MoveCamera(cu);
+					};
+					actionSheet.ShowInView (View);
+				}
+			}
+			if  (sender is UIButton && ((UIButton)sender).Tag == 2) {
+				// Check, if north should be on top
+				if (((UIButton)sender).CurrentImage == Images.ButtonOrientation) {
+					((UIButton)sender).SetImage (Images.ButtonOrientationNorth, UIControlState.Normal);
+				} else {
+					((UIButton)sender).SetImage (Images.ButtonOrientation, UIControlState.Normal);
+				}
+				Console.WriteLine ("BtnOrientation touched");
+			}
+			if  (sender is UIButton && ((UIButton)sender).Tag == 3) {
+				// Change map type
+				// Ask, which to show
+				UIActionSheet actionSheet = new UIActionSheet (Strings.GetString ("Type of map"));
+				actionSheet.AddButton ("Google Maps");
+				actionSheet.AddButton (Strings.GetString ("Google Satellite"));
+				actionSheet.AddButton (Strings.GetString ("Google Terrain"));
+				actionSheet.AddButton (Strings.GetString ("Google Hybrid"));
+				actionSheet.AddButton (Strings.GetString ("None"));
+				actionSheet.AddButton (Strings.GetString ("Cancel"));
+				actionSheet.CancelButtonIndex = 5;       // Black button
+				actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
+					switch (b.ButtonIndex) {
+					case 0:
+						mapView.MapType = MapViewType.Normal;
+						break;
+					case 1:
+						mapView.MapType = MapViewType.Satellite;
+						break;
+					case 2:
+						mapView.MapType = MapViewType.Terrain;
+						break;
+					case 3:
+						mapView.MapType = MapViewType.Hybrid;
+						break;
+					case 4:
+						mapView.MapType = MapViewType.None;
+						break;
+					}
+				};
+				actionSheet.ShowInView (View);
+			}
 		}
 
 		void StartEvents()
@@ -213,20 +350,20 @@ namespace WF.Player.iOS
 
 		void CreateThing (Thing t)
 		{
-			Overlay marker;
+			Marker marker;
 
 			// If the thing don't have a ObjectLocation, than don't draw it
 			if (t.ObjectLocation == null)
 				return;
 
-			if (!overlays.TryGetValue (t.ObjIndex, out marker)) {
+			if (!markers.TryGetValue (t.ObjIndex, out marker)) {
 				marker = new Marker () {
 					Tappable = true,
 					Icon = (t.Icon != null ? UIImage.LoadFromData (NSData.FromArray (t.Icon.Data)) : Images.IconMapZone),
 					GroundAnchor = t.Icon != null ? new PointF(0.5f, 0.5f) : new PointF(0.5f, 1.0f),
 					Map = mapView
 				};
-				overlays.Add(t.ObjIndex, marker);
+				markers.Add(t.ObjIndex, marker);
 			}
 
 			marker.Title = t.Name;

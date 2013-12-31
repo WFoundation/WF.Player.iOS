@@ -29,7 +29,12 @@ namespace WF.Player.iOS
 
 		public static UIImage IconMapZone = UIImage.FromFile ("Images/glow-marker.png");
 
-		static public UIImage Blue = UIImage.FromFile ("Images/blue.png").StretchableImage(0, 0);
+		public static UIImage ButtonCenter = UIImage.FromFile ("Images/ButtonCenter.png");
+		public static UIImage ButtonOrientation = UIImage.FromFile ("Images/ButtonOrientation.png");
+		public static UIImage ButtonOrientationNorth = UIImage.FromFile ("Images/ButtonOrientationNorth.png");
+		public static UIImage ButtonMapType = UIImage.FromFile ("Images/ButtonLayer.png");
+
+		public static UIImage Blue = UIImage.FromFile ("Images/blue.png").StretchableImage(0, 0);
 		static public UIImage BlueTop = UIImage.FromFile ("Images/blueTop.png").StretchableImage(0, 0);
 		static public UIImage BlueButton = UIImage.FromFile ("Images/blueButton.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
 		static public UIImage BlueButtonHighlight = UIImage.FromFile ("Images/blueButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));

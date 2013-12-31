@@ -205,6 +205,14 @@
     <BundleResource Include="Images\glow-marker.png" />
     <BundleResource Include="Images\glow-marker%402x.png" />
     <BundleResource Include="de.lproj\Localizable.strings" />
+    <BundleResource Include="Images\ButtonCenter.png" />
+    <BundleResource Include="Images\ButtonCenter%402x.png" />
+    <BundleResource Include="Images\ButtonOrientation.png" />
+    <BundleResource Include="Images\ButtonOrientation%402x.png" />
+    <BundleResource Include="Images\ButtonLayer.png" />
+    <BundleResource Include="Images\ButtonLayer%402x.png" />
+    <BundleResource Include="Images\ButtonOrientationNorth.png" />
+    <BundleResource Include="Images\ButtonOrientationNorth%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googlemapsios">
