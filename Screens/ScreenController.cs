@@ -110,8 +110,8 @@ namespace WF.Player.iOS
 			leftBarButton.TintColor = Colors.NavBarButton;
 			screenMain.NavigationItem.SetLeftBarButtonItem(leftBarButton, true);
 
-			var rightBarButton = new UIBarButtonItem (Strings.GetString("Menu"), UIBarButtonItemStyle.Plain, (sender, args) => {
-				menu ();
+			var rightBarButton = new UIBarButtonItem (Strings.GetString("Save"), UIBarButtonItemStyle.Plain, (sender, args) => {
+				Save();
 			});
 			rightBarButton.TintColor = Colors.NavBarButton;
 			screenMain.NavigationItem.SetRightBarButtonItem(rightBarButton, true);
@@ -375,7 +375,7 @@ namespace WF.Player.iOS
 		[CLSCompliantAttribute(false)]
 		public void OnSaveCartridge (object sender, SavingEventArgs args)
 		{
-			engine.Save (new FileStream (args.Cartridge.SaveFilename, FileMode.Create));
+			Save ();
 		}
 
 		[CLSCompliantAttribute(false)]
@@ -569,9 +569,12 @@ namespace WF.Player.iOS
 			alert.Message = Strings.GetString("Would you save before quit?"); 
 			alert.AddButton(Strings.GetString("Yes")); 
 			alert.AddButton(Strings.GetString("No")); 
+			alert.AddButton(Strings.GetString("Cancel")); 
 			alert.Clicked += (sender, e) => { 
+				if (e.ButtonIndex == 2)
+					return;
 				if (e.ButtonIndex == 0) 
-					engine.Save(new FileStream(cart.SaveFilename,FileMode.Create)); 
+					Save();
 				// Close log file
 				locationManager.StopUpdatingLocation();
 				DestroyEngine();

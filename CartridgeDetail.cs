@@ -92,6 +92,7 @@ namespace WF.Player.iOS
 
 			// Resize ScrollView
 			PagesView.ContentSize = new SizeF(PagesView.Bounds.Width * PagesController.Pages, PagesView.Bounds.Height - 6f);
+			PagesView.DirectionalLockEnabled = true;
 
 			// Create views
 			CreateViews();
@@ -112,7 +113,8 @@ namespace WF.Player.iOS
 		{
 			var pageWidth = PagesView.Bounds.Width;
 			int page = Convert.ToInt16(Math.Floor((PagesView.ContentOffset.X - pageWidth / 2) / pageWidth) + 1);
-			PagesController.CurrentPage = page;
+			if (PagesController.CurrentPage != page)
+				PagesController.CurrentPage = page;
 		}
 		
 		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
@@ -140,7 +142,29 @@ namespace WF.Player.iOS
 		
 		partial void BarItemStorePressed (MonoTouch.Foundation.NSObject sender)
 		{
-			//			appDelegate.CartStart(cart);
+			if (File.Exists(cart.Filename)) {
+				// Delete cartridge and all files
+				// Ask, if user wants to delete cartridge
+				var alert = new UIAlertView(); 
+				alert.Title = Strings.GetString("Delete"); 
+				alert.Message = Strings.GetStringFmt("Would you delete the cartridge {0} and all log/save files?", cart.Name); 
+				alert.AddButton(Strings.GetString("Yes")); 
+				alert.AddButton(Strings.GetString("No")); 
+				alert.Clicked += (s, e) => { 
+					if (e.ButtonIndex == 0) {
+						if (File.Exists(cart.SaveFilename))
+							File.Delete(cart.SaveFilename);
+						if (File.Exists(cart.LogFilename))
+							File.Delete(cart.LogFilename);
+						if (File.Exists(cart.Filename))
+							File.Delete(cart.Filename);
+						NavigationController.PopViewControllerAnimated(true);
+					}
+				};
+				alert.Show();
+			} else {
+				// TODO: Save cartridge
+			}
 		}
 
 		#region Private Functions
@@ -160,6 +184,7 @@ namespace WF.Player.iOS
 			// Poster page
 			page1 = new UIScrollView (PagesView.Frame) {
 				Frame = new RectangleF (0.0f, 0.0f, width, height),
+				DirectionalLockEnabled = true,
 				BackgroundColor = UIColor.Clear
 			};
 			textHeader = new UILabel() {
@@ -207,6 +232,7 @@ namespace WF.Player.iOS
 			// Description
 			page2 = new UIScrollView (PagesView.Frame) {
 				Frame = new RectangleF (1.0f * width, 0.0f, width, PagesView.Frame.Height),
+				DirectionalLockEnabled = true,
 				ContentSize = new SizeF(width, height),
 				BackgroundColor = UIColor.Clear
 			};
@@ -226,6 +252,7 @@ namespace WF.Player.iOS
 
 			page3 = new UITableView (PagesView.Frame) {
 				Frame = new RectangleF (2 * width, 0.0f, width, height),
+				DirectionalLockEnabled = true,
 				SeparatorStyle = UITableViewCellSeparatorStyle.None
 			};
 
