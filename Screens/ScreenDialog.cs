@@ -96,7 +96,9 @@ namespace WF.Player.iOS
 //			createView ();
 			NSNotificationCenter.DefaultCenter.AddObserver ("UIKeyboardDidShowNotification", keyboardUpNotification);
 
-			this.NavigationController.SetNavigationBarHidden(false,false);
+			NavigationController.SetNavigationBarHidden(false,false);
+			NavigationItem.SetHidesBackButton(true, false);
+
 			CreateView ();
 		}
 

@@ -43,7 +43,7 @@ namespace WF.Player.iOS
 		public ScreenDetail (ScreenController ctrl, UIObject obj) : base ()
 		{
 			this.ctrl = ctrl;
-			this.obj = obj;
+			this.activeObject = obj;
 
 			// OS specific details
 			if (new Version (UIDevice.CurrentDevice.SystemVersion) >= new Version(7,0)) 
@@ -52,8 +52,6 @@ namespace WF.Player.iOS
 				this.EdgesForExtendedLayout = UIRectEdge.None;
 			}
 		}
-
-		public UIObject Item { get { return obj; } }
 
 		#region MonoTouch Functions
 		
@@ -71,10 +69,16 @@ namespace WF.Player.iOS
 			
 			// Perform any additional setup after loading the view, typically from a nib.
 			// Get all commands for this object
+
+			// Show back button
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(ScreenType.Details); }), false);
+			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
+			NavigationItem.SetHidesBackButton (false, false);
+
 			commands = null;
 			targets = null;
-			if (!(obj is Task)) {
-				commands = ((Thing)obj).ActiveCommands;
+			if (!(activeObject is Task)) {
+				commands = ((Thing)activeObject).ActiveCommands;
 //				foreach(Command c in ((Thing)obj).ActiveCommands)
 //					commands.Add (c);
 			}
@@ -138,8 +142,8 @@ namespace WF.Player.iOS
 				actionCommandEmpty = null;
 				commands = null;
 				targets = null;
-				if (!(obj is Task)) {
-					commands = ((Thing)obj).ActiveCommands;
+				if (!(activeObject is Task)) {
+					commands = ((Thing)activeObject).ActiveCommands;
 				}
 				Refresh ();
 			}
@@ -228,24 +232,29 @@ namespace WF.Player.iOS
 			this.View.BackgroundColor = UIColor.Clear;
 		}
 
-		void Refresh(string what = "")
+		public void Refresh(string what = "")
 		{
 			float maxWidth = this.View.Bounds.Width - 2 * frame;
 			float maxHeight = this.View.Bounds.Height;
+
+			if (activeObject is Zone || (activeObject is Thing && ctrl.Engine.VisibleObjects.Contains ((Thing)activeObject)))
+				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
+					ctrl.ShowScreen(ScreenType.Map, activeObject);
+				}), false);
 
 			scrollView.Frame = new RectangleF (0, 0, this.View.Bounds.Width, maxHeight);
 
 			if (what.Equals ("") || what.Equals ("Name")) 
 			{
-				if (obj is Task)
-					this.NavigationItem.Title = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + obj.Name;
+				if (activeObject is Task)
+					this.NavigationItem.Title = (((Task)activeObject).Complete ? (((Task)activeObject).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + activeObject.Name;
 				else
-					this.NavigationItem.Title = obj.Name;
+					this.NavigationItem.Title = activeObject.Name;
 			}
 
 			if (what.Equals ("") || what.Equals ("Media")) {
-				if (obj.Image != null) {
-					image.Image = UIImage.LoadFromData (NSData.FromArray (obj.Image.Data));
+				if (activeObject.Image != null) {
+					image.Image = UIImage.LoadFromData (NSData.FromArray (activeObject.Image.Data));
 					image.Hidden = false;
 					if (image.Image.Size.Width > image.Image.Size.Height)
 						image.Bounds = new RectangleF (0, 0, maxWidth, image.Image.Size.Height * maxWidth / image.Image.Size.Width);
@@ -258,8 +267,8 @@ namespace WF.Player.iOS
 			}
 
 			if (what.Equals ("") || what.Equals ("Description")) {
-				if (!String.IsNullOrWhiteSpace (obj.Description)) {
-					text.Text = obj.Description;
+				if (!String.IsNullOrWhiteSpace (activeObject.Description)) {
+					text.Text = activeObject.Description;
 					SizeF size = text.SizeThatFits (new SizeF (maxWidth, 999999));
 					text.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
 					text.Hidden = false;

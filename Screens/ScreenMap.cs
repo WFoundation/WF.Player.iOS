@@ -34,6 +34,7 @@ namespace WF.Player.iOS
 	public class ScreenMap : UIViewController
 	{
 		float zoom = 16f;
+		bool headingOrientation = false;
 		Engine engine;
 		ScreenController ctrl;
 		Thing thing;
@@ -64,8 +65,16 @@ namespace WF.Player.iOS
 		{
 			base.ViewDidLoad ();
 
+			// Perform any additional setup after loading the view, typically from a nib.
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(ScreenType.Map); }), false);
+			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
+			NavigationItem.SetHidesBackButton(false, false);
+
 			// Get zoom factor
 			zoom = NSUserDefaults.StandardUserDefaults.FloatForKey("MapZoom");
+
+			// Get zoom factor
+			headingOrientation = NSUserDefaults.StandardUserDefaults.BoolForKey("HeadingOrientation");
 
 			if (zoom == 0f)
 				zoom = 16f;
@@ -113,7 +122,7 @@ namespace WF.Player.iOS
 			btnOrientation.TintColor = UIColor.White;
 			btnOrientation.SetBackgroundImage(Images.BlueButton, UIControlState.Normal);
 			btnOrientation.SetBackgroundImage(Images.BlueButtonHighlight, UIControlState.Highlighted);
-			btnOrientation.SetImage (Images.ButtonOrientation, UIControlState.Normal);
+			btnOrientation.SetImage ((headingOrientation ? Images.ButtonOrientation : Images.ButtonOrientationNorth), UIControlState.Normal);
 			btnOrientation.ContentMode = UIViewContentMode.Center;
 			btnOrientation.TouchUpInside += OnTouchUpInside;
 
@@ -154,9 +163,9 @@ namespace WF.Player.iOS
 			base.ViewWillDisappear (animated);
 		}
 
-		public void Refresh(Thing thing = null)
+		public void Refresh(Thing refreshThing = null)
 		{
-			if (thing != null) {
+			if (refreshThing != null) {
 				// Only one thing needs an update
 
 			} else {
@@ -174,6 +183,9 @@ namespace WF.Player.iOS
 				foreach (Thing t in things)
 					CreateThing(t);//					createThing (t);
 			}
+
+			if (thing != null)
+				NavigationItem.Title = thing.Name;
 		}
 
 		#region Private Functions
@@ -244,12 +256,15 @@ namespace WF.Player.iOS
 			}
 			if  (sender is UIButton && ((UIButton)sender).Tag == 2) {
 				// Check, if north should be on top
-				if (((UIButton)sender).CurrentImage == Images.ButtonOrientation) {
-					((UIButton)sender).SetImage (Images.ButtonOrientationNorth, UIControlState.Normal);
-				} else {
+				headingOrientation = !headingOrientation;
+				if (headingOrientation) {
 					((UIButton)sender).SetImage (Images.ButtonOrientation, UIControlState.Normal);
+					ctrl.LocatitionManager.UpdatedHeading += OnUpdateHeading;
+				} else {
+					((UIButton)sender).SetImage (Images.ButtonOrientationNorth, UIControlState.Normal);
+					ctrl.LocatitionManager.UpdatedHeading -= OnUpdateHeading;
+					mapView.AnimateToBearing (0.0);
 				}
-				Console.WriteLine ("BtnOrientation touched");
 			}
 			if  (sender is UIButton && ((UIButton)sender).Tag == 3) {
 				// Change map type
@@ -290,8 +305,9 @@ namespace WF.Player.iOS
 			engine.AttributeChanged += OnAttributeChanged;
 			engine.InventoryChanged += OnPropertyChanged;
 			engine.ZoneStateChanged += OnZoneStateChanged;
-
 			engine.PropertyChanged += OnPropertyChanged;
+			if (headingOrientation)
+				ctrl.LocatitionManager.UpdatedHeading += OnUpdateHeading;
 		}
 
 		void StopEvents()
@@ -299,8 +315,9 @@ namespace WF.Player.iOS
 			engine.AttributeChanged -= OnAttributeChanged;
 			engine.InventoryChanged -= OnPropertyChanged;
 			engine.ZoneStateChanged -= OnZoneStateChanged;
-
 			engine.PropertyChanged -= OnPropertyChanged;
+			if (headingOrientation)
+				ctrl.LocatitionManager.UpdatedHeading -= OnUpdateHeading;
 		}
 
 		public void OnPropertyChanged(object sender,  EventArgs e)
@@ -324,6 +341,12 @@ namespace WF.Player.iOS
 				if (e.Object is Zone)
 					CreateZone(e.Object as Zone);
 			}
+		}
+
+		public void OnUpdateHeading (object sender, CLHeadingUpdatedEventArgs e)
+		{
+			if (headingOrientation)
+				mapView.AnimateToBearing(e.NewHeading.MagneticHeading);
 		}
 
 		public void OnZoneStateChanged(object sender,  ZoneStateChangedEventArgs e)
