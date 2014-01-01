@@ -22,6 +22,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Timers;
+using MonoTouch.AudioToolbox;
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 using MonoTouch.CoreLocation;
@@ -188,6 +189,7 @@ namespace WF.Player.iOS
 			engine.CartridgeCompleted += OnCartridgeComplete;
 			engine.InputRequested += OnGetInput;
 			engine.LogMessageRequested += OnLogMessage;
+			engine.PlayAlertRequested += OnPlayAlert;
 			engine.PlayMediaRequested += OnPlayMedia;
 			engine.SaveRequested += OnSaveCartridge;
 			engine.ShowMessageBoxRequested += OnShowMessageBox;
@@ -218,6 +220,7 @@ namespace WF.Player.iOS
 				engine.CartridgeCompleted -= OnCartridgeComplete;
 				engine.InputRequested -= OnGetInput;
 				engine.LogMessageRequested -= OnLogMessage;
+				engine.PlayAlertRequested -= OnPlayAlert;
 				engine.PlayMediaRequested -= OnPlayMedia;
 				engine.SaveRequested -= OnSaveCartridge;
 				engine.ShowMessageBoxRequested -= OnShowMessageBox;
@@ -340,6 +343,11 @@ namespace WF.Player.iOS
 		public void OnLogMessage ( Object sender, LogMessageEventArgs args )
 		{
 			logMessage (args.Level, args.Message);
+		}
+
+		void OnPlayAlert (object sender, WherigoEventArgs e)
+		{
+			SystemSound.Vibrate.PlayAlertSound ();
 		}
 
 //		[CLSCompliantAttribute(false)]

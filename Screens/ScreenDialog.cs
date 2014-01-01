@@ -243,6 +243,21 @@ namespace WF.Player.iOS
 			float maxWidth = this.View.Bounds.Width - 2 * frame;
 			float maxHeight = this.View.Bounds.Height;
 
+			UITextAlignment textAlign = UITextAlignment.Center;
+			int format = NSUserDefaults.StandardUserDefaults.IntForKey("TextAlignment");
+
+			switch (format) {
+			case 0:
+				textAlign = UITextAlignment.Center;
+				break;
+			case 1:
+				textAlign = UITextAlignment.Left;
+				break;
+			case 2:
+				textAlign = UITextAlignment.Right;
+				break;
+			}
+
 			if (image != null) {
 				imageView = new UIImageView (UIImage.LoadFromData (NSData.FromArray (image.Data))) {
 					ContentMode = UIViewContentMode.Center | UIViewContentMode.ScaleAspectFit
@@ -257,7 +272,7 @@ namespace WF.Player.iOS
 					BackgroundColor = UIColor.Clear,
 					Lines = 0,
 					LineBreakMode = UILineBreakMode.WordWrap,
-					TextAlignment = UITextAlignment.Center,
+					TextAlignment = textAlign,
 					AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight,
 					ContentMode = UIViewContentMode.Center
 				};

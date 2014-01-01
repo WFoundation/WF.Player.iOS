@@ -52,7 +52,29 @@
 			<key>Key</key>
 			<string>CoordFormat</string>
 			<key>DefaultValue</key>
-			<string>1</string>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Title</key>
+			<string>Text alignment</string>
+			<key>Values</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+			<key>Titles</key>
+			<array>
+				<string>Center</string>
+				<string>Left</string>
+				<string>Right</string>
+			</array>
+			<key>Key</key>
+			<string>TextAlignment</string>
+			<key>DefaultValue</key>
+			<integer>0</integer>
 		</dict>
 	</array>
 	<key>StringsTable</key>

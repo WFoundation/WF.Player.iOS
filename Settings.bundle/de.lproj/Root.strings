@@ -3,3 +3,7 @@
 "Password" = "Passwort";
 "Display" = "Anzeige";
 "Coordinates" = "Koordinaten";
+"Text alignment" = "Textausrichtung";
+"Center" = "Zentriert";
+"Left" = "Linksbündig";
+"Right" = "Rechtsbündig";

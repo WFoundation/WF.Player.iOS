@@ -1,13 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Ad-Hoc|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenMap.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenList.cs">
     <Files>
       <File FileName="AppDelegate.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenMap.cs" Line="157" Column="1" />
-      <File FileName="iOS/Settings.cs" Line="35" Column="78" />
-      <File FileName="CartridgeList.cs" Line="193" Column="34" />
+      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
+      <File FileName="CartridgeList.cs" Line="1" Column="1" />
       <File FileName="CheckLocation.cs" Line="1" Column="1" />
-      <File FileName="CartridgeDetail.cs" Line="95" Column="44" />
+      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenListiOS.cs" Line="132" Column="1" />
       <File FileName="Screens/ScreenMainiOS.cs" Line="1" Column="1" />
       <File FileName="Settings.bundle/de.lproj/Root.strings" Line="1" Column="1" />
@@ -16,14 +16,21 @@
       <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenDetailiOS.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenDialog.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenController.cs" Line="584" Column="1" />
-      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="97" Column="1" />
-      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="48" Column="37" />
-      <File FileName="WF.Player.Core/Core/Zone.cs" Line="52" Column="3" />
+      <File FileName="Screens/ScreenController.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Zone.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/LocationVector.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Utils/Utils.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Utils/Extensions.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="49" Column="30" />
+      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/WherigoObject.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataContainer.cs" Line="372" Column="40" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/SafeLua.cs" Line="1181" Column="42" />
+      <File FileName="WF.Player.Core/Eluant/Eluant/LuaString.cs" Line="43" Column="2" />
+      <File FileName="WF.Player.Core/Eluant/Eluant/LuaRuntime.cs" Line="1451" Column="3" />
+      <File FileName="WF.Player.Core/Core/Formats/FileGWS.cs" Line="485" Column="1" />
+      <File FileName="Screens/ScreenList.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
