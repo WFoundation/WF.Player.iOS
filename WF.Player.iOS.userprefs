@@ -1,23 +1,29 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenMap.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenController.cs">
     <Files>
       <File FileName="AppDelegate.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenController.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenMap.cs" Line="262" Column="48" />
-      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenController.cs" Line="515" Column="22" />
+      <File FileName="Screens/ScreenMap.cs" Line="583" Column="83" />
+      <File FileName="iOS/Settings.cs" Line="46" Column="18" />
       <File FileName="CartridgeList.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenDetailiOS.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenDetailiOS.cs" Line="245" Column="1" />
       <File FileName="CheckLocation.cs" Line="1" Column="1" />
       <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenListiOS.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenListiOS.cs" Line="80" Column="42" />
       <File FileName="Screens/ScreenMainiOS.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Enums.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/ZonePoint.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenDialog.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="434" Column="17" />
       <File FileName="WF.Player.Core/Core/Engines/iOSPlatformHelper.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Zone.cs" Line="74" Column="1" />
+      <File FileName="WF.Player.Core/Core/Utils/Extensions.cs" Line="41" Column="1" />
+      <File FileName="WF.Player.Core/Core/Utils/CoordRect.cs" Line="66" Column="1" />
+      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="162" Column="1" />
+      <File FileName="WF.Player.Core/Core/Thing.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/WherigoObject.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

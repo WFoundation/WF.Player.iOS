@@ -213,6 +213,16 @@
     <BundleResource Include="Images\ButtonLayer%402x.png" />
     <BundleResource Include="Images\ButtonOrientationNorth.png" />
     <BundleResource Include="Images\ButtonOrientationNorth%402x.png" />
+    <BundleResource Include="Images\IconMapZone.png" />
+    <BundleResource Include="Images\IconMapZone%402x.png" />
+    <BundleResource Include="Images\IconMapCharacter.png" />
+    <BundleResource Include="Images\IconMapCharacter%402x.png" />
+    <BundleResource Include="Images\IconInventory%402x.png" />
+    <BundleResource Include="Images\IconLocation%402x.png" />
+    <BundleResource Include="Images\IconTask%402x.png" />
+    <BundleResource Include="Images\IconYouSee%402x.png" />
+    <BundleResource Include="Images\IconMapItem.png" />
+    <BundleResource Include="Images\IconMapItem%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googlemapsios">

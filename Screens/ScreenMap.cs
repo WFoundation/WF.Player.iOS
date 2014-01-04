@@ -28,9 +28,23 @@ using MonoTouch.CoreGraphics;
 using Google.Maps;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
+using WF.Player.Core.Utils;
 
 namespace WF.Player.iOS
 {
+	public enum MapSource : int
+	{
+		GoogleMaps,
+		GoogleSatellite,
+		GoogleTerrain,
+		GoogleHybrid,
+		OpenStreetMap,
+		OpenCycleMap,
+		Offline,
+		Cartridge,
+		None
+	}
+
 	public class ScreenMap : UIViewController
 	{
 		float zoom = 16f;
@@ -39,14 +53,16 @@ namespace WF.Player.iOS
 		ScreenController ctrl;
 		Thing thing;
 		MapView mapView;
+		UrlTileLayer osmLayer;
+		UrlTileLayer ocmLayer;
 		UIButton btnCenter;
 		UIButton btnOrientation;
 		UIButton btnMapType;
+		UIWebView webLegacy;
 		Dictionary<int,Overlay> overlays = new Dictionary<int, Overlay> ();
 		Dictionary<int,Marker> markers = new Dictionary<int, Marker> ();
 		string[] properties = {"Name", "Icon", "Active", "Visible", "ObjectLocation"};
 
-		
 		public ScreenMap (ScreenController ctrl, Thing t)
 		{
 			this.ctrl = ctrl;
@@ -59,6 +75,23 @@ namespace WF.Player.iOS
 				// Code that uses features from Xamarin.iOS 7.0
 				this.EdgesForExtendedLayout = UIRectEdge.None;
 			}
+
+			// Create URLTileLayers
+			osmLayer = UrlTileLayer.FromUrlConstructor (
+				(uint x, uint y, uint zoom) => {
+					string url = String.Format("http://a.tile.openstreetmap.org/{0}/{1}/{2}.png", zoom, x, y);
+					return NSUrl.FromString(url);
+				}
+			); 
+			osmLayer.ZIndex = 0;
+
+			ocmLayer = UrlTileLayer.FromUrlConstructor (
+				(uint x, uint y, uint zoom) => {
+					string url = String.Format("http://c.tile.opencyclemap.org/cycle/{0}/{1}/{2}.png", zoom, x, y);
+					return NSUrl.FromString(url);
+				}
+			); 
+			ocmLayer.ZIndex = 0;
 		}
 		
 		public override void ViewDidLoad ()
@@ -81,11 +114,22 @@ namespace WF.Player.iOS
 
 			// Create camera position
 			CameraPosition camera;
+			CoordBounds bounds;
 
-			if (thing != null && thing.ObjectLocation != null)
-				camera = CameraPosition.FromCamera (thing.ObjectLocation.Latitude, thing.ObjectLocation.Longitude, zoom);
-			else
+			if (thing != null && !(thing is Zone) && thing.ObjectLocation != null)
+				camera = CameraPosition.FromCamera( thing.ObjectLocation.Latitude, thing.ObjectLocation.Longitude, zoom);
+			else {
+				// Set camera to mylocation, perhaps there is no other position
 				camera = CameraPosition.FromCamera (engine.Latitude, engine.Longitude, zoom);
+				if (thing != null && thing is Zone) {
+					bounds = ((Zone)thing).Bounds;
+					if (bounds != null) {
+						camera = CameraPosition.FromCamera (bounds.Left + (bounds.Right - bounds.Left) / 2.0, bounds.Bottom + (bounds.Top - bounds.Bottom) / 2.0, zoom);
+					}
+				} else {
+					camera = CameraPosition.FromCamera (engine.Latitude, engine.Longitude, zoom);
+				}
+			}
 
 			// Init MapView
 			mapView = MapView.FromCamera (RectangleF.Empty, camera);
@@ -101,8 +145,18 @@ namespace WF.Player.iOS
 
 			mapView.TappedOverlay += OnTappedOverlay;
 			mapView.TappedInfo += OnTappedInfo;
+			mapView.CameraPositionChanged += OnCameraPositionChanged;
 
 			View.AddSubview(mapView);
+
+			if (thing == null) {
+				// Show all
+				bounds = engine.Bounds;
+				if (bounds != null) {
+					camera = mapView.CameraForBounds (new CoordinateBounds (new CLLocationCoordinate2D (bounds.Left, bounds.Top), new CLLocationCoordinate2D (bounds.Right, bounds.Bottom)), new UIEdgeInsets (30f, 30f, 30f, 30f));
+					mapView.Camera = camera;
+				}
+			}
 
 			btnCenter = UIButton.FromType (UIButtonType.RoundedRect);
 			btnCenter.Tag = 1;
@@ -140,6 +194,26 @@ namespace WF.Player.iOS
 			btnMapType.TouchUpInside += OnTouchUpInside;
 
 			View.AddSubview (btnMapType);
+
+			webLegacy = new UIWebView();
+			webLegacy.Frame = new RectangleF (mapView.Frame.Width - 2f - 150f, mapView.Frame.Height - 2f - 20f, 150f, 20f);
+			webLegacy.AutoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleTopMargin | UIViewAutoresizing.FlexibleWidth;
+			webLegacy.BackgroundColor = UIColor.Clear;
+			webLegacy.Opaque = false;
+			webLegacy.ScrollView.ScrollEnabled = false;
+			webLegacy.ScalesPageToFit = true;
+			webLegacy.ShouldStartLoad = delegate (UIWebView webView, NSUrlRequest request, UIWebViewNavigationType navigationType) {
+				if (navigationType == UIWebViewNavigationType.LinkClicked) {
+					UIApplication.SharedApplication.OpenUrl(request.Url);
+					return false;
+				}
+				return true;
+			};
+
+			View.AddSubview (webLegacy);
+
+			// Set map source
+			SetMapSource((MapSource)NSUserDefaults.StandardUserDefaults.IntForKey("MapSource"));
 
 			Refresh ();
 		}
@@ -190,6 +264,17 @@ namespace WF.Player.iOS
 
 		#region Private Functions
 
+		void OnCameraPositionChanged (object sender, GMSCameraEventArgs e)
+		{
+			float maxZoom = Google.Maps.Constants.MaxZoomLevel;
+
+			if (osmLayer.Map != null || ocmLayer.Map != null)
+				maxZoom = 17.3f;
+
+			if (e.Position.Zoom > maxZoom)
+				mapView.MoveCamera(CameraUpdate.ZoomToZoom(maxZoom));
+		}
+
 		void OnTappedOverlay (object sender, GMSOverlayEventEventArgs e)
 		{
 			var objIndex = overlays.FirstOrDefault(x => x.Value == e.Overlay).Key;
@@ -209,50 +294,45 @@ namespace WF.Player.iOS
 		void OnTouchUpInside (object sender, EventArgs e)
 		{
 			if (sender is UIButton && ((UIButton)sender).Tag == 1) {
-				if (thing == null) {
-					// No thing, so show location immediatly
-				} else {
-					// Ask, which to show
-					UIActionSheet actionSheet = new UIActionSheet (Strings.GetString ("Focus on"));
+				// Ask, which to show
+				var thingOffset = 1;
+				UIActionSheet actionSheet = new UIActionSheet (Strings.GetString ("Focus on"));
+				if (thing != null) {
 					actionSheet.AddButton (thing.Name);
-					actionSheet.AddButton (Strings.GetString ("Playing area"));
-					actionSheet.AddButton (Strings.GetString ("Location"));
-					actionSheet.AddButton (Strings.GetString ("Cancel"));
-					actionSheet.CancelButtonIndex = 3;       // Black button
-					actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
-						CameraUpdate cu = null;
-						if (b.ButtonIndex == 0) {
-							// Location of thing is selected and thing is a zone
-							if (thing is Zone) {
-								WherigoCollection<ZonePoint> points = ((Zone)thing).Points;
-								double lat1 = points[0].Latitude;
-								double lon1 = points[0].Longitude;
-								double lat2 = points[0].Latitude;
-								double lon2 = points[0].Longitude;
-								foreach(ZonePoint zp in points) {
-									lat1 = zp.Latitude < lat1 ? zp.Latitude : lat1;
-									lon1 = zp.Longitude < lon1 ? zp.Longitude : lon1;
-									lat2 = zp.Latitude > lat2 ? zp.Latitude : lat2;
-									lon2 = zp.Longitude > lon2 ? zp.Longitude : lon2;
-								}
+					thingOffset = 0;
+				}
+				actionSheet.AddButton (Strings.GetString ("Playing area"));
+				actionSheet.AddButton (Strings.GetString ("Location"));
+				actionSheet.AddButton (Strings.GetString ("Cancel"));
+				actionSheet.CancelButtonIndex = 3 - thingOffset;       // Black button
+				actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
+					CameraUpdate cu = null;
+					if (b.ButtonIndex == 0 - thingOffset) {
+						// Location of thing is selected and thing is a zone
+						if (thing is Zone) {
+							var bounds = ((Zone)thing).Bounds;
 //								cu = CameraUpdate.FitBounds(new CoordinateBounds(new CLLocationCoordinate2D(lat1, lon1),new CLLocationCoordinate2D(lat2, lon2)),30f);
-								cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(lat1+(lat2-lat1)/2.0, lon1+(lon2-lon1)/2.0));
-							} else {
-								// Location of thing is selected and thing is no zone
-								if (thing.ObjectLocation != null) {
-									cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(thing.ObjectLocation.Latitude,thing.ObjectLocation.Longitude));
-								}
+							cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(bounds.Left + (bounds.Right - bounds.Left) / 2.0, bounds.Bottom + (bounds.Top - bounds.Bottom) / 2.0));
+						} else {
+							// Location of thing is selected and thing is no zone
+							if (thing.ObjectLocation != null) {
+								cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(thing.ObjectLocation.Latitude,thing.ObjectLocation.Longitude));
 							}
 						}
-						if (b.ButtonIndex == 2) {
-							// Location of player is selected
-							cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(engine.Latitude,engine.Longitude));
-						}
-						if (cu != null)
-							mapView.MoveCamera(cu);
-					};
-					actionSheet.ShowInView (View);
-				}
+					}
+					if (b.ButtonIndex == 1 - thingOffset) {
+						var bounds = engine.Bounds;
+						if (bounds != null)
+							cu = CameraUpdate.FitBounds(new CoordinateBounds(new CLLocationCoordinate2D(bounds.Left, bounds.Top),new CLLocationCoordinate2D(bounds.Right, bounds.Bottom)),30f);
+					}
+					if (b.ButtonIndex == 2 - thingOffset) {
+						// Location of player is selected
+						cu = CameraUpdate.SetTarget(new CLLocationCoordinate2D(engine.Latitude,engine.Longitude));
+					}
+					if (cu != null)
+						mapView.MoveCamera(cu);
+				};
+				actionSheet.ShowInView (View);
 			}
 			if  (sender is UIButton && ((UIButton)sender).Tag == 2) {
 				// Check, if north should be on top
@@ -270,29 +350,39 @@ namespace WF.Player.iOS
 				// Change map type
 				// Ask, which to show
 				UIActionSheet actionSheet = new UIActionSheet (Strings.GetString ("Type of map"));
-				actionSheet.AddButton ("Google Maps");
-				actionSheet.AddButton (Strings.GetString ("Google Satellite"));
-				actionSheet.AddButton (Strings.GetString ("Google Terrain"));
-				actionSheet.AddButton (Strings.GetString ("Google Hybrid"));
-				actionSheet.AddButton (Strings.GetString ("None"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Normal ? Strings.Checked + " " : "") + Strings.GetString ("Google Maps"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Satellite ? Strings.Checked + " " : "") + Strings.GetString ("Google Satellite"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Terrain ? Strings.Checked + " " : "") + Strings.GetString ("Google Terrain"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Hybrid ? Strings.Checked + " " : "") + Strings.GetString ("Google Hybrid"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.None && osmLayer.Map != null ? Strings.Checked + " " : "") + Strings.GetString ("OpenStreetMap"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.None && ocmLayer.Map != null ? Strings.Checked + " " : "") + Strings.GetString ("OpenCycleMap"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.None && osmLayer.Map == null && ocmLayer.Map == null ? Strings.Checked + " " : "") + Strings.GetString ("None"));
 				actionSheet.AddButton (Strings.GetString ("Cancel"));
-				actionSheet.CancelButtonIndex = 5;       // Black button
+				actionSheet.CancelButtonIndex = 7;       // Black button
 				actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
 					switch (b.ButtonIndex) {
 					case 0:
-						mapView.MapType = MapViewType.Normal;
+						SetMapSource(MapSource.GoogleMaps);
 						break;
 					case 1:
-						mapView.MapType = MapViewType.Satellite;
+						SetMapSource(MapSource.GoogleSatellite);
 						break;
 					case 2:
-						mapView.MapType = MapViewType.Terrain;
+						SetMapSource(MapSource.GoogleTerrain);
 						break;
 					case 3:
-						mapView.MapType = MapViewType.Hybrid;
+						SetMapSource(MapSource.GoogleHybrid);
 						break;
 					case 4:
-						mapView.MapType = MapViewType.None;
+						// OpenStreetMap
+						SetMapSource(MapSource.OpenStreetMap);
+						break;
+					case 5:
+						// OpenCycleMap
+						SetMapSource(MapSource.OpenCycleMap);
+						break;
+					case 6:
+						SetMapSource(MapSource.None);
 						break;
 					}
 				};
@@ -371,6 +461,61 @@ namespace WF.Player.iOS
 			}
 		}
 
+		void SetMapSource (MapSource ms)
+		{
+			switch (ms) {
+			case MapSource.GoogleMaps:
+				mapView.MapType = MapViewType.Normal;
+				webLegacy.LoadHtmlString("",new NSUrl(""));
+				osmLayer.Map = null;
+				ocmLayer.Map = null;
+				break;
+			case MapSource.GoogleSatellite:
+				mapView.MapType = MapViewType.Satellite;
+				webLegacy.LoadHtmlString("",new NSUrl(""));
+				osmLayer.Map = null;
+				ocmLayer.Map = null;
+				break;
+			case MapSource.GoogleTerrain:
+				mapView.MapType = MapViewType.Terrain;
+				webLegacy.LoadHtmlString("",null);
+				osmLayer.Map = null;
+				ocmLayer.Map = null;
+				break;
+			case MapSource.GoogleHybrid:
+				mapView.MapType = MapViewType.Hybrid;
+				webLegacy.LoadHtmlString("",null);
+				osmLayer.Map = null;
+				ocmLayer.Map = null;
+				break;
+			case MapSource.OpenStreetMap:
+				// OpenStreetMap
+				mapView.MapType = MapViewType.None;
+				webLegacy.LoadHtmlString("<html><head></head><body style=\"font-family:sans-serif; margin:0 auto;text-align:left;background-color: transparent; color:#808080 \"><hfill>Data, imagery and map information provided by<br>MapQuest, <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> and contributors, <a href=\"http://wiki.openstreetmap.org/wiki/Legal_FAQ#I_would_like_to_use_OpenStreetMap_maps._How_should_I_credit_you.#\">ODbL</a></body></html>",new NSUrl(""));
+				webLegacy.SizeToFit();
+				osmLayer.Map = mapView;
+				ocmLayer.Map = null;
+				break;
+			case MapSource.OpenCycleMap:
+				// OpenCycleMap
+				mapView.MapType = MapViewType.None;
+				webLegacy.LoadHtmlString ("<html><head></head><body style=\"font-family:sans-serif; margin:0 auto;text-align:left;background-color: transparent; color:#808080 \"><hfill>Data, imagery and map information provided by<br>MapQuest, <a href=\"http://www.openstreetmap.org/copyright\">OpenStreetMap</a> and contributors, <a href=\"http://wiki.openstreetmap.org/wiki/Legal_FAQ#I_would_like_to_use_OpenStreetMap_maps._How_should_I_credit_you.#\">ODbL</a></body></html>", new NSUrl (""));
+				webLegacy.SizeToFit();
+				osmLayer.Map = null;
+				ocmLayer.Map = mapView;
+				break;
+			case MapSource.None:
+				mapView.MapType = MapViewType.None;
+				webLegacy.LoadHtmlString ("", new NSUrl (""));
+				osmLayer.Map = null;
+				ocmLayer.Map = null;
+				break;
+			}
+
+			// Save map source
+			NSUserDefaults.StandardUserDefaults.SetInt((int)ms, "MapSource");
+		}
+
 		void CreateThing (Thing t)
 		{
 			Marker marker;
@@ -382,14 +527,21 @@ namespace WF.Player.iOS
 			if (!markers.TryGetValue (t.ObjIndex, out marker)) {
 				marker = new Marker () {
 					Tappable = true,
-					Icon = (t.Icon != null ? UIImage.LoadFromData (NSData.FromArray (t.Icon.Data)) : Images.IconMapZone),
-					GroundAnchor = t.Icon != null ? new PointF(0.5f, 0.5f) : new PointF(0.5f, 1.0f),
 					Map = mapView
 				};
+				if (thing is Character) {
+					marker.Icon = t.Icon != null && t.Icon == null ? UIImage.LoadFromData (NSData.FromArray (t.Icon.Data)) : Images.IconMapCharacter;
+					marker.GroundAnchor = t.Icon != null && t.Icon == null ? new PointF (0.5f, 0.5f) : new PointF (0.3f, 0.92f);
+					marker.InfoWindowAnchor = t.Icon != null && t.Icon == null ? new PointF (0.5f, 0.0f) : new PointF (0.3f, 0.0f);
+				} else {
+					marker.Icon = t.Icon != null && t.Icon == null ? UIImage.LoadFromData (NSData.FromArray (t.Icon.Data)) : Images.IconMapItem;
+					marker.GroundAnchor = t.Icon != null && t.Icon == null ? new PointF (0.5f, 0.5f) : new PointF (0.2f, 0.92f);
+					marker.InfoWindowAnchor = t.Icon != null && t.Icon == null ? new PointF (0.5f, 0.0f) : new PointF (0.2f, 0.0f);
+				}
 				markers.Add(t.ObjIndex, marker);
 			}
-
 			marker.Title = t.Name;
+			marker.ZIndex = 100;
 			((Marker)marker).Position = new CLLocationCoordinate2D(t.ObjectLocation.Latitude, t.ObjectLocation.Longitude);
 		}
 
@@ -397,6 +549,20 @@ namespace WF.Player.iOS
 		{
 			Overlay polygon;
 			Marker marker;
+
+			if (!z.Active || !z.Visible) {
+				if (overlays.ContainsKey (z.ObjIndex)) {
+					overlays.TryGetValue (z.ObjIndex, out polygon);
+					if (polygon != null) 
+						polygon.Map = null;
+					overlays.Remove (z.ObjIndex);
+					markers.TryGetValue (z.ObjIndex, out marker);
+					if (marker != null)
+						marker.Map = null;
+					markers.Remove (z.ObjIndex);
+				}
+				return;
+			}
 
 			if (!overlays.TryGetValue(z.ObjIndex, out polygon)) {
 				polygon = new Polygon () {
@@ -413,7 +579,8 @@ namespace WF.Player.iOS
 				marker = new Marker () {
 					Tappable = true,
 					Icon = (z.Icon != null ? UIImage.LoadFromData (NSData.FromArray (z.Icon.Data)) : Images.IconMapZone),
-					GroundAnchor = z.Icon != null ? new PointF(0.5f, 0.5f) : new PointF(0.5f, 1.0f),
+					GroundAnchor = z.Icon != null ? new PointF(0.5f, 0.5f) : new PointF(0.075f, 0.95f),
+					InfoWindowAnchor = z.Icon != null ? new PointF(0.5f, 0.5f) : new PointF(0.075f, 0.0f),
 					Map = mapView
 				};
 				markers.Add (z.ObjIndex, marker);
@@ -435,261 +602,14 @@ namespace WF.Player.iOS
 			}
 
 			((Polygon)polygon).Path = path;
+			polygon.ZIndex = 50;
 
 			marker.Position = new CLLocationCoordinate2D ((float)lat / (float)points.Count, (float)lon / (float)points.Count);
+			marker.ZIndex = 100;
 		}
 
 		#endregion
 
-//			mapView = BuildMapView (true);
-//
-////			var center = new ThingAnnotation (thing.ObjectLocation.Latitude, thing.ObjectLocation.Longitude, thing.Name);
-////			mapView.AddAnnotation(center);
-//
-//			//TODO: ISZone
-//			var zones = ctrl.Engine.ActiveVisibleZones;
-//			foreach(Zone z in zones)
-//			{
-//				var points = z.Points;
-//				CLLocationCoordinate2D[] coords = new CLLocationCoordinate2D [points.Count];
-//				int i = 0;
-//				foreach(ZonePoint zp in points) {
-////				for (int i = 0; i < points.Count; i++) {
-////					ZonePoint zp = points[i+1];
-//					coords[i++] = new CLLocationCoordinate2D(zp.Latitude, zp.Longitude);
-//				}
-//				var mkp = MKPolygon.FromCoordinates(coords);
-			//				mapView.AddOverlay(mkp);
-			//			}
-//
-//			UITapGestureRecognizer tgr = new UITapGestureRecognizer ();
-//			tgr.AddTarget (this, new MonoTouch.ObjCRuntime.Selector ("TapGesture"));
-//			tgr.Delegate = new TapRecognizerDelegate ();
-//			this.View.AddGestureRecognizer (tgr);
-//
-//			mapView.Delegate = new MapDelegate();
-//			
-//			this.View.AddSubview(mapView);
-//
-//			// Set center to object
-//			ZonePoint loc;
-//			
-//			if (thing is Zone)
-//				loc = ((Zone)thing).OriginalPoint;
-//			else if (thing is Item)
-//				loc = ((Item)thing).ObjectLocation;
-//			else
-//				loc = ((Character)thing).ObjectLocation;
-//
-//			if (loc != null)
-//				SetCenterCoordinate(new CLLocationCoordinate2D(loc.Latitude,loc.Longitude),ctrl.ZoomLevel,false);
-		}
-//		
-//		private MKMapView BuildMapView(bool showUserLocation)
-//		{
-//			var view = new MKMapView()
-//			{
-//				ShowsUserLocation = showUserLocation
-//			};
-//
-//			view.SizeToFit();
-//			view.Frame = new RectangleF(0, 0, this.View.Frame.Width, this.View.Frame.Height);
-//			return view;
-//		}
-//		
-//		private MKCoordinateRegion BuildVisibleRegion(CLLocationCoordinate2D currentLocation)
-//		{
-//			var span = new MKCoordinateSpan(0.2,0.2);
-//			var region = new MKCoordinateRegion(currentLocation,span);
-//			
-//			return region;
-//		}
-//
-//		[Export("TapGesture")]
-//		public void TapGesture (UIGestureRecognizer recognizer)
-//		{
-//			//http://freshmob.com.au/mapkit/mapkit-tap-and-hold-to-drop-a-pin-on-the-map/
-//			//and
-//			//http://inxunxa.wordpress.com/2011/03/10/monotouch-longpress/
-//			
-//			
-//			if (recognizer.State != UIGestureRecognizerState.Ended)
-//				return;
-//			
-//			// Get the point of the action ...
-//			PointF point = recognizer.LocationInView (this.View);
-//
-//			// ... and convert it to lat/lon
-//			CLLocationCoordinate2D coord = this.mapView.ConvertPoint (point, this.mapView);
-//			MKMapPoint mapPoint = new MKMapPoint(coord.Latitude,coord.Longitude);
-//
-//			// Did we have any overlays?
-//			if (mapView.Overlays == null)
-//				return;
-//
-//			// Check all active objects, if they are inside
-//			var zones = ctrl.Engine.ActiveVisibleZones;
-//			foreach(Zone z in zones)
-//			{
-//				//Add pin annoation here
-//				ZonePoint loc = z.OriginalPoint;
-//				double lat = loc.Latitude;
-//				double lon = loc.Longitude;
-//				string name = z.Name;
-//				ThingAnnotation ann = new ThingAnnotation (lat, lon, name);
-//				this.mapView.AddAnnotation (ann);
-//			}
-//
-//			foreach (NSObject overlay in mapView.Overlays) {
-//				if (overlay is MKPolygon) {
-//					MKPolygon poly = (MKPolygon)overlay;
-//					MKOverlayView view = this.mapView.ViewForOverlay (poly);
-//					if (view is MKPolygonView) {
-//						MKPolygonView polyView = (MKPolygonView)view;
-//						PointF polygonViewPoint = polyView.PointForMapPoint (mapPoint);
-//						CGPath path = polyView.Path;
-//						bool mapCoordinateIsInPolygon = path.ContainsPoint( polygonViewPoint,true);
-//						if (mapCoordinateIsInPolygon) {
-//							//Add pin annoation here
-//							ThingAnnotation ann = new ThingAnnotation (coord.Latitude, coord.Longitude, thing.Name);
-//							this.mapView.AddAnnotation (ann);
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//		// Code in Objectiv-C from http://troybrant.net/blog/2010/01/set-the-zoom-level-of-an-mkmapview/
-//
-//		private const double MERCATOR_OFFSET = 268435456;
-//		private const double MERCATOR_RADIUS = 85445659.44705395;
-//		
-//		private double longitudeToPixelSpaceX (double longitude)
-//		{
-//			return Math.Round (MERCATOR_OFFSET + MERCATOR_RADIUS * longitude * Math.PI / 180.0);
-//		}
-//		
-//		private double latitudeToPixelSpaceY (double latitude)
-//		{
-//			return Math.Round (MERCATOR_OFFSET - MERCATOR_RADIUS * Math.Log((1 + Math.Sin(latitude * Math.PI / 180.0)) / (1 - Math.Sin(latitude * Math.PI / 180.0))) / 2.0);
-//		}
-//		
-//		private double pixelSpaceXToLongitude (double pixelX)
-//		{
-//			return ((Math.Round(pixelX) - MERCATOR_OFFSET) / MERCATOR_RADIUS) * 180.0 / Math.PI;
-//		}
-//
-//		private double pixelSpaceYToLatitude (double pixelY)
-//		{
-//			return (Math.PI / 2.0 - 2.0 * Math.Atan(Math.Exp((Math.Round(pixelY) - MERCATOR_OFFSET) / MERCATOR_RADIUS))) * 180.0 / Math.PI;
-//		}
-//		
-//		private MKCoordinateSpan coordinateSpanWithMapView (MKMapView mapView, CLLocationCoordinate2D centerCoordinate, int zoomLevel)
-//		{
-//			// convert center coordiate to pixel space
-//			double centerPixelX = longitudeToPixelSpaceX (centerCoordinate.Longitude);
-//			double centerPixelY = latitudeToPixelSpaceY (centerCoordinate.Latitude);
-//			
-//			// determine the scale value from the zoom level
-//			int zoomExponent = 20 - zoomLevel;
-//			double zoomScale = Math.Pow(2, zoomExponent);
-//			
-//			// scale the map’s size in pixel space
-//			SizeF mapSizeInPixels = mapView.Bounds.Size;
-//			double scaledMapWidth = mapSizeInPixels.Width * zoomScale;
-//			double scaledMapHeight = mapSizeInPixels.Height * zoomScale;
-//			
-//			// figure out the position of the top-left pixel
-//			double topLeftPixelX = centerPixelX - (scaledMapWidth / 2);
-//			double topLeftPixelY = centerPixelY - (scaledMapHeight / 2);
-//			
-//			// find delta between left and right longitudes
-//			double minLng = pixelSpaceXToLongitude (topLeftPixelX);
-//			double maxLng = pixelSpaceXToLongitude (topLeftPixelX + scaledMapWidth);
-//			double longitudeDelta = maxLng - minLng;
-//			
-//			// find delta between top and bottom latitudes
-//			double minLat = pixelSpaceYToLatitude (topLeftPixelY);
-//			double maxLat = pixelSpaceYToLatitude (topLeftPixelY + scaledMapHeight);
-//			double latitudeDelta = -1 * (maxLat - minLat);
-//			
-//			// create and return the lat/lng span
-//			MKCoordinateSpan span = new MKCoordinateSpan(latitudeDelta, longitudeDelta);
-//
-//			return span;
-//		}
-//
-//		public void SetCenterCoordinate (CLLocationCoordinate2D centerCoordinate, int zoomLevel, bool animated)
-//		{
-//			// clamp large numbers to 28
-//			zoomLevel = Math.Min(zoomLevel, 28);
-//			
-//			// use the zoom level to compute the region
-//			MKCoordinateSpan span = coordinateSpanWithMapView (mapView, centerCoordinate, zoomLevel);
-//			MKCoordinateRegion region = new MKCoordinateRegion (centerCoordinate, span);
-//			
-//			// set the region like normal
-//			mapView.SetRegion (region, animated);
-//		}
-//
-//	}
-//
-//	public class ThingAnnotation : MKAnnotation
-//	{
-//		private string title;
-//
-//		public override CLLocationCoordinate2D Coordinate { get; set; }
-//
-//		public ThingAnnotation (double latitude, double longitude, string title) : base()
-//		{
-//			this.Coordinate = new CLLocationCoordinate2D(latitude,longitude);
-//			this.title = title;
-//		}
-//
-//		public override string Title { get { return title; } }
-//	}
-//
-//	public class MapDelegate : MKMapViewDelegate
-//	{
-//		
-//		public override MKAnnotationView GetViewForAnnotation (MKMapView Map, NSObject annotation)
-//		{
-//			if (annotation is MKAnnotation) {
-//				MKAnnotation a = annotation as MKAnnotation;
-//				if (a != null) { 
-//					MKAnnotationView aView = new MKAnnotationView (a,"Anna");
-//					// customize code for the MKPolygonView
-//					aView.Image = new UIImage("IconLocation.png");
-//					return aView;
-//				} 
-//			}
-//			
-//			return null;
-//		}
-//
-//		public override MKOverlayView GetViewForOverlay (MKMapView mapView, NSObject overlay)
-//		{
-//			if (overlay is MKPolygon) {
-//				MKPolygon polygon = overlay as MKPolygon;
-//				if (polygon != null) { // "overlay" is the overlay object you added
-//					MKPolygonView polyView = new MKPolygonView (polygon);
-//					// customize code for the MKPolygonView
-//					polyView.FillColor = UIColor.Red.ColorWithAlpha(0.3f);
-//					polyView.StrokeColor = UIColor.Red.ColorWithAlpha(0.5f);
-//					polyView.LineWidth = 0.5f;
-//					return polyView;
-//				} 
-//			}
-//			
-//			return null;
-//		}
-//	}
-//
-//	public class TapRecognizerDelegate : MonoTouch.UIKit.UIGestureRecognizerDelegate
-//	{
-//		public override bool ShouldReceiveTouch (UIGestureRecognizer recognizer, UITouch touch)
-//		{
-//			return true;
-//		}
+	}
 
 }

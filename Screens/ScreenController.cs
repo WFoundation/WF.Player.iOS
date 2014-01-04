@@ -234,6 +234,7 @@ namespace WF.Player.iOS
 		{
 			if (engine != null) {
 				engine.Stop();
+				engine.Reset ();
 
 				engine.AttributeChanged -= OnAttributeChanged;
 				engine.InventoryChanged -= OnInventoryChanged;

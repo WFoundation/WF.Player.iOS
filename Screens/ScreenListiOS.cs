@@ -75,6 +75,11 @@ namespace WF.Player.iOS
 			
 			// Perform any additional setup after loading the view, typically from a nib.
 			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(type); }), false);
+			if (type == ScreenType.Locations || type == ScreenType.Items)
+				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
+					ctrl.ShowScreen(ScreenType.Map, null);
+				}), false);
+
 			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
 			NavigationItem.SetHidesBackButton (false, false);
 
@@ -297,14 +302,19 @@ namespace WF.Player.iOS
 						textDistance.Hidden = false;
 						textDistance.Text = Strings.GetString("Inside");
 					} else {
-						if (((Thing)obj).VectorFromPlayer != null) {
-							imageDirection.Hidden = false;
-							imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
-							textDistance.Hidden = false;
-							textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
-						} else {
+						if ((obj is Item || obj is Character) && obj.ObjectLocation != null) {
 							imageDirection.Hidden = true;
 							textDistance.Hidden = true;
+						} else {
+							if (((Thing)obj).VectorFromPlayer != null) {
+								imageDirection.Hidden = false;
+								imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
+								textDistance.Hidden = false;
+								textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
+							} else {
+								imageDirection.Hidden = true;
+								textDistance.Hidden = true;
+							}
 						}
 					}
 				} else {

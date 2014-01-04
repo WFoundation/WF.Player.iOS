@@ -13,21 +13,23 @@ namespace WF.Player.iOS
 
 	public class Colors
 	{
-		static public UIColor NavBar = UIColor.FromRGB(0.2118f,0.4588f,0.7333f);
-		static public UIColor NavBarButton = UIColor.FromRGB(0.1569f,0.3608f,0.5961f);
-		static public UIColor ButtonText = UIColor.FromRGB(1.0f,1.0f,1.0f);
+		public static UIColor NavBar = UIColor.FromRGB(0.2118f,0.4588f,0.7333f);
+		public static UIColor NavBarButton = UIColor.FromRGB(0.1569f,0.3608f,0.5961f);
+		public static UIColor ButtonText = UIColor.FromRGB(1.0f,1.0f,1.0f);
 		public static UIColor ZoneFill = UIColor.FromRGBA (1.0f, 0, 0, 0.1f);
 		public static UIColor ZoneStroke = UIColor.FromRGBA (1.0f, 0, 0, 0.3f);
 	}
 
 	public class Images
 	{
-		static public UIImage IconLocation = UIImage.FromFile ("Images/IconLocation.png");
-		static public UIImage IconYouSee = UIImage.FromFile ("Images/IconYouSee.png");
-		static public UIImage IconInventory = UIImage.FromFile ("Images/IconInventory.png");
-		static public UIImage IconTask = UIImage.FromFile ("Images/IconTask.png");
+		public static UIImage IconLocation = UIImage.FromFile ("Images/IconLocation.png");
+		public static UIImage IconYouSee = UIImage.FromFile ("Images/IconYouSee.png");
+		public static UIImage IconInventory = UIImage.FromFile ("Images/IconInventory.png");
+		public static UIImage IconTask = UIImage.FromFile ("Images/IconTask.png");
 
-		public static UIImage IconMapZone = UIImage.FromFile ("Images/glow-marker.png");
+		public static UIImage IconMapZone = UIImage.FromFile ("Images/IconMapZone.png");
+		public static UIImage IconMapCharacter = UIImage.FromFile ("Images/IconMapCharacter.png");
+		public static UIImage IconMapItem = UIImage.FromFile ("Images/IconMapItem.png");
 
 		public static UIImage ButtonCenter = UIImage.FromFile ("Images/ButtonCenter.png");
 		public static UIImage ButtonOrientation = UIImage.FromFile ("Images/ButtonOrientation.png");
@@ -35,13 +37,13 @@ namespace WF.Player.iOS
 		public static UIImage ButtonMapType = UIImage.FromFile ("Images/ButtonLayer.png");
 
 		public static UIImage Blue = UIImage.FromFile ("Images/blue.png").StretchableImage(0, 0);
-		static public UIImage BlueTop = UIImage.FromFile ("Images/blueTop.png").StretchableImage(0, 0);
-		static public UIImage BlueButton = UIImage.FromFile ("Images/blueButton.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
-		static public UIImage BlueButtonHighlight = UIImage.FromFile ("Images/blueButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
-		static public UIImage OrangeButton = UIImage.FromFile ("Images/orangeButton.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
-		static public UIImage OrangeButtonHighlight = UIImage.FromFile ("Images/orangeButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
-		static public UIImage GreenButton = UIImage.FromFile ("Images/greenButton.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
-		static public UIImage GreenButtonHighlight = UIImage.FromFile ("Images/greenButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
+		public static UIImage BlueTop = UIImage.FromFile ("Images/blueTop.png").StretchableImage(0, 0);
+		public static UIImage BlueButton = UIImage.FromFile ("Images/blueButton.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
+		public static UIImage BlueButtonHighlight = UIImage.FromFile ("Images/blueButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
+		public static UIImage OrangeButton = UIImage.FromFile ("Images/orangeButton.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
+		public static UIImage OrangeButtonHighlight = UIImage.FromFile ("Images/orangeButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
+		public static UIImage GreenButton = UIImage.FromFile ("Images/greenButton.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
+		public static UIImage GreenButtonHighlight = UIImage.FromFile ("Images/greenButtonHighlight.png").CreateResizableImage(new UIEdgeInsets (18f, 18f, 18f, 18f));
 	}
 
 	public sealed class Strings
@@ -49,6 +51,7 @@ namespace WF.Player.iOS
 		public static string TaskCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    	// UTF-8 2713
 		public static string TaskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  	// UTF-8 2717
 		public static string Infinite = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E } );  		// UTF-8 221E
+		public static string Checked = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    		// UTF-8 2713
 
 		public static string GetString(string text)
 		{

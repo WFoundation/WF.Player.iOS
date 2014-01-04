@@ -30,7 +30,7 @@
 	<key>MinimumOSVersion</key>
 	<string>6.0</string>
 	<key>CFBundleVersion</key>
-	<string>0.2</string>
+	<string>0.3</string>
 	<key>CFBundleIdentifier</key>
 	<string>wfplayerios</string>
 	<key>CFBundleShortVersionString</key>
