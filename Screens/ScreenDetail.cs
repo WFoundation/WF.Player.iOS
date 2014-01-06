@@ -31,21 +31,38 @@ namespace WF.Player.iOS
 	public partial class ScreenDetail
 	{
 		ScreenController ctrl;
-		UIObject obj;
+		UIObject activeObject;
 		WherigoCollection<Command> commands;
 		WherigoCollection<Thing> targets;
 		string[] properties = {"Name", "Description", "Media", "Commands"};
+
+		#region Object Handling
+
+		public UIObject ActiveObject
+		{
+			get { 
+				return activeObject; 
+			} 
+			set {
+				if (activeObject != value) {
+					activeObject = value;
+					Refresh ();
+				}
+			}
+		}
+
+		#endregion
 
 		#region Common Functions
 
 		void StartEvents()
 		{
-			obj.PropertyChanged += OnPropertyChanged;
+			activeObject.PropertyChanged += OnPropertyChanged;
 		}
 
 		void StopEvents()
 		{
-			obj.PropertyChanged -= OnPropertyChanged;
+			activeObject.PropertyChanged -= OnPropertyChanged;
 		}
 
 		public void OnPropertyChanged(object sender,  PropertyChangedEventArgs e)
@@ -53,7 +70,7 @@ namespace WF.Player.iOS
 			bool remove = false;
 
 			if (e.PropertyName.Equals("Commands"))
-			    commands = ((Thing)obj).ActiveCommands;
+			    commands = ((Thing)activeObject).ActiveCommands;
 
 			// Check, if one of the visible entries changed
 			if (!(e is PropertyChangedEventArgs) || (e is PropertyChangedEventArgs && properties.Contains(((PropertyChangedEventArgs)e).PropertyName)))
@@ -61,9 +78,9 @@ namespace WF.Player.iOS
 
 			// The object is set to not visible or not active, so it should removed from screen
 			if (e.PropertyName.Equals("Visible") || e.PropertyName.Equals("Active"))
-				remove = !obj.Visible;
+				remove = !activeObject.Visible;
 			// The object is moved to nil, so it should removed from screen
-			if (e.PropertyName.Equals("Container") && !(obj is Task) && ((Thing)obj).Container == null)
+			if (e.PropertyName.Equals("Container") && !(activeObject is Task) && ((Thing)activeObject).Container == null)
 				remove = true;
 
 			if (remove) {

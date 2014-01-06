@@ -25,7 +25,6 @@ using MonoTouch.CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
-using GNU.Gettext;
 using WF.Player.Core;
 using WF.Player.Core.Live;
 
@@ -98,6 +97,7 @@ namespace WF.Player.iOS
 		{
 			base.ViewDidAppear(animated);
 			this.NavigationController.SetNavigationBarHidden(false,false);
+			((CartridgeListSource)Table.Source).GetCartridgeList ();
 			Table.ReloadData();
 		}
 		
@@ -181,7 +181,7 @@ namespace WF.Player.iOS
 				OnSelect(activeCart);
 		}
 		
-		private void GetCartridgeList ()
+		public void GetCartridgeList ()
 		{
 			string documentsPath = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
 			FileInfo[] cartridgeFiles = new DirectoryInfo (documentsPath).GetFiles ("*.gwc");
@@ -285,7 +285,10 @@ namespace WF.Player.iOS
 				textAuthor.Text = Strings.GetStringFmt("By {0}", (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany));
 			else
 				textAuthor.Text = "";
-			if (cart.Poster != null)
+			// TODO: Load default image for cart.ActivityType
+			if (cart.Icon != null)
+				this.imagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Icon.Data));
+			else if (cart.Poster != null)
 				this.imagePoster.Image = UIImage.LoadFromData (NSData.FromArray (cart.Poster.Data));
 			else
 				this.imagePoster.Image = null;

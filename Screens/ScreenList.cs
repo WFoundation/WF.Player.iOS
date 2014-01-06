@@ -30,12 +30,20 @@ namespace WF.Player.iOS
 	{
 		ScreenController ctrl;
 		Engine engine;
-		ScreenType screen;
-		string[] properties = {"Name", "Icon", "Active", "Visible", "ObjectLocation"};
+		ScreenType type;
+		string[] properties = {"Name", "Icon", "Active", "Visible", "ObjectLocation", "VisibleObjects", "VisibleInventory", "ActiveVisibleTasks", "ActiveVisibleZones"};
 
 		public List<UIObject> Items = new List<UIObject>();
 		public bool ShowIcons;
 		public bool ShowDirections;
+
+		#region Properties
+
+		public ScreenType Type {
+			get { return type; }
+		}
+
+		#endregion
 
 		#region Common Functions
 
@@ -64,7 +72,7 @@ namespace WF.Player.iOS
 
 			Items = new List<UIObject> ();
 
-			switch (screen) 
+			switch (type) 
 			{
 				case ScreenType.Locations:
 					header = Strings.GetString("Locations");
@@ -140,7 +148,6 @@ namespace WF.Player.iOS
 			newItems |= e is InventoryChangedEventArgs;
 			newItems |= e is AttributeChangedEventArgs && ((AttributeChangedEventArgs)e).PropertyName.Equals("Active");
 			newItems |= e is AttributeChangedEventArgs && ((AttributeChangedEventArgs)e).PropertyName.Equals("Visible");
-			newItems |= e is InventoryChangedEventArgs;
 			newItems |= e is PropertyChangedEventArgs && ((PropertyChangedEventArgs)e).PropertyName.Equals("Active");
 			newItems |= e is PropertyChangedEventArgs && ((PropertyChangedEventArgs)e).PropertyName.Equals("Visible");
 

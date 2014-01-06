@@ -68,6 +68,7 @@
     <BuildIpa>true</BuildIpa>
     <MtouchUseSGen>true</MtouchUseSGen>
     <StartupObject>WF.Player.iPhone.Application</StartupObject>
+    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -124,8 +125,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="monotouch" />
-    <Reference Include="GNU.Gettext">
-      <HintPath>Libs\GNU.Gettext.dll</HintPath>
+    <Reference Include="GoogleMaps">
+      <HintPath>Components\googlemapsios-1.5.0\lib\ios\GoogleMaps.dll</HintPath>
+    </Reference>
+    <Reference Include="Vernacular.Catalog">
+      <HintPath>lib\Vernacular.Catalog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -135,10 +139,11 @@
     <Folder Include="Screens\" />
     <Folder Include="Settings.bundle\" />
     <Folder Include="Settings.bundle\de.lproj\" />
+    <Folder Include="de.lproj\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
-    <None Include="de\de.po" />
+    <None Include="de.lproj\de.po" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -148,7 +153,6 @@
       <DependentUpon>CartridgeDetail.cs</DependentUpon>
     </Compile>
     <Compile Include="CartridgeList.cs" />
-    <Compile Include="iOS\AssemblyInfo.cs" />
     <Compile Include="IController.cs" />
     <Compile Include="iOS\Settings.cs" />
     <Compile Include="CheckLocation.cs" />
@@ -161,6 +165,8 @@
     <Compile Include="Screens\ScreenMain.cs" />
     <Compile Include="Screens\ScreenMainiOS.cs" />
     <Compile Include="Screens\ScreenMap.cs" />
+    <Compile Include="iOS\AssemblyInfo.cs" />
+    <Compile Include="Enums.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -195,10 +201,34 @@
     <BundleResource Include="Images\blue%402x.png" />
     <BundleResource Include="Images\blueTop.png" />
     <BundleResource Include="Images\blueTop%402x.png" />
-    <BundleResource Include="de\WF.Player.iOS.Messages.resources.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\de.lproj\Root.strings" />
+    <BundleResource Include="Images\glow-marker.png" />
+    <BundleResource Include="Images\glow-marker%402x.png" />
+    <BundleResource Include="de.lproj\Localizable.strings" />
+    <BundleResource Include="Images\ButtonCenter.png" />
+    <BundleResource Include="Images\ButtonCenter%402x.png" />
+    <BundleResource Include="Images\ButtonOrientation.png" />
+    <BundleResource Include="Images\ButtonOrientation%402x.png" />
+    <BundleResource Include="Images\ButtonLayer.png" />
+    <BundleResource Include="Images\ButtonLayer%402x.png" />
+    <BundleResource Include="Images\ButtonOrientationNorth.png" />
+    <BundleResource Include="Images\ButtonOrientationNorth%402x.png" />
+    <BundleResource Include="Images\IconMapZone.png" />
+    <BundleResource Include="Images\IconMapZone%402x.png" />
+    <BundleResource Include="Images\IconMapCharacter.png" />
+    <BundleResource Include="Images\IconMapCharacter%402x.png" />
+    <BundleResource Include="Images\IconInventory%402x.png" />
+    <BundleResource Include="Images\IconLocation%402x.png" />
+    <BundleResource Include="Images\IconTask%402x.png" />
+    <BundleResource Include="Images\IconYouSee%402x.png" />
+    <BundleResource Include="Images\IconMapItem.png" />
+    <BundleResource Include="Images\IconMapItem%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="googlemapsios">
+      <Version>1.5.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>

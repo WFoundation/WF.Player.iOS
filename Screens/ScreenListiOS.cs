@@ -44,7 +44,7 @@ namespace WF.Player.iOS
 		{
 			this.ctrl = ctrl;
 			this.engine = ctrl.Engine;
-			this.screen = screen;
+			this.type = screen;
 
 			// Create source for table view
 			screenListSource = new ScreenListSource(this, ctrl, screen);
@@ -74,8 +74,14 @@ namespace WF.Player.iOS
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(screen); }), false);
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(type); }), false);
+			if (type == ScreenType.Locations || type == ScreenType.Items)
+				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
+					ctrl.ShowScreen(ScreenType.Map, null);
+				}), false);
+
 			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
+			NavigationItem.SetHidesBackButton (false, false);
 
 			// Create table view
 			Table = new UITableView()
@@ -85,15 +91,11 @@ namespace WF.Player.iOS
 				AutosizesSubviews = true
 			};
 
-			// Set the table view to fit the width of the app.
-			Table.SizeToFit();
-
 			// Reposition and resize the receiver
-			Table.Frame = new RectangleF (0, 0, this.View.Frame.Width,this.View.Frame.Height);
+			Table.Frame = new RectangleF (0, 0, View.Frame.Width, View.Frame.Height);
 
 			// Add the table view as a subview
-			this.View.AddSubviews(this.Table);
-			this.View.AutoresizingMask = UIViewAutoresizing.All;
+			View.AddSubview(this.Table);
 		}
 		
 		public override void ViewDidAppear (bool animated)
@@ -135,16 +137,13 @@ namespace WF.Player.iOS
 			return true;
 		}
 
-		#endregion
-
-		#region Private Functions
-
-		void Refresh(bool itemsChanged)
+		public void Refresh(bool itemsChanged)
 		{
 			if (itemsChanged)
 				NavigationItem.Title = GetContent ();
 
-			Table.ReloadData ();
+			if (Table != null)
+				Table.ReloadData ();
 		}
 
 		#endregion
@@ -303,14 +302,19 @@ namespace WF.Player.iOS
 						textDistance.Hidden = false;
 						textDistance.Text = Strings.GetString("Inside");
 					} else {
-						if (((Thing)obj).VectorFromPlayer != null) {
-							imageDirection.Hidden = false;
-							imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
-							textDistance.Hidden = false;
-							textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
-						} else {
+						if ((obj is Item || obj is Character) && obj.ObjectLocation != null) {
 							imageDirection.Hidden = true;
 							textDistance.Hidden = true;
+						} else {
+							if (((Thing)obj).VectorFromPlayer != null) {
+								imageDirection.Hidden = false;
+								imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
+								textDistance.Hidden = false;
+								textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
+							} else {
+								imageDirection.Hidden = true;
+								textDistance.Hidden = true;
+							}
 						}
 					}
 				} else {

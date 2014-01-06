@@ -147,7 +147,7 @@ namespace WF.Player.iOS
 				{
 					case 0:
 						header = Strings.GetString("Locations");
-						empty = engine.Cartridge.EmptyZonesListText;
+						empty = Strings.GetString(engine.Cartridge.EmptyZonesListText);
 						image = iconLocation;
 						foreach (UIObject o in engine.ActiveVisibleZones) 
 						{
@@ -156,7 +156,7 @@ namespace WF.Player.iOS
 						break;
 					case 1:
 						header = Strings.GetString("You see");
-						empty = engine.Cartridge.EmptyYouSeeListText;
+						empty = Strings.GetString(engine.Cartridge.EmptyYouSeeListText);
 						image = iconYouSee;
 						foreach (UIObject o in engine.VisibleObjects) 
 						{
@@ -165,7 +165,7 @@ namespace WF.Player.iOS
 						break;
 					case 2:
 						header = Strings.GetString("Inventory");
-						empty = engine.Cartridge.EmptyInventoryListText;
+						empty = Strings.GetString(engine.Cartridge.EmptyInventoryListText);
 						image = iconInventory;
 						foreach (UIObject o in engine.VisibleInventory) 
 						{
@@ -174,7 +174,7 @@ namespace WF.Player.iOS
 						break;
 					case 3:
 						header = Strings.GetString("Tasks");
-						empty = engine.Cartridge.EmptyTasksListText;
+						empty = Strings.GetString(engine.Cartridge.EmptyTasksListText);
 						image = iconTask;
 						foreach (UIObject o in engine.ActiveVisibleTasks) 
 						{

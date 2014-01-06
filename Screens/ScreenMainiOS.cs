@@ -73,6 +73,9 @@ namespace WF.Player.iOS
 			iconInventory = Images.IconInventory;
 			iconTask = Images.IconTask;
 
+			// Show back button
+			NavigationItem.SetHidesBackButton (false, false);
+
 			// Create source for table view
 			MainScreenSource mainListSource = new MainScreenSource(this, ctrl);
 
@@ -112,6 +115,8 @@ namespace WF.Player.iOS
 			base.ViewDidAppear(animated);
 
 			NavigationController.SetNavigationBarHidden(false,false);
+			NavigationItem.SetHidesBackButton(false, false);
+
 			NavigationItem.Title = engine.Cartridge.Name;
 
 			StartEvents ();
