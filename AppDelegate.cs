@@ -24,7 +24,6 @@ using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using Google.Maps;
-using MonoTouch.Foundation;
 using Vernacular;
 using WF.Player.Core;
 
@@ -60,6 +59,8 @@ namespace WF.Player.iOS
 			// TODO: Delete
 			Console.WriteLine ("FinishedLaunching");
 
+			// Activate TestFlight
+			MonoTouch.TestFlight.TestFlight.TakeOffThreadSafe(@"d8fc2051-04bd-4612-b83f-19786b749aab");
 
 			// Activate Vernacular Catalog
 			Catalog.Implementation = new ResourceCatalog {

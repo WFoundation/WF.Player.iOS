@@ -131,6 +131,9 @@
     <Reference Include="Vernacular.Catalog">
       <HintPath>lib\Vernacular.Catalog.dll</HintPath>
     </Reference>
+    <Reference Include="TestFlight">
+      <HintPath>lib\TestFlight.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
