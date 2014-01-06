@@ -129,7 +129,7 @@
       <HintPath>Components\googlemapsios-1.5.0\lib\ios\GoogleMaps.dll</HintPath>
     </Reference>
     <Reference Include="Vernacular.Catalog">
-      <HintPath>Libs\Vernacular.Catalog.dll</HintPath>
+      <HintPath>lib\Vernacular.Catalog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +166,7 @@
     <Compile Include="Screens\ScreenMainiOS.cs" />
     <Compile Include="Screens\ScreenMap.cs" />
     <Compile Include="iOS\AssemblyInfo.cs" />
+    <Compile Include="Enums.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -32,19 +32,6 @@ using WF.Player.Core.Utils;
 
 namespace WF.Player.iOS
 {
-	public enum MapSource : int
-	{
-		GoogleMaps,
-		GoogleSatellite,
-		GoogleTerrain,
-		GoogleHybrid,
-		OpenStreetMap,
-		OpenCycleMap,
-		Offline,
-		Cartridge,
-		None
-	}
-
 	public class ScreenMap : UIViewController
 	{
 		float zoom = 16f;

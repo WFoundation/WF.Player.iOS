@@ -417,7 +417,7 @@ namespace WF.Player.iOS
 		[CLSCompliantAttribute(false)]
 		public void OnShowScreen (Object sender, ScreenEventArgs args)
 		{
-			ShowScreen(args.Screen, args.Object);
+			ShowScreen((ScreenType)args.Screen, args.Object);
 		}
 
 		[CLSCompliantAttribute(false)]

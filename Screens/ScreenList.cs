@@ -31,7 +31,7 @@ namespace WF.Player.iOS
 		ScreenController ctrl;
 		Engine engine;
 		ScreenType type;
-		string[] properties = {"Name", "Icon", "Active", "Visible", "ObjectLocation"};
+		string[] properties = {"Name", "Icon", "Active", "Visible", "ObjectLocation", "VisibleObjects", "VisibleInventory", "ActiveVisibleTasks", "ActiveVisibleZones"};
 
 		public List<UIObject> Items = new List<UIObject>();
 		public bool ShowIcons;

@@ -1,29 +1,32 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhoneRetina.7.0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="WF.Player.Core/Core/Engines/Engine.cs">
     <Files>
       <File FileName="AppDelegate.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenController.cs" Line="515" Column="22" />
-      <File FileName="Screens/ScreenMap.cs" Line="583" Column="83" />
-      <File FileName="iOS/Settings.cs" Line="46" Column="18" />
+      <File FileName="Screens/ScreenController.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenMap.cs" Line="1" Column="1" />
+      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
       <File FileName="CartridgeList.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenDetailiOS.cs" Line="245" Column="1" />
+      <File FileName="Screens/ScreenDetailiOS.cs" Line="1" Column="1" />
       <File FileName="CheckLocation.cs" Line="1" Column="1" />
       <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenListiOS.cs" Line="80" Column="42" />
+      <File FileName="Screens/ScreenListiOS.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenList.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenMainiOS.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Enums.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/ZonePoint.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs" Line="479" Column="1" />
       <File FileName="Screens/ScreenDialog.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="434" Column="17" />
-      <File FileName="WF.Player.Core/Core/Engines/iOSPlatformHelper.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Zone.cs" Line="74" Column="1" />
-      <File FileName="WF.Player.Core/Core/Utils/Extensions.cs" Line="41" Column="1" />
-      <File FileName="WF.Player.Core/Core/Utils/CoordRect.cs" Line="66" Column="1" />
-      <File FileName="WF.Player.Core/Core/Cartridge.cs" Line="162" Column="1" />
-      <File FileName="WF.Player.Core/Core/Thing.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/WherigoObject.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenMain.cs" Line="1" Column="1" />
+      <File FileName="Main.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Events.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1694" Column="9" />
+      <File FileName="WF.Player.Core/Eluant/Eluant/LuaRuntime.cs" Line="1491" Column="1" />
+      <File FileName="WF.Player.Core/Core/Threading/ExecutionQueue.cs" Line="217" Column="9" />
+      <File FileName="WF.Player.Core/Core/Formats/FileGWS.cs" Line="279" Column="1" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataProvider.cs" Line="101" Column="1" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/SafeLua.cs" Line="377" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -34,7 +37,8 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
     <IPhoneTestFlightSettings_27CRelease ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="d8fc2051-04bd-4612-b83f-19786b749aab" ReleaseNotes="Erste Version für Betatester.&#xA;&#xA;Es ist noch nicht alles perfekt, aber einen ersten Blick ist es auf alle Fälle wert. Ich wünsche viel Spaß. Und gerne höre ich von Euren Erfahrungen.&#xA;&#xA;Viele Grüße&#xA;Dirk (Charlenni)&#xA;&#xA;First version for betatester.&#xA;&#xA;Not all perfect, but worth a first look. Enjoy it. And if you find a bug, please send me an e-mail.&#xA;&#xA;Best regards&#xA;Dirk (Charlenni)" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
-    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Dritte Version&#xA;&#xA;- Karte überarbeitet. Funktioniert noch immer nicht alles, aber schon deutlich mehr&#xA;- Fehler Poster statt Icon in der Cartridge-Liste behoben&#xA;- Löschen von Cartridges funktioniert&#xA;- Abbruch im Beenden Dialog hinzugefügt&#xA;- Rollen-Problem in der Cartridge Detailansicht behoben&#xA;- Menü auf &quot;Sichern&quot; reduziert&#xA;&#xA;Alle anderen Fehler müssen bis nächstes Jahr warten.&#xA;&#xA;Einen guten Rutsch und ein schönes neues Jahr 2014&#xA;&#xA;Viele Grüße&#xA;Dirk&#xA;&#xA;Hello RangerFox,&#xA;&#xA;sorry, no time, you have to use the Google translator :(&#xA;&#xA;Enjoy it! And best wishes for 2014!&#xA;&#xA;Best regards&#xA;Dirk " NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="So, Version 0.5.0.3 ist fertig. Die Karte wurde komplett überarbeitet und ist weitgehend fertig. Es fehlen nur noch Offline Maps, was aber noch etwas warten muss. Ein Fehler beim Speichern von Cartridges mit Umlauten wurde behoben und die Verwaltung der Screens wurde umgestaltet, so dass nun hoffentlich immer aktuelle Daten zu sehen sind.&#xA;&#xA;Nach einem Bug-Tracking-System muss ich noch schauen.&#xA;&#xA;Viel Spaß!&#xA;&#xA;Ok, Christopher, I’m nearly through with the maps. Only offline maps are missing. Had to wait a little bit, but should be very complicated. I removed a bug which occurred when saving cartridges with umlaute. The handling of screens was redesigned, so that now the screen should actual data.&#xA;&#xA;Enjoy it!" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
     <MonoDevelop.MacDev.AppleDevelopmentTeam DeveloperId="568GFG8P5M" TeamId="CE232943X3" />
+    <IPhoneTestFlightSettings_27CDebug ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="So, Version 0.5.0.3 ist fertig. Die Karte wurde komplett überarbeitet und ist weitgehend fertig. Es fehlen nur noch Offline Maps, was aber noch etwas warten muss. Ein Fehler beim Speichern von Cartridges mit Umlauten wurde behoben und die Verwaltung der Screens wurde umgestaltet, so dass nun hoffentlich immer aktuelle Daten zu sehen sind.&#xA;&#xA;Nach einem Bug-Tracking-System muss ich noch schauen.&#xA;&#xA;Viel Spaß!&#xA;&#xA;Ok, Christopher, I’m nearly through with the maps. Only offline maps are missing. Had to wait a little bit, but should be very complicated. I removed a bug which occurred when saving cartridges with umlaute. The handling of screens was redesigned, so that now the screen should actual data.&#xA;&#xA;Enjoy it!" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
   </MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
 </Properties>
