@@ -6,7 +6,15 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>CFBundleTypeName</string>
+			<string>Wherigo Cartridge File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.wf.player.gwc</string>
+			</array>
 		</dict>
 	</array>
 	<key>UIDeviceFamily</key>
@@ -22,18 +30,32 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UTExportedTypeDeclarations</key>
-	<array/>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<string>public.data</string>
+			<key>UTTypeDescription</key>
+			<string>Wherigo Cartridge File</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.wf.player.gwc</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<string>gwc</string>
+			</dict>
+		</dict>
+	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array/>
 	<key>CFBundleDisplayName</key>
 	<string>WF.Player</string>
 	<key>MinimumOSVersion</key>
 	<string>6.0</string>
-	<key>CFBundleVersion</key>
-	<string>0.3</string>
 	<key>CFBundleIdentifier</key>
 	<string>wfplayerios</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.5</string>
+	<key>CFBundleVersion</key>
+	<string>5</string>
 </dict>
 </plist>

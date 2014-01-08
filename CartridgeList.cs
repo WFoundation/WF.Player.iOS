@@ -117,7 +117,7 @@ namespace WF.Player.iOS
 		{
 			if (cartDetail == null)
 				cartDetail = new CartridgeDetail(appDelegate);
-			this.NavigationController.PushViewController (cartDetail,true);
+			NavigationController.PushViewController (cartDetail,true);
 			cartDetail.Cartridge = cart;
 		}
 

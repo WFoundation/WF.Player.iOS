@@ -1,38 +1,24 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x64" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.6.1" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="WF.Player.Core/Core/Engines/Engine.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="AppDelegate.cs">
     <Files>
-      <File FileName="AppDelegate.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenController.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenMap.cs" Line="1" Column="1" />
-      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
-      <File FileName="CartridgeList.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenDetailiOS.cs" Line="1" Column="1" />
-      <File FileName="CheckLocation.cs" Line="1" Column="1" />
-      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenListiOS.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenList.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="93" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenMainiOS.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Enums.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/ZonePoint.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataFactory.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenDialog.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="1" Column="1" />
       <File FileName="Screens/ScreenMain.cs" Line="1" Column="1" />
-      <File FileName="Main.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Events.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1694" Column="9" />
-      <File FileName="WF.Player.Core/Eluant/Eluant/LuaRuntime.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Threading/ExecutionQueue.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Formats/FileGWS.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataProvider.cs" Line="1" Column="1" />
-      <File FileName="WF.Player.Core/Core/Data/Lua/SafeLua.cs" Line="1" Column="1" />
+      <File FileName="AppDelegate.cs" Line="190" Column="1" />
+      <File FileName="WF.Player.Core/Core/Threading/JobQueue.cs" Line="442" Column="1" />
+      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
+      <File FileName="CartridgeList.cs" Line="187" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Entwicklung/WF.Player.iOS/GNU.Gettext/intl.cs" line="6" column="1" />
+      <Breakpoint file="/Entwicklung/WF.Player.iOS/AppDelegate.cs" line="190" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
+    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Der Fehler mit der nicht aktuellen Anzeige sollte nun behoben werden. Auch die immer kürzer werdenden Zeichenketten bei Umlauten sollte der Vergangenheit angehören.&#xA;&#xA;Zusätzlich habe ich noch das SDK von TestFlight eingebaut, womit ich bei Abstürzen mehr Informationen bekommen sollte. Ich bin mal gespannt.&#xA;&#xA;Viele Grüße und weiterhin viel Spaß&#xA;Dirk (Charlenni)&#xA;&#xA;Removed bug with not actual screen lists. Also removed a bug with loding GWS files with umlaute.&#xA;&#xA;Included the TestFlight SDK for getting more informations when app is in trouble.&#xA;&#xA;Best regards&#xA;Dirk" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+  </MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
 </Properties>

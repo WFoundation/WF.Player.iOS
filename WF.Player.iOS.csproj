@@ -22,12 +22,12 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <MtouchDebug>True</MtouchDebug>
-    <MtouchLink>None</MtouchLink>
     <MtouchI18n>
     </MtouchI18n>
     <MtouchArch>ARMv7</MtouchArch>
     <AssemblyName>WFPlayer</AssemblyName>
     <StartupObject>WF.Player.iPhone.Application</StartupObject>
+    <MtouchExtraArgs>-cxx</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -68,7 +68,6 @@
     <BuildIpa>true</BuildIpa>
     <MtouchUseSGen>true</MtouchUseSGen>
     <StartupObject>WF.Player.iPhone.Application</StartupObject>
-    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>

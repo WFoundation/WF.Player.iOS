@@ -26,6 +26,7 @@ using MonoTouch.UIKit;
 using Google.Maps;
 using Vernacular;
 using WF.Player.Core;
+using WF.Player.Core.Formats;
 
 namespace WF.Player.iOS
 {
@@ -56,11 +57,12 @@ namespace WF.Player.iOS
 		[CLSCompliantAttribute(false)]
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
-			// TODO: Delete
-			Console.WriteLine ("FinishedLaunching");
-
 			// Activate TestFlight
 			MonoTouch.TestFlight.TestFlight.TakeOffThreadSafe(@"d8fc2051-04bd-4612-b83f-19786b749aab");
+
+			NSObject test = null;
+			if (options != null && options.TryGetValue(UIApplication.LaunchOptionsUrlKey, out test))
+				Console.WriteLine (test.ToString ());
 
 			// Activate Vernacular Catalog
 			Catalog.Implementation = new ResourceCatalog {
@@ -110,7 +112,7 @@ namespace WF.Player.iOS
 			
 			// make the window visible
 			window.MakeKeyAndVisible ();
-			
+
 			return true;
 		}
 
@@ -178,6 +180,23 @@ namespace WF.Player.iOS
 				// Save game automatically
 				screenCtrl.Engine.Save (new FileStream (screenCtrl.Engine.Cartridge.SaveFilename, FileMode.Create));
 			}
+		}
+
+		// Is called by other apps from "open in" dialogs
+		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+		{
+			var fileName = url.MakeRelative(Environment.GetFolderPath (Environment.SpecialFolder.Personal)).Path;
+
+			Cartridge cart = new Cartridge(fileName);
+			FileFormats.LoadMetadata(new FileStream(fileName, FileMode.Open), cart);
+
+			CartridgeDetail cartDetail = new CartridgeDetail(this);
+
+			window.RootViewController.NavigationController.PushViewController (cartDetail,true);
+
+			cartDetail.Cartridge = cart;
+
+			return true;
 		}
 
 		[CLSCompliantAttribute(false)]
