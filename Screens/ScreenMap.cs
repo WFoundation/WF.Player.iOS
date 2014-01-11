@@ -87,7 +87,10 @@ namespace WF.Player.iOS
 			base.ViewDidLoad ();
 
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.ButtonPressed(null); ctrl.RemoveScreen(ScreenType.Map); }), false);
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
+				ctrl.ButtonPressed(null); 
+				ctrl.RemoveScreen(ScreenType.Map); 
+			}), false);
 			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
 			NavigationItem.SetHidesBackButton(false, false);
 

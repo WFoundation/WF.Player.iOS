@@ -366,7 +366,8 @@ namespace WF.Player.iOS
 
 		void OnPlayAlert (object sender, WherigoEventArgs e)
 		{
-			SystemSound.Vibrate.PlayAlertSound ();
+			Sounds.Alarm.PlayAlertSound ();
+			SystemSound.Vibrate.PlaySystemSound ();
 		}
 
 		[CLSCompliantAttribute(false)]

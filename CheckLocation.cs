@@ -170,8 +170,8 @@ namespace WF.Player.iOS
 
 		void start()
 		{
-			if (NSUserDefaults.StandardUserDefaults.BoolForKey("ButtonClick"))
-				Sounds.KeyboardClick.PlaySystemSound ();
+			if (NSUserDefaults.StandardUserDefaults.BoolForKey ("ButtonClick"))
+				Sounds.KeyboardClick.PlayAlertSound ();
 			if (NSUserDefaults.StandardUserDefaults.BoolForKey("ButtonVibrate"))
 				SystemSound.Vibrate.PlaySystemSound ();
 
@@ -181,7 +181,7 @@ namespace WF.Player.iOS
 		void quit()
 		{
 			if (NSUserDefaults.StandardUserDefaults.BoolForKey("ButtonClick"))
-				Sounds.KeyboardClick.PlaySystemSound ();
+				Sounds.KeyboardClick.PlayAlertSound ();
 			if (NSUserDefaults.StandardUserDefaults.BoolForKey("ButtonVibrate"))
 				SystemSound.Vibrate.PlaySystemSound ();
 

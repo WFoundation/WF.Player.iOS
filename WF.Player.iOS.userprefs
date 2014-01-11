@@ -1,14 +1,38 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Ad-Hoc|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Ad-Hoc|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Dirks iPad" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Info.plist">
     <Files>
       <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
-      <File FileName="AppDelegate.cs" Line="3" Column="28" />
+      <File FileName="AppDelegate.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Threading/JobQueue.cs" Line="1" Column="1" />
       <File FileName="Info.plist" />
-      <File FileName="Screens/ScreenController.cs" Line="3" Column="28" />
+      <File FileName="Screens/ScreenController.cs" Line="370" Column="34" />
+      <File FileName="Screens/ScreenListiOS.cs" Line="184" Column="9" />
+      <File FileName="Screens/ScreenMap.cs" Line="93" Column="4" />
+      <File FileName="iOS/Settings.cs" Line="28" Column="46" />
+      <File FileName="CheckLocation.cs" Line="178" Column="15" />
+      <File FileName="CartridgeDetail.cs" Line="3" Column="28" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataProvider.cs" Line="105" Column="1" />
+      <File FileName="Screens/ScreenList.cs" Line="3" Column="28" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Core.iOS" expanded="True">
+            <Node name="Data" expanded="True">
+              <Node name="Lua" expanded="True" />
+            </Node>
+          </Node>
+          <Node name="WF.Player.iOS" expanded="True">
+            <Node name="iOS" expanded="True" />
+            <Node name="Resources" expanded="True" />
+            <Node name="Screens" expanded="True" />
+            <Node name="Info.plist" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

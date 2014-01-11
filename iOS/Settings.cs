@@ -24,7 +24,8 @@ namespace WF.Player.iOS
 
 	public class Sounds
 	{
-		public static SystemSound KeyboardClick = new SystemSound(NSUrl.FromFilename (NSBundle.FromIdentifier ("com.apple.UIKit").PathForResource ("Tock", "aiff")));
+		public static SystemSound KeyboardClick = SystemSound.FromFile(NSBundle.MainBundle.PathForResource("tap", "aif"));
+		public static SystemSound Alarm = SystemSound.FromFile(NSBundle.MainBundle.PathForResource("alarm", "aif"));
 	}
 
 	public class Images
