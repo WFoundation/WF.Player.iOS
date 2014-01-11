@@ -325,3 +325,7 @@ msgstr "OpenCycleMap"
 #: Screens/ScreenMap.cs:359
 msgid "None"
 msgstr "Keine"
+
+#: Screens/ScreenMap.cs:608
+msgid "Contains {0}"
+msgstr "Enthält {0}"

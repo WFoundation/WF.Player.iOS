@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -222,6 +222,7 @@ namespace WF.Player.iOS
 		
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
+			ctrl.ButtonPressed (null);
 			owner.EntrySelected(indexPath.Row);
 		}
 

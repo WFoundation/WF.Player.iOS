@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -60,10 +60,6 @@ namespace WF.Player.iOS
 			// Activate TestFlight
 			MonoTouch.TestFlight.TestFlight.TakeOffThreadSafe(@"d8fc2051-04bd-4612-b83f-19786b749aab");
 
-			NSObject test = null;
-			if (options != null && options.TryGetValue(UIApplication.LaunchOptionsUrlKey, out test))
-				Console.WriteLine (test.ToString ());
-
 			// Activate Vernacular Catalog
 			Catalog.Implementation = new ResourceCatalog {
 				GetResourceById = id => {
@@ -108,7 +104,7 @@ namespace WF.Player.iOS
 			// controller will handle the rest
 			// If you have defined a view, add it here:
 			// window.AddSubview (navigationController.View);
-			this.window.RootViewController = navCartSelect;
+			window.RootViewController = navCartSelect;
 			
 			// make the window visible
 			window.MakeKeyAndVisible ();
@@ -185,16 +181,40 @@ namespace WF.Player.iOS
 		// Is called by other apps from "open in" dialogs
 		public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
 		{
-			var fileName = url.MakeRelative(Environment.GetFolderPath (Environment.SpecialFolder.Personal)).Path;
+			var sourceFile = url.Path;
+			var destFile = System.IO.Path.Combine(Environment.GetFolderPath (Environment.SpecialFolder.Personal), System.IO.Path.GetFileName(sourceFile));
 
-			Cartridge cart = new Cartridge(fileName);
-			FileFormats.LoadMetadata(new FileStream(fileName, FileMode.Open), cart);
+			if (!File.Exists (sourceFile))
+				return false;
 
-			CartridgeDetail cartDetail = new CartridgeDetail(this);
+			var fileExists = false;
 
-			window.RootViewController.NavigationController.PushViewController (cartDetail,true);
+			if (File.Exists (destFile)) {
+				fileExists = true;
+				File.Delete (destFile);
+			}
 
-			cartDetail.Cartridge = cart;
+			File.Copy (sourceFile, destFile);
+
+			Cartridge cart = new Cartridge(destFile);
+			FileFormats.LoadMetadata(new FileStream(destFile, FileMode.Open), cart);
+
+			// TODO
+			// If there was a cartridge with the same filename, than replace
+			if (fileExists) {
+			}
+
+			if (window.RootViewController.PresentedViewController is UINavigationController && window.RootViewController.PresentedViewController == navCartSelect) {
+				// Now create a new list for cartridges
+				viewCartSelect = new CartridgeList(this);
+				// Add the cartridge view to the navigation controller
+				// (it'll be the top most screen)
+				navCartSelect.PopToRootViewController (true);
+				navCartSelect.SetViewControllers(new UIViewController[] {(UIViewController)viewCartSelect}, false);
+//				CartridgeDetail cartDetail = new CartridgeDetail(this);
+//				((UINavigationController)window.RootViewController.PresentedViewController).PushViewController (cartDetail,true);
+//				cartDetail.Cartridge = cart;
+			}
 
 			return true;
 		}

@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using MonoTouch.CoreLocation;
@@ -86,14 +87,14 @@ namespace WF.Player.iOS
 			base.ViewDidLoad ();
 
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(ScreenType.Map); }), false);
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.ButtonPressed(null); ctrl.RemoveScreen(ScreenType.Map); }), false);
 			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
 			NavigationItem.SetHidesBackButton(false, false);
 
 			// Get zoom factor
 			zoom = NSUserDefaults.StandardUserDefaults.FloatForKey("MapZoom");
 
-			// Get zoom factor
+			// Get heading orientation
 			headingOrientation = NSUserDefaults.StandardUserDefaults.BoolForKey("HeadingOrientation");
 
 			if (zoom == 0f)
@@ -280,6 +281,8 @@ namespace WF.Player.iOS
 
 		void OnTouchUpInside (object sender, EventArgs e)
 		{
+			ctrl.ButtonPressed (null);
+
 			if (sender is UIButton && ((UIButton)sender).Tag == 1) {
 				// Ask, which to show
 				var thingOffset = 1;
@@ -324,6 +327,8 @@ namespace WF.Player.iOS
 			if  (sender is UIButton && ((UIButton)sender).Tag == 2) {
 				// Check, if north should be on top
 				headingOrientation = !headingOrientation;
+				NSUserDefaults.StandardUserDefaults.SetBool (headingOrientation, "HeadingOrientation");
+
 				if (headingOrientation) {
 					((UIButton)sender).SetImage (Images.ButtonOrientation, UIControlState.Normal);
 					ctrl.LocatitionManager.UpdatedHeading += OnUpdateHeading;
@@ -527,7 +532,20 @@ namespace WF.Player.iOS
 				}
 				markers.Add(t.ObjIndex, marker);
 			}
-			marker.Title = t.Name;
+			marker.Title = (t.Name == null ? "" : t.Name);
+
+			var inventory = (WherigoCollection<Thing>)t.Inventory;
+
+			if (inventory.Count > 0) {
+				StringBuilder s = new StringBuilder ();
+
+				foreach (Thing thing in inventory) {
+					s.Append ((s.Length > 0 ? ", " : "") + (thing.Name == null ? "" : thing.Name));
+				}
+
+				marker.Snippet = Strings.GetStringFmt("Contains {0}", s.ToString());
+			}
+
 			marker.ZIndex = 100;
 			((Marker)marker).Position = new CLLocationCoordinate2D(t.ObjectLocation.Latitude, t.ObjectLocation.Longitude);
 		}
@@ -576,6 +594,18 @@ namespace WF.Player.iOS
 			polygon.Title = z.Name;
 			marker.Title = z.Name;
 
+			var inventory = (WherigoCollection<Thing>)z.Inventory;
+
+			if (inventory.Count > 0) {
+				StringBuilder s = new StringBuilder ();
+
+				foreach (Thing thing in inventory) {
+					s.Append ((s.Length > 0 ? ", " : "") + (thing.Name == null ? "" : thing.Name));
+				}
+
+				marker.Snippet = Strings.GetStringFmt("Contains {0}", s.ToString());
+			}
+				
 			MutablePath path = new MutablePath ();;
 			WherigoCollection<ZonePoint> points = z.Points;
 

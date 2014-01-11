@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -108,6 +108,7 @@ namespace WF.Player.iOS
 
 			// Set left button
 			var leftBarButton = new UIBarButtonItem (Strings.GetString("Quit"), UIBarButtonItemStyle.Plain, (sender, args) => {
+				ButtonPressed(null);
 				quit();
 			});
 			leftBarButton.TintColor = Colors.NavBarButton;
@@ -115,6 +116,7 @@ namespace WF.Player.iOS
 
 			// Set right button
 			var rightBarButton = new UIBarButtonItem (Strings.GetString("Save"), UIBarButtonItemStyle.Plain, (sender, args) => {
+				ButtonPressed(null);
 				Save();
 			});
 			rightBarButton.TintColor = Colors.NavBarButton;
@@ -354,11 +356,6 @@ namespace WF.Player.iOS
 		public void OnGetInput (Object sender, ObjectEventArgs<Input> input)
 		{
 			ShowScreen (ScreenType.Dialog, input.Object);
-//			ScreenDialog dialogScreen = new ScreenDialog(input.Object);
-//			this.NavigationItem.SetHidesBackButton(true, animation);
-//			PushViewController (dialogScreen,animation);
-			// Ensure, that screen is updated
-//			NSRunLoop.Current.RunUntil(DateTime.Now);
 		}
 
 		[CLSCompliantAttribute(false)]
@@ -372,30 +369,6 @@ namespace WF.Player.iOS
 			SystemSound.Vibrate.PlayAlertSound ();
 		}
 
-//		[CLSCompliantAttribute(false)]
-//		public void OnNotifyOS(Object sender, NotifyOSEventArgs args)
-//		{
-//			// TODO
-//			switch (args.Command) {
-//				case "StopSound":
-//					StopSound();
-//					break;
-//				case "SaveClose":
-//					engine.Save (new FileStream (cart.SaveFilename, FileMode.Create));
-//					DestroyEngine ();
-//					// Close log file
-//					locationManager.StopUpdatingLocation();
-//					appDelegate.CartStop();
-//					break;
-//				case "DriveTo":
-//					// TODO: Implement
-//					break;
-//				case "Alert":
-//					// TODO: Implement
-//					break;
-//			}
-//		}
-
 		[CLSCompliantAttribute(false)]
 		public void OnPlayMedia(Object sender, ObjectEventArgs<Media> mediaObj)
 		{
@@ -406,6 +379,13 @@ namespace WF.Player.iOS
 		public void OnSaveCartridge (object sender, SavingEventArgs args)
 		{
 			Save ();
+
+			if (args.CloseAfterSave) {
+				// Close log file
+				locationManager.StopUpdatingLocation ();
+				DestroyEngine ();
+				appDelegate.CartStop ();
+			}
 		}
 
 		[CLSCompliantAttribute(false)]
@@ -434,6 +414,18 @@ namespace WF.Player.iOS
 		#endregion
 
 		#region Helper Functions
+
+		/// <summary>
+		/// Buttons the pressed, so give the user the right feedback.
+		/// </summary>
+		/// <param name="button">Button, which is pressed.</param>
+		public void ButtonPressed(UIButton button)
+		{
+			if (NSUserDefaults.StandardUserDefaults.BoolForKey("ButtonClick"))
+				Sounds.KeyboardClick.PlaySystemSound ();
+			if (NSUserDefaults.StandardUserDefaults.BoolForKey("ButtonVibrate"))
+				SystemSound.Vibrate.PlaySystemSound ();
+		}
 
 		[CLSCompliantAttribute(false)]
 		public void RemoveScreen(ScreenType type)
@@ -525,48 +517,6 @@ namespace WF.Player.iOS
 				}
 				break;
 			}
-//
-//
-//			PopViewControllerAnimated(animation);
-//
-//			switch (remove) {
-//				//				case ScreenType.Main:
-//				//					// ToDo: Main screen is the last screen to show, so stop the cartridge
-//				//					ShowScreen (ScreenType.Main, null);
-//				//					break;
-//				//				case ScreenType.Locations:
-//				//				case ScreenType.Items:
-//				//				case ScreenType.Inventory:
-//				//				case ScreenType.Tasks:
-//				//					ShowScreen (ScreenType.Main, null);
-//				//					break;
-//				case ScreenType.Details:
-//				// Show correct list for this zone/item/character/task
-//				if (activeObject != null) {
-//					// Remove active list from screen
-//					PopViewControllerAnimated(animation);
-//					// Select the correct list to show
-//					UIObject obj = activeObject;
-//					activeObject = null;
-//					if (obj is Zone)
-//						ShowScreen (ScreenType.Locations, null);
-//					if (obj is Task)
-//						ShowScreen (ScreenType.Tasks, null);
-//					if (obj is Item || obj is Character) {
-//						if (engine.VisibleInventory.Contains((Thing)obj))
-//							ShowScreen (ScreenType.Inventory, null);
-//						else
-//							ShowScreen (ScreenType.Items, null);
-//					}
-//				} else
-//					ShowScreen (ScreenType.Main, null);
-//				break;
-//				case ScreenType.Dialog:
-//				// Which screen to show
-//				if (activeScreen == ScreenType.Details && activeObject != null && !activeObject.Visible)
-//					RemoveScreen (ScreenType.Details);
-//				break;
-			//			}
 		}
 
 		[CLSCompliantAttribute(false)]
@@ -613,75 +563,6 @@ namespace WF.Player.iOS
 				activeScreen = screenId;
 				activeObject = (UIObject)param;
 			}
-
-
-//			// If there is a old DialogScreen active, remove it
-//			if (VisibleViewController is ScreenDialog) {
-//				PopViewControllerAnimated (animation);
-//				if (VisibleViewController is ScreenMain)
-//					screenMain.Table.ReloadData ();
-//				if (VisibleViewController is ScreenList)
-//					screenList.Table.ReloadData ();
-//				// Ensure, that screen is updated
-//				NSRunLoop.Current.RunUntil(DateTime.Now);
-//			}
-//
-//			if (screenId == ScreenType.Main)
-//			{
-//				this.NavigationItem.SetHidesBackButton(false, animation);
-//				PopToRootViewController(animation);
-//				screenMain.Table.ReloadData();
-//				// Ensure, that screen is updated
-//				NSRunLoop.Current.RunUntil(DateTime.Now);
-//			}
-//			if (screenId == ScreenType.Locations || screenId == ScreenType.Items || screenId == ScreenType.Inventory || screenId == ScreenType.Tasks)
-//			{
-//				if (VisibleViewController != screenMain)
-//					PopToRootViewController(animation);
-//				screenList = new ScreenList (this, screenId);
-////				if (screenList.UpdateData(screenId)) {
-//					this.NavigationItem.SetHidesBackButton(false, animation);
-//					PushViewController (screenList,animation);
-////					screenList.Table.ReloadData();
-//					// Ensure, that screen is updated
-//					NSRunLoop.Current.RunUntil(DateTime.Now);
-////				}
-//			}
-//			if (screenId == ScreenType.Details)
-//			{
-//				if (activeScreen != ScreenType.Details || activeObject != (UIObject)param) {
-//					activeObject = (UIObject)param;
-//					if (VisibleViewController is ScreenDetail)
-//						PopViewControllerAnimated (animation);
-//					// Create new ViewController
-//					screenDetail = new ScreenDetail (this, activeObject);
-//					screenDetail.NavigationItem.SetLeftBarButtonItem (new UIBarButtonItem (Strings.GetString("Back"), UIBarButtonItemStyle.Plain, (sender, args) => {
-//						back ();
-//					}), true);
-//					if (activeObject is Zone || (activeObject is Thing && engine.VisibleObjects.Contains ((Thing)activeObject)))
-//						screenDetail.NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
-//							map ((Thing)activeObject);
-//						}), true);
-//					PushViewController (screenDetail, animation);
-//					// Ensure, that screen is updated
-//					NSRunLoop.Current.RunUntil (DateTime.Now);
-//				}
-//			}
-//			if (screenId == ScreenType.Dialog)
-//			{
-//				if (param is MessageBoxEventArgs) {
-//					ScreenDialog dialogScreen = new ScreenDialog(((MessageBoxEventArgs)param).Descriptor);
-//					this.NavigationItem.SetHidesBackButton(true, animation);
-//					PushViewController (dialogScreen,animation);
-//				}
-//				if (param is Input) {
-//					ScreenDialog dialogScreen = new ScreenDialog ((Input)param);
-//					this.NavigationItem.SetHidesBackButton (true, animation);
-//					PushViewController (dialogScreen, animation);
-//				}
-//			}
-//
-//			activeScreen = screenId;
 		}
 
 		[CLSCompliantAttribute(false)]

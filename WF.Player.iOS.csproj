@@ -62,7 +62,7 @@
     <MtouchArch>ARMv7, ARMv7s</MtouchArch>
     <CrashReportingApiKey>
     </CrashReportingApiKey>
-    <CodesignProvision>5309B5AC-A735-4EF9-A534-01E3384CF55E</CodesignProvision>
+    <CodesignProvision>8A487026-4714-412A-9789-B232080D9310</CodesignProvision>
     <AssemblyName>Player</AssemblyName>
     <MtouchLink>None</MtouchLink>
     <BuildIpa>true</BuildIpa>
@@ -93,7 +93,7 @@
     <WarningLevel>4</WarningLevel>
     <BuildIpa>True</BuildIpa>
     <ConsolePause>False</ConsolePause>
-    <CodesignProvision>7C9CFB5C-1BA9-4A86-8315-3E849E2B903A</CodesignProvision>
+    <CodesignProvision>6830DF9B-7B6C-4B2A-861C-B8AE276D87C1</CodesignProvision>
     <CodesignKey>iPhone Developer: Dirk Weltz (HN729T3H4S)</CodesignKey>
     <IpaPackageName>
     </IpaPackageName>
@@ -207,7 +207,6 @@
     <BundleResource Include="Settings.bundle\de.lproj\Root.strings" />
     <BundleResource Include="Images\glow-marker.png" />
     <BundleResource Include="Images\glow-marker%402x.png" />
-    <BundleResource Include="de.lproj\Localizable.strings" />
     <BundleResource Include="Images\ButtonCenter.png" />
     <BundleResource Include="Images\ButtonCenter%402x.png" />
     <BundleResource Include="Images\ButtonOrientation.png" />
@@ -226,6 +225,10 @@
     <BundleResource Include="Images\IconYouSee%402x.png" />
     <BundleResource Include="Images\IconMapItem.png" />
     <BundleResource Include="Images\IconMapItem%402x.png" />
+    <BundleResource Include="de.lproj\Localizable.strings" />
+    <BundleResource Include="Resources\Icon.png" />
+    <BundleResource Include="Resources\Icon%402x.png" />
+    <BundleResource Include="Resources\Icon-60%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googlemapsios">

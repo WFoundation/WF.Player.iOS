@@ -55,7 +55,15 @@
 	<string>wfplayerios</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.5</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>Icon</string>
+		<string>Icon@2x</string>
+		<string>Icon-60@2x</string>
+	</array>
+	<key>UIPrerenderedIcon</key>
+	<true/>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>7</string>
 </dict>
 </plist>

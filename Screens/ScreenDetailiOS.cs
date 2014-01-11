@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -71,7 +71,10 @@ namespace WF.Player.iOS
 			// Get all commands for this object
 
 			// Show back button
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(ScreenType.Details); }), false);
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
+				ctrl.ButtonPressed(null);
+				ctrl.RemoveScreen(ScreenType.Details); 
+			}), false);
 			NavigationItem.LeftBarButtonItem.TintColor = Colors.NavBarButton;
 			NavigationItem.SetHidesBackButton (false, false);
 
@@ -118,6 +121,9 @@ namespace WF.Player.iOS
 
 		private void OnTouchUpInside (object sender, EventArgs e)
 		{
+			// Play sound and vibrate, if set in the settings
+			ctrl.ButtonPressed ((UIButton)sender);
+
 			if (actionCommand == null) {
 				Command command = commands[((UIButton)sender).Tag];
 				if (command.CmdWith) {
@@ -237,7 +243,7 @@ namespace WF.Player.iOS
 			float maxWidth = this.View.Bounds.Width - 2 * frame;
 			float maxHeight = this.View.Bounds.Height;
 
-			if (activeObject is Zone || (activeObject is Thing && ctrl.Engine.VisibleObjects.Contains ((Thing)activeObject)))
+			if ((activeObject is Zone || (activeObject is Thing && ctrl.Engine.VisibleObjects.Contains ((Thing)activeObject))) && activeObject.ObjectLocation != null)
 				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
 					ctrl.ShowScreen(ScreenType.Map, activeObject);
 				}), false);
@@ -246,10 +252,11 @@ namespace WF.Player.iOS
 
 			if (what.Equals ("") || what.Equals ("Name")) 
 			{
+				string name = activeObject.Name == null ? "" : activeObject.Name;
 				if (activeObject is Task)
-					this.NavigationItem.Title = (((Task)activeObject).Complete ? (((Task)activeObject).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + activeObject.Name;
+					this.NavigationItem.Title = (((Task)activeObject).Complete ? (((Task)activeObject).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + name;
 				else
-					this.NavigationItem.Title = activeObject.Name;
+					this.NavigationItem.Title = name;
 			}
 
 			if (what.Equals ("") || what.Equals ("Media")) {
@@ -291,13 +298,13 @@ namespace WF.Player.iOS
 				MakeButtons (commands.Count);
 				// Set text for buttons
 				for (int i = 0; i < commands.Count; i++)
-					buttons [i].SetTitle (commands [i].Text, UIControlState.Normal);
+					buttons [i].SetTitle ((commands [i].Text == null ? "" : commands[i].Text), UIControlState.Normal);
 
 				buttonView.Hidden = commands.Count == 0;
 			}
 
 			if (actionCommand != null) {
-				actionText.Text = String.IsNullOrEmpty (actionCommandEmpty) ? actionCommand.Text : actionCommandEmpty;
+				actionText.Text = String.IsNullOrEmpty (actionCommandEmpty) ? (actionCommand.Text == null ? "" : actionCommand.Text) : actionCommandEmpty;
 				actionText.Hidden = false;
 				SizeF size = actionText.SizeThatFits (new SizeF (maxWidth, 999999));
 				actionText.Bounds = new RectangleF (0, 0, maxWidth, size.Height);
@@ -308,7 +315,7 @@ namespace WF.Player.iOS
 				if (String.IsNullOrEmpty (actionCommandEmpty)) {
 					// Show targets
 					for (int i = 0; i < targets.Count; i++) {
-						buttons [i].SetTitle (targets [i].Name, UIControlState.Normal);
+						buttons [i].SetTitle ((targets [i].Name == null ? "" : targets[i].Name), UIControlState.Normal);
 						buttons [i].Tag = i;
 					}
 				}

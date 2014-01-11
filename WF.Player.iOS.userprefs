@@ -1,24 +1,21 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="AppDelegate.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Ad-Hoc|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenController.cs">
     <Files>
-      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="93" Column="1" />
+      <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenMainiOS.cs" Line="1" Column="1" />
-      <File FileName="Screens/ScreenMain.cs" Line="1" Column="1" />
-      <File FileName="AppDelegate.cs" Line="190" Column="1" />
-      <File FileName="WF.Player.Core/Core/Threading/JobQueue.cs" Line="442" Column="1" />
-      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
-      <File FileName="CartridgeList.cs" Line="187" Column="1" />
+      <File FileName="AppDelegate.cs" Line="3" Column="28" />
+      <File FileName="WF.Player.Core/Core/Threading/JobQueue.cs" Line="1" Column="1" />
+      <File FileName="Info.plist" />
+      <File FileName="Screens/ScreenController.cs" Line="3" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/Entwicklung/WF.Player.iOS/AppDelegate.cs" line="190" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
-    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Der Fehler mit der nicht aktuellen Anzeige sollte nun behoben werden. Auch die immer kürzer werdenden Zeichenketten bei Umlauten sollte der Vergangenheit angehören.&#xA;&#xA;Zusätzlich habe ich noch das SDK von TestFlight eingebaut, womit ich bei Abstürzen mehr Informationen bekommen sollte. Ich bin mal gespannt.&#xA;&#xA;Viele Grüße und weiterhin viel Spaß&#xA;Dirk (Charlenni)&#xA;&#xA;Removed bug with not actual screen lists. Also removed a bug with loding GWS files with umlaute.&#xA;&#xA;Included the TestFlight SDK for getting more informations when app is in trouble.&#xA;&#xA;Best regards&#xA;Dirk" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Dinge, die in einer Zone enthalten sind (Zone.Inventory) werden jetzt auf der Karte angezeigt, wenn man die Fahne Antipp. Außerdem sollte es funktionieren, dass man GWC Dateien direkt aus E-Mails oder Webseiten kopieren kann. Neuzugänge werden noch nicht automatisch angezeigt. Überwachung des Documenten-Verzeichnisses kommt noch.&#xA;&#xA;Allerdings ist mir noch immer nicht klar, was beim Nachtspaziergang nicht funktioniert. Ich kann den hier ganz normal starten und er zählt artig hoch.&#xA;&#xA;Viele Grüße&#xA;Dirk" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+    <MonoDevelop.MacDev.AppleDevelopmentTeam DeveloperId="568GFG8P5M" TeamId="CE232943X3" />
   </MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
 </Properties>

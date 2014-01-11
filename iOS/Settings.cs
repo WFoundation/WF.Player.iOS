@@ -1,5 +1,7 @@
 using System;
 using System.Text;
+using MonoTouch.AudioToolbox;
+using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using Vernacular;
 
@@ -18,6 +20,11 @@ namespace WF.Player.iOS
 		public static UIColor ButtonText = UIColor.FromRGB(1.0f,1.0f,1.0f);
 		public static UIColor ZoneFill = UIColor.FromRGBA (1.0f, 0, 0, 0.1f);
 		public static UIColor ZoneStroke = UIColor.FromRGBA (1.0f, 0, 0, 0.3f);
+	}
+
+	public class Sounds
+	{
+		public static SystemSound KeyboardClick = new SystemSound(NSUrl.FromFilename (NSBundle.FromIdentifier ("com.apple.UIKit").PathForResource ("Tock", "aiff")));
 	}
 
 	public class Images
@@ -60,7 +67,7 @@ namespace WF.Player.iOS
 
 		public static string GetStringFmt(string text, params object[] args)
 		{
-			return Catalog.Format(Catalog.GetString(text), args);
+			return Catalog.Format(GetString(text), args);
 		}
 
 		public static string GetPluralString(string singular, string plural, int n)

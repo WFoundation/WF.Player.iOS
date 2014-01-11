@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -208,10 +208,12 @@ namespace WF.Player.iOS
 
 		private void OnTouchUpInside(object sender, EventArgs e) 
 		{
+			// Play sound and vibrate, if set in the settings
+			((ScreenController)ParentViewController).ButtonPressed ((UIButton)sender);
+
 			string result = "";
 			if (inputView != null && inputView.Text != null)
 				result = inputView.Text;
-			// TODO: Remove old screen
 			((ScreenController)ParentViewController).RemoveScreen (ScreenType.Dialog);
 			// Show right screen
 			if (input != null) {

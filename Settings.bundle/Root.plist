@@ -76,6 +76,32 @@
 			<key>DefaultValue</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Feedback</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Button click</string>
+			<key>Key</key>
+			<string>ButtonClick</string>
+			<key>DefaultValue</key>
+			<string>TrueValue</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Button vibrate</string>
+			<key>Key</key>
+			<string>ButtonVibrate</string>
+			<key>DefaultValue</key>
+			<string>TrueValue</string>
+		</dict>
 	</array>
 	<key>StringsTable</key>
 	<string>Root</string>

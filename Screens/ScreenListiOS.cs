@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2013  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -74,9 +74,13 @@ namespace WF.Player.iOS
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { ctrl.RemoveScreen(type); }), false);
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
+				ctrl.ButtonPressed(null); 
+				ctrl.RemoveScreen(type); 
+			}), false);
 			if (type == ScreenType.Locations || type == ScreenType.Items)
 				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
+					ctrl.ButtonPressed(null);
 					ctrl.ShowScreen(ScreenType.Map, null);
 				}), false);
 
@@ -195,6 +199,7 @@ namespace WF.Player.iOS
 		
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
+			ctrl.ButtonPressed (null);
 			owner.EntrySelected(indexPath.Row);
 		}
 	} 
@@ -285,13 +290,15 @@ namespace WF.Player.iOS
 				}
 			}
 
+			string name = obj.Name == null ? "" : obj.Name;
+
 			if (screenType == ScreenType.Tasks) 
 			{
 				// If a task, than show CorrectState by character in front of name
-				textTitle.Text = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + obj.Name;
+				textTitle.Text = (((Task)obj).Complete ? (((Task)obj).CorrectState == TaskCorrectness.NotCorrect ? Strings.TaskNotCorrect : Strings.TaskCorrect) + " " : "") + name;
 			}
 			else
-				textTitle.Text = obj.Name;
+				textTitle.Text = name;
 
 			if (HasDirection)
 			{
