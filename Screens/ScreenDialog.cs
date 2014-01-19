@@ -266,7 +266,11 @@ namespace WF.Player.iOS
 				imageView = new UIImageView (UIImage.LoadFromData (NSData.FromArray (image.Data))) {
 					ContentMode = UIViewContentMode.Center | UIViewContentMode.ScaleAspectFit
 				};
-				imageView.Bounds = new RectangleF (0, 0, maxWidth, imageView.Bounds.Height);
+				if (imageView.Image.Size.Width > maxWidth)
+					imageView.Bounds = new RectangleF (0, 0, maxWidth, imageView.Image.Size.Height * maxWidth / imageView.Image.Size.Width);
+				else
+					imageView.Bounds = new RectangleF (0, 0, maxWidth, imageView.Image.Size.Height);
+			//				imageView.Bounds = new RectangleF (0, 0, maxWidth, imageView.Bounds.Height);
 			} else {
 				imageView = null;
 			}

@@ -206,7 +206,7 @@ namespace WF.Player.iOS
 			MainScreenCell cell = new MainScreenCell();
 
 			// Set initial data 
-			if (ctrl.Engine.GameState == EngineGameState.Playing) 
+			if (ctrl != null && ctrl.Engine != null && ctrl.Engine.GameState == EngineGameState.Playing) 
 			{
 				cell.RefreshCell (owner, ctrl.Engine, indexPath.Row);
 			}

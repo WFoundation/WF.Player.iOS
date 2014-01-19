@@ -263,7 +263,7 @@ namespace WF.Player.iOS
 				if (activeObject.Image != null) {
 					image.Image = UIImage.LoadFromData (NSData.FromArray (activeObject.Image.Data));
 					image.Hidden = false;
-					if (image.Image.Size.Width > image.Image.Size.Height)
+					if (image.Image.Size.Width > maxWidth)
 						image.Bounds = new RectangleF (0, 0, maxWidth, image.Image.Size.Height * maxWidth / image.Image.Size.Width);
 					else
 						image.Bounds = new RectangleF (0, 0, maxWidth, image.Image.Size.Height);

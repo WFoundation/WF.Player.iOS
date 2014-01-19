@@ -64,11 +64,11 @@
 		<string>Icon-Small@2x</string>
 		<string>Icon-Small-40@2x</string>
 	</array>
-	<key>CFBundleVersion</key>
-	<string>7</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>CFBundleVersion</key>
+	<string>8</string>
 </dict>
 </plist>

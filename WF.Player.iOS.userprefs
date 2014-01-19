@@ -1,45 +1,35 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Ad-Hoc|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Dirks iPad" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Info.plist">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.iPhone von Dirk Weltz" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Screens/ScreenMainiOS.cs">
     <Files>
       <File FileName="WF.Player.Core/Core/Live/Cartridges.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Engines/Engine.cs" Line="1" Column="1" />
       <File FileName="AppDelegate.cs" Line="1" Column="1" />
       <File FileName="WF.Player.Core/Core/Threading/JobQueue.cs" Line="1" Column="1" />
       <File FileName="Info.plist" />
-      <File FileName="Screens/ScreenController.cs" Line="370" Column="34" />
-      <File FileName="Screens/ScreenListiOS.cs" Line="184" Column="9" />
-      <File FileName="Screens/ScreenMap.cs" Line="93" Column="4" />
-      <File FileName="iOS/Settings.cs" Line="28" Column="46" />
-      <File FileName="CheckLocation.cs" Line="178" Column="15" />
-      <File FileName="CartridgeDetail.cs" Line="3" Column="28" />
-      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataProvider.cs" Line="105" Column="1" />
-      <File FileName="Screens/ScreenList.cs" Line="3" Column="28" />
+      <File FileName="Screens/ScreenController.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenListiOS.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenMap.cs" Line="1" Column="1" />
+      <File FileName="iOS/Settings.cs" Line="1" Column="1" />
+      <File FileName="CheckLocation.cs" Line="1" Column="1" />
+      <File FileName="CartridgeDetail.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/LuaDataProvider.cs" Line="1" Column="1" />
+      <File FileName="Screens/ScreenList.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Zone.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/WherigoObject.cs" Line="1" Column="1" />
+      <File FileName="WF.Player.Core/Core/Engines/WIGInternalImpl.cs" Line="214" Column="1" />
+      <File FileName="Screens/ScreenDetailiOS.cs" Line="208" Column="49" />
+      <File FileName="Screens/ScreenDialog.cs" Line="272" Column="6" />
+      <File FileName="WF.Player.Core/Core/Data/Lua/SafeLua.cs" Line="304" Column="1" />
+      <File FileName="Screens/ScreenMainiOS.cs" Line="209" Column="24" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="Core.iOS" expanded="True">
-            <Node name="Data" expanded="True">
-              <Node name="Lua" expanded="True" />
-            </Node>
-          </Node>
-          <Node name="WF.Player.iOS" expanded="True">
-            <Node name="iOS" expanded="True" />
-            <Node name="Resources" expanded="True" />
-            <Node name="Screens" expanded="True" />
-            <Node name="Info.plist" selected="True" />
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
-    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Dinge, die in einer Zone enthalten sind (Zone.Inventory) werden jetzt auf der Karte angezeigt, wenn man die Fahne Antipp. Außerdem sollte es funktionieren, dass man GWC Dateien direkt aus E-Mails oder Webseiten kopieren kann. Neuzugänge werden noch nicht automatisch angezeigt. Überwachung des Documenten-Verzeichnisses kommt noch.&#xA;&#xA;Allerdings ist mir noch immer nicht klar, was beim Nachtspaziergang nicht funktioniert. Ich kann den hier ganz normal starten und er zählt artig hoch.&#xA;&#xA;Viele Grüße&#xA;Dirk" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
+    <IPhoneTestFlightSettings_27CAd-Hoc ApiToken="bb4f2acb281857f28488f35a566ece44_MTQxOTQzNjIwMTMtMTEtMDQgMDc6MzU6NTUuMjk2MjQx" TeamToken="9ee4f0df78647883b24004556c2fdd86_Mjk1MTExMjAxMy0xMS0wNCAwNzo0MjoxMi40NDI1NTI" ReleaseNotes="Einige kleinere Bugs entfernt.&#xA;&#xA;Viele Grüße&#xA;Dirk" NotifyTeamMembers="False" ReplaceBinaries="True" DistributionLists="" UploadDSYMs="False" />
     <MonoDevelop.MacDev.AppleDevelopmentTeam DeveloperId="568GFG8P5M" TeamId="CE232943X3" />
   </MonoDevelop.Ide.ItemProperties.WF.Player.iOS>
 </Properties>
