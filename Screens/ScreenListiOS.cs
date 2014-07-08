@@ -24,6 +24,7 @@ using MonoTouch.CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
+using Vernacular;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
@@ -58,6 +59,14 @@ namespace WF.Player.iOS
 		}
 
 		#endregion
+
+		#region Properties
+
+		public ScreenController Ctrl {
+			get { return ctrl; }
+		}
+
+		#endregion
 		
 		#region MonoTouch Functions
 		
@@ -74,12 +83,12 @@ namespace WF.Player.iOS
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Catalog.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
 				ctrl.ButtonPressed(null); 
 				ctrl.RemoveScreen(type); 
 			}), false);
 			if (type == ScreenType.Locations || type == ScreenType.Items)
-				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
+				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Catalog.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
 					ctrl.ButtonPressed(null);
 					ctrl.ShowScreen(ScreenType.Map, null);
 				}), false);
@@ -307,7 +316,7 @@ namespace WF.Player.iOS
 						imageDirection.Hidden = false;
 						imageDirection.Image = drawCenter ();
 						textDistance.Hidden = false;
-						textDistance.Text = Strings.GetString("Inside");
+						textDistance.Text = Catalog.GetString("Inside");
 					} else {
 						if ((obj is Item || obj is Character) && obj.ObjectLocation != null) {
 							imageDirection.Hidden = true;
@@ -315,7 +324,7 @@ namespace WF.Player.iOS
 						} else {
 							if (((Thing)obj).VectorFromPlayer != null) {
 								imageDirection.Hidden = false;
-								imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + engine.Heading) % 360); // * 180.0 / Math.PI);
+								imageDirection.Image = drawArrow ((((Thing)obj).VectorFromPlayer.Bearing.GetValueOrDefault () + owner.Ctrl.LocatitionManager.Heading.TrueHeading) % 360); // * 180.0 / Math.PI);
 								textDistance.Hidden = false;
 								textDistance.Text = ((Thing)obj).VectorFromPlayer.Distance.BestMeasureAs (DistanceUnit.Meters);
 							} else {

@@ -197,7 +197,7 @@ namespace WF.Player.iOS
 			File.Copy (sourceFile, destFile);
 
 			Cartridge cart = new Cartridge(destFile);
-			FileFormats.LoadMetadata(new FileStream(destFile, FileMode.Open), cart);
+			CartridgeLoaders.LoadMetadata(new FileStream(destFile, FileMode.Open), cart);
 
 			// TODO
 			// If there was a cartridge with the same filename, than replace

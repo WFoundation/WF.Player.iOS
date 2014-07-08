@@ -34,6 +34,7 @@ namespace WF.Player.iOS
 		public static UIImage IconYouSee = UIImage.FromFile ("Images/IconYouSee.png");
 		public static UIImage IconInventory = UIImage.FromFile ("Images/IconInventory.png");
 		public static UIImage IconTask = UIImage.FromFile ("Images/IconTask.png");
+		public static UIImage IconPosition = UIImage.FromFile ("Images/IconPosition.png");
 
 		public static UIImage IconMapZone = UIImage.FromFile ("Images/IconMapZone.png");
 		public static UIImage IconMapCharacter = UIImage.FromFile ("Images/IconMapCharacter.png");
@@ -60,26 +61,6 @@ namespace WF.Player.iOS
 		public static string TaskNotCorrect = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x97 } );  	// UTF-8 2717
 		public static string Infinite = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x88, 0x9E } );  		// UTF-8 221E
 		public static string Checked = Encoding.UTF8.GetString(new byte[] { 0xE2, 0x9C, 0x93 } );    		// UTF-8 2713
-
-		public static string GetString(string text)
-		{
-			return Catalog.GetString (text);
-		}
-
-		public static string GetStringFmt(string text, params object[] args)
-		{
-			return Catalog.Format(GetString(text), args);
-		}
-
-		public static string GetPluralString(string singular, string plural, int n)
-		{
-			return Catalog.GetPluralString(singular, plural, n);
-		}
-
-		public static string GetPluralStringFmt(string singular, string plural, int n, params object[] args)
-		{
-			return Catalog.Format(Catalog.GetPluralString(singular, plural, n), args);
-		}
 	}
 }
 

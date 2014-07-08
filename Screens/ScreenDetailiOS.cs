@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <mail@wfplayer.com>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ using MonoTouch.CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
+using Vernacular;
 using WF.Player.Core;
 
 namespace WF.Player.iOS
@@ -71,7 +72,7 @@ namespace WF.Player.iOS
 			// Get all commands for this object
 
 			// Show back button
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Catalog.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
 				ctrl.ButtonPressed(null);
 				ctrl.RemoveScreen(ScreenType.Details); 
 			}), false);
@@ -131,7 +132,7 @@ namespace WF.Player.iOS
 					targets = command.TargetObjects;
 					// If things has no entry, than there are no targets for this command
 					if (targets.Count == 0) {
-						actionCommandEmpty = Strings.GetString(command.EmptyTargetListText);
+						actionCommandEmpty = Catalog.GetString(command.EmptyTargetListText);
 					}
 					actionCommand = command;
 					Refresh ();
@@ -244,7 +245,7 @@ namespace WF.Player.iOS
 			float maxHeight = this.View.Bounds.Height;
 
 			if ((activeObject is Zone || (activeObject is Thing && ctrl.Engine.VisibleObjects.Contains ((Thing)activeObject))) && activeObject.ObjectLocation != null)
-				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Strings.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
+				NavigationItem.SetRightBarButtonItem (new UIBarButtonItem (Catalog.GetString("Map"), UIBarButtonItemStyle.Plain, (sender, args) => {
 					ctrl.ShowScreen(ScreenType.Map, activeObject);
 				}), false);
 
@@ -321,7 +322,7 @@ namespace WF.Player.iOS
 				}
 				else
 					// Show empty text
-					buttons[0].SetTitle (Strings.GetString("Ok"), UIControlState.Normal);
+					buttons[0].SetTitle (Catalog.GetString("Ok"), UIControlState.Normal);
 
 				buttonView.Hidden = num == 0;
 			}

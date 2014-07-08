@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <mail@wfplayer.com>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ using MonoTouch.CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
+using Vernacular;
 using WF.Player.Core;
 
 namespace WF.Player.iOS
@@ -72,7 +73,7 @@ namespace WF.Player.iOS
 			this.text = input.Text;
 			this.image = input.Image;
 			if (input.InputType == InputType.Text)
-				buttons.Add (Strings.GetString("Ok"));
+				buttons.Add (Catalog.GetString("Ok"));
 			if (input.InputType == InputType.MultipleChoice)
 				foreach (string s in input.Choices)
 					buttons.Add (s);

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2F0805AA-607D-47A7-B72C-520E2B260567}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,12 +62,12 @@
     <MtouchArch>ARMv7, ARMv7s</MtouchArch>
     <CrashReportingApiKey>
     </CrashReportingApiKey>
-    <CodesignProvision>8A487026-4714-412A-9789-B232080D9310</CodesignProvision>
     <AssemblyName>Player</AssemblyName>
     <MtouchLink>None</MtouchLink>
     <BuildIpa>true</BuildIpa>
     <MtouchUseSGen>true</MtouchUseSGen>
     <StartupObject>WF.Player.iPhone.Application</StartupObject>
+    <CodesignProvision>AEDBD980-A0E1-493A-8C3D-B9DA7146489E</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -142,14 +142,13 @@
     <Folder Include="Settings.bundle\" />
     <Folder Include="Settings.bundle\de.lproj\" />
     <Folder Include="de.lproj\" />
-    <Folder Include="Resources\sounds\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="de.lproj\de.po" />
+    <None Include="RELEASE-NOTES.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="CartridgeDetail.cs" />
     <Compile Include="CartridgeDetail.designer.cs">
@@ -170,6 +169,7 @@
     <Compile Include="Screens\ScreenMap.cs" />
     <Compile Include="iOS\AssemblyInfo.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Application.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -238,6 +238,8 @@
     <BundleResource Include="Resources\Default%402x.png" />
     <BundleResource Include="Resources\Default.png" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Images\IconPosition.png" />
+    <BundleResource Include="Images\IconPosition%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googlemapsios">

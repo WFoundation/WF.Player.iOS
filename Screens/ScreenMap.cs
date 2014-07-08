@@ -27,6 +27,7 @@ using MonoTouch.UIKit;
 using MonoTouch.CoreLocation;
 using MonoTouch.CoreGraphics;
 using Google.Maps;
+using Vernacular;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 using WF.Player.Core.Utils;
@@ -87,7 +88,7 @@ namespace WF.Player.iOS
 			base.ViewDidLoad ();
 
 			// Perform any additional setup after loading the view, typically from a nib.
-			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
+			NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Catalog.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { 
 				ctrl.ButtonPressed(null); 
 				ctrl.RemoveScreen(ScreenType.Map); 
 			}), false);
@@ -289,14 +290,14 @@ namespace WF.Player.iOS
 			if (sender is UIButton && ((UIButton)sender).Tag == 1) {
 				// Ask, which to show
 				var thingOffset = 1;
-				UIActionSheet actionSheet = new UIActionSheet (Strings.GetString ("Focus on"));
+				UIActionSheet actionSheet = new UIActionSheet (Catalog.GetString ("Focus on"));
 				if (thing != null) {
 					actionSheet.AddButton (thing.Name);
 					thingOffset = 0;
 				}
-				actionSheet.AddButton (Strings.GetString ("Playing area"));
-				actionSheet.AddButton (Strings.GetString ("Location"));
-				actionSheet.AddButton (Strings.GetString ("Cancel"));
+				actionSheet.AddButton (Catalog.GetString ("Playing area"));
+				actionSheet.AddButton (Catalog.GetString ("Location"));
+				actionSheet.AddButton (Catalog.GetString ("Cancel"));
 				actionSheet.CancelButtonIndex = 3 - thingOffset;       // Black button
 				actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
 					CameraUpdate cu = null;
@@ -344,15 +345,15 @@ namespace WF.Player.iOS
 			if  (sender is UIButton && ((UIButton)sender).Tag == 3) {
 				// Change map type
 				// Ask, which to show
-				UIActionSheet actionSheet = new UIActionSheet (Strings.GetString ("Type of map"));
-				actionSheet.AddButton ((mapView.MapType == MapViewType.Normal ? Strings.Checked + " " : "") + Strings.GetString ("Google Maps"));
-				actionSheet.AddButton ((mapView.MapType == MapViewType.Satellite ? Strings.Checked + " " : "") + Strings.GetString ("Google Satellite"));
-				actionSheet.AddButton ((mapView.MapType == MapViewType.Terrain ? Strings.Checked + " " : "") + Strings.GetString ("Google Terrain"));
-				actionSheet.AddButton ((mapView.MapType == MapViewType.Hybrid ? Strings.Checked + " " : "") + Strings.GetString ("Google Hybrid"));
-				actionSheet.AddButton ((mapView.MapType == MapViewType.None && osmLayer.Map != null ? Strings.Checked + " " : "") + Strings.GetString ("OpenStreetMap"));
-				actionSheet.AddButton ((mapView.MapType == MapViewType.None && ocmLayer.Map != null ? Strings.Checked + " " : "") + Strings.GetString ("OpenCycleMap"));
-				actionSheet.AddButton ((mapView.MapType == MapViewType.None && osmLayer.Map == null && ocmLayer.Map == null ? Strings.Checked + " " : "") + Strings.GetString ("None"));
-				actionSheet.AddButton (Strings.GetString ("Cancel"));
+				UIActionSheet actionSheet = new UIActionSheet (Catalog.GetString ("Type of map"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Normal ? Strings.Checked + " " : "") + Catalog.GetString ("Google Maps"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Satellite ? Strings.Checked + " " : "") + Catalog.GetString ("Google Satellite"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Terrain ? Strings.Checked + " " : "") + Catalog.GetString ("Google Terrain"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.Hybrid ? Strings.Checked + " " : "") + Catalog.GetString ("Google Hybrid"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.None && osmLayer.Map != null ? Strings.Checked + " " : "") + Catalog.GetString ("OpenStreetMap"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.None && ocmLayer.Map != null ? Strings.Checked + " " : "") + Catalog.GetString ("OpenCycleMap"));
+				actionSheet.AddButton ((mapView.MapType == MapViewType.None && osmLayer.Map == null && ocmLayer.Map == null ? Strings.Checked + " " : "") + Catalog.GetString ("None"));
+				actionSheet.AddButton (Catalog.GetString ("Cancel"));
 				actionSheet.CancelButtonIndex = 7;       // Black button
 				actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
 					switch (b.ButtonIndex) {
@@ -546,7 +547,7 @@ namespace WF.Player.iOS
 					s.Append ((s.Length > 0 ? ", " : "") + (thing.Name == null ? "" : thing.Name));
 				}
 
-				marker.Snippet = Strings.GetStringFmt("Contains {0}", s.ToString());
+				marker.Snippet = Catalog.Format(Catalog.GetString("Contains {0}"), s.ToString());
 			}
 
 			marker.ZIndex = 100;
@@ -606,7 +607,7 @@ namespace WF.Player.iOS
 					s.Append ((s.Length > 0 ? ", " : "") + (thing.Name == null ? "" : thing.Name));
 				}
 
-				marker.Snippet = Strings.GetStringFmt("Contains {0}", s.ToString());
+				marker.Snippet = Catalog.Format(Catalog.GetString("Contains {0}"), s.ToString());
 			}
 				
 			MutablePath path = new MutablePath ();;

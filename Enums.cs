@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <mail@wfplayer.com>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -49,6 +49,17 @@ namespace WF.Player.iOS
 		Offline,
 		Cartridge,
 		None
+	}
+
+	/// <summary>
+	/// Image resize types.
+	/// </summary>
+	public enum ImageResize : int
+	{
+		NoResize = 0,
+		ShrinkWidth,
+		ResizeWidth,
+		ResizeHeight
 	}
 }
 

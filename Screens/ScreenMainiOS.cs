@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <mail@wfplayer.com>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ using System.Text;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using MonoTouch.ObjCRuntime;
+using Vernacular;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
@@ -72,6 +73,7 @@ namespace WF.Player.iOS
 			iconYouSee = Images.IconYouSee;
 			iconInventory = Images.IconInventory;
 			iconTask = Images.IconTask;
+			iconPosition = Images.IconPosition;
 
 			// Show back button
 			NavigationItem.SetHidesBackButton (false, false);
@@ -198,7 +200,7 @@ namespace WF.Player.iOS
 		
 		public override int RowsInSection (UITableView tableview, int section) 
 		{ 
-			return 4; 
+			return 5; 
 		} 
 
 		public override float GetHeightForRow (UITableView tableView, NSIndexPath indexPath)
@@ -302,6 +304,39 @@ namespace WF.Player.iOS
 				return;
 
 			owner.GetContentEntry (row, out header, out items, out image);
+
+			// For position we must generate text here
+			if (row == 4) {
+//				var gps = MainApp.Instance.GPS;
+//				var location = ctrl .gps.IsValid ? gps.CoordinatesToString(gps.Latitude, gps.Longitude) : Catalog.GetString("Unknown");
+//				var altitude = gps.HasAltitude ? String.Format("{0:0}", gps.Altitude) : "\u0335";
+//				var accuracy = gps.HasAccuracy ? String.Format("{0:0}", gps.Accuracy) : Strings.Infinite;
+//				var status = gps.IsValid ? Catalog.GetString("valid") : Catalog.GetString("invalid");
+
+				var location = Catalog.GetString("Unknown");
+				var altitude = "\u0335";
+				var accuracy = Strings.Infinite;
+				var status = Catalog.GetString ("invalid");
+
+				StringBuilder sb = new StringBuilder();
+
+				sb.AppendLine(location);
+				sb.AppendLine("");
+				sb.Append(Catalog.GetString("Altitude"));
+				sb.Append(":\t\t\t\t");
+				sb.Append(altitude);
+				sb.AppendLine(" m");
+				sb.Append(Catalog.GetString("Accuracy"));
+				sb.Append(":\t\t");
+				sb.Append(accuracy);
+				sb.AppendLine(" m");
+				sb.Append(Catalog.GetString("Status"));
+				sb.Append(":\t\t\t\t");
+				sb.AppendLine(status);
+
+				items = sb.ToString();
+			}
+
 
 			textTitle.Text = header;
 			textItems.Text = items;

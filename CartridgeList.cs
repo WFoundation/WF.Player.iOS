@@ -1,6 +1,6 @@
 ///
 /// WF.Player.iPhone - A Wherigo Player for iPhone which use the Wherigo Foundation Core.
-/// Copyright (C) 2012-2014  Dirk Weltz <web@weltz-online.de>
+/// Copyright (C) 2012-2014  Dirk Weltz <mail@wfplayer.com>
 ///
 /// This program is free software: you can redistribute it and/or modify
 /// it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ using MonoTouch.CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.ObjCRuntime;
 using MonoTouch.UIKit;
+using Vernacular;
 using WF.Player.Core;
 using WF.Player.Core.Live;
 
@@ -82,7 +83,7 @@ namespace WF.Player.iOS
 			base.ViewDidLoad ();
 			
 			// Perform any additional setup after loading the view, typically from a nib.
-			this.Title = Strings.GetString("Cartridges");
+			this.Title = Catalog.GetString("Cartridges");
 
 			// Set the table view to fit the width of the app.
 			Table.SizeToFit();
@@ -278,11 +279,11 @@ namespace WF.Player.iOS
 			textTitle.Text = cart.Name;
 			if (!String.IsNullOrEmpty (cart.Version))
 				// GETTEXT: Version for cartridge list in one line
-				textVersion.Text += Strings.GetStringFmt("Version {0}", cart.Version);
+				textVersion.Text += Catalog.Format(Catalog.GetString("Version {0}"), cart.Version);
 			else
 				textVersion.Text = "";
 			if (!String.IsNullOrEmpty(cart.AuthorName) || !String.IsNullOrEmpty(cart.AuthorCompany))
-				textAuthor.Text = Strings.GetStringFmt("By {0}", (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany));
+				textAuthor.Text = Catalog.Format(Catalog.GetString("By {0}"), (String.IsNullOrEmpty(cart.AuthorName) ? "" : cart.AuthorName) + (!String.IsNullOrEmpty(cart.AuthorName) && !String.IsNullOrEmpty(cart.AuthorCompany) ? " / " : "") + (String.IsNullOrEmpty(cart.AuthorCompany) ? "" : cart.AuthorCompany));
 			else
 				textAuthor.Text = "";
 			// TODO: Load default image for cart.ActivityType

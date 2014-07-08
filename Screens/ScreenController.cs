@@ -27,6 +27,7 @@ using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 using MonoTouch.CoreLocation;
 using MonoTouch.AVFoundation;
+using Vernacular;
 using WF.Player.Core;
 using WF.Player.Core.Engines;
 
@@ -107,7 +108,7 @@ namespace WF.Player.iOS
 			screenMain = new ScreenMain(this);
 
 			// Set left button
-			var leftBarButton = new UIBarButtonItem (Strings.GetString("Quit"), UIBarButtonItemStyle.Plain, (sender, args) => {
+			var leftBarButton = new UIBarButtonItem (Catalog.GetString("Quit"), UIBarButtonItemStyle.Plain, (sender, args) => {
 				ButtonPressed(null);
 				quit();
 			});
@@ -115,7 +116,7 @@ namespace WF.Player.iOS
 			screenMain.NavigationItem.SetLeftBarButtonItem(leftBarButton, true);
 
 			// Set right button
-			var rightBarButton = new UIBarButtonItem (Strings.GetString("Save"), UIBarButtonItemStyle.Plain, (sender, args) => {
+			var rightBarButton = new UIBarButtonItem (Catalog.GetString("Save"), UIBarButtonItemStyle.Plain, (sender, args) => {
 				ButtonPressed(null);
 				Save();
 			});
@@ -570,6 +571,10 @@ namespace WF.Player.iOS
 		public void StartSound(Media media)
 		{
 			NSError error;
+			if (soundPlayer != null) {
+				soundPlayer.Stop();
+				soundPlayer = null;
+			}
 			soundPlayer = AVAudioPlayer.FromData(NSData.FromArray (media.Data), out error);
 			if (soundPlayer != null)
 				soundPlayer.Play ();
@@ -581,6 +586,7 @@ namespace WF.Player.iOS
 		{
 			if (soundPlayer != null && soundPlayer.Playing) {
 				soundPlayer.Stop ();
+				soundPlayer = null;
 			}
 		}
 
@@ -609,11 +615,11 @@ namespace WF.Player.iOS
 		{
 			// Ask, if user wants to save game
 			var alert = new UIAlertView(); 
-			alert.Title = Strings.GetString("Quit"); 
-			alert.Message = Strings.GetString("Would you save before quit?"); 
-			alert.AddButton(Strings.GetString("Yes")); 
-			alert.AddButton(Strings.GetString("No")); 
-			alert.AddButton(Strings.GetString("Cancel")); 
+			alert.Title = Catalog.GetString("Quit"); 
+			alert.Message = Catalog.GetString("Would you save before quit?"); 
+			alert.AddButton(Catalog.GetString("Yes")); 
+			alert.AddButton(Catalog.GetString("No")); 
+			alert.AddButton(Catalog.GetString("Cancel")); 
 			alert.Clicked += (sender, e) => { 
 				if (e.ButtonIndex == 2)
 					return;
@@ -630,9 +636,9 @@ namespace WF.Player.iOS
 		private void menu ()
 		{
 			UIActionSheet actionSheet = new UIActionSheet ();
-			actionSheet.AddButton(Strings.GetString("Save"));
-			actionSheet.AddButton(Strings.GetString("About"));
-			actionSheet.AddButton (Strings.GetString("Cancel"));
+			actionSheet.AddButton(Catalog.GetString("Save"));
+			actionSheet.AddButton(Catalog.GetString("About"));
+			actionSheet.AddButton (Catalog.GetString("Cancel"));
 			actionSheet.DestructiveButtonIndex = 0;  // Red button
 			actionSheet.CancelButtonIndex = 2;       // Black button
 			actionSheet.Clicked += delegate(object a, UIButtonEventArgs b) {
@@ -641,9 +647,9 @@ namespace WF.Player.iOS
 				if (b.ButtonIndex == 1)
 				{
 					var alert = new UIAlertView(); 
-					alert.Title = Strings.GetString("WF.Player.iOS"); 
-					alert.Message = Strings.GetStringFmt("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz, Brice Clocher\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua ",0,Engine.CoreVersion); 
-					alert.AddButton(Strings.GetString("Ok")); 
+					alert.Title = Catalog.GetString("WF.Player.iOS"); 
+					alert.Message = Catalog.Format(Catalog.GetString("Copyright 2012-2013 by Wherigo Foundation, Dirk Weltz, Brice Clocher\n\nVersion\niPhone {0}\nCore {1}\n\nUsed parts of following products (copyrights see at product):\nGroundspeak, NLua, KeraLua, KopiLua, Lua "),0,Engine.CORE_VERSION); 
+					alert.AddButton(Catalog.GetString("Ok")); 
 //					alert.Clicked += (sender, e) => {
 //					};
 					alert.Show();
@@ -660,7 +666,7 @@ namespace WF.Player.iOS
 		private void map (Thing thing)
 		{
 			ScreenMap mapScreen = new ScreenMap(this,thing);
-			mapScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Strings.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
+			mapScreen.NavigationItem.SetLeftBarButtonItem(new UIBarButtonItem(Catalog.GetString("Back"),UIBarButtonItemStyle.Plain, (sender,args) => { back (); }), true);
 			mapScreen.Title = thing.Name;
 			PushViewController (mapScreen,animation);
 		}
@@ -693,12 +699,12 @@ namespace WF.Player.iOS
 
 			public override void UpdatedHeading(CLLocationManager manager, CLHeading newHeading)
 			{
-				if (ctrl != null && ctrl.Engine != null && ctrl.Engine.GameState == EngineGameState.Playing)
-					if (ctrl.Engine.Heading != newHeading.TrueHeading)
-					{
-						ctrl.Engine.RefreshHeading(newHeading.TrueHeading);
-						ctrl.Refresh();
-					}
+//				if (ctrl != null && ctrl.Engine != null && ctrl.Engine.GameState == EngineGameState.Playing)
+//					if (ctrl.Engine.Heading != newHeading.TrueHeading)
+//					{
+//						ctrl.Engine.RefreshHeading(newHeading.TrueHeading);
+//						ctrl.Refresh();
+//					}
 			}
 
 			public override void Failed (CLLocationManager manager, NSError error)
